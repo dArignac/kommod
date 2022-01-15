@@ -21,8 +21,7 @@ jobs:
           cache: npm
 
       - name: npm install
-        run: |
-          npm install
+        run: npm ci
 
       - name: npm test
         env:
