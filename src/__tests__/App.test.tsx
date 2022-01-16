@@ -25,7 +25,5 @@ describe('App', () => {
     );
     expect(result).toBeTruthy();
     expect(screen.getByText(/API Token/)).toBeInTheDocument();
-
-    // FIXME test with mocked local storage display of token
   });
 });

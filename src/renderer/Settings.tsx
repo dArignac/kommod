@@ -24,10 +24,11 @@ const Settings = () => {
       <label htmlFor="token">
         API Token
         <input
-          type="text"
+          data-testid="token"
           id="token"
           placeholder="API token"
           required
+          type="text"
           {...register('token', { required: true })}
         />
         <small>
@@ -42,7 +43,9 @@ const Settings = () => {
         </small>{' '}
       </label>
       {errors.token && <span>This field is required</span>}
-      <button type="submit">Save</button>
+      <button data-testid="submit" type="submit">
+        Save
+      </button>
     </form>
   );
 };
