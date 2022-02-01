@@ -1,8 +1,13 @@
 import '@testing-library/jest-dom';
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import Settings from '../renderer/Settings';
+import mockWindow from '../mocks/mocks';
 
 describe('Settings', () => {
+  beforeAll(() => {
+    mockWindow();
+  });
+
   it('should save API token', async () => {
     const { rerender } = render(<Settings />);
 
