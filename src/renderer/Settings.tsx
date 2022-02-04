@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 type Inputs = {
@@ -6,18 +7,23 @@ type Inputs = {
 };
 
 const Settings = () => {
+  const [token, setToken] = useState<string>('');
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>({
-    defaultValues: {
-      token: window.localStorage.getItem('token') || '',
-    },
-  });
+  } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    window.localStorage.setItem('token', data.token);
+    window.electron.ipcRenderer.setToken('toggl-api-token', data.token);
   };
+
+  useEffect(() => {
+    window.electron.ipcRenderer.getToken('toggl-api-token');
+    // this could take time if use has to approve credential store
+    window.electron.ipcRenderer.once('get-password', (arg) => {
+      setToken(arg);
+    });
+  });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -29,6 +35,7 @@ const Settings = () => {
           placeholder="API token"
           required
           type="text"
+          defaultValue={token}
           {...register('token', { required: true })}
         />
         <small>

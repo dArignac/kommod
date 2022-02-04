@@ -1,9 +1,14 @@
 import '@testing-library/jest-dom';
-import { screen, render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter as Router } from 'react-router-dom';
+import mockWindow from '../mocks/mocks';
 import App from '../renderer/App';
 
 describe('App', () => {
+  beforeAll(() => {
+    mockWindow();
+  });
+
   it('should render home page', () => {
     const result = render(
       <Router>
