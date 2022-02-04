@@ -55,14 +55,15 @@ jobs:
           npm exec tsc
           npm test
 
-      - name: archive
-        uses: actions/upload-artifact@v2
-        with:
-          name: image-mac
-          path: |
-            release/build/*.dmg
-            release/build/*.zip
-          retention-days: 3
+      # FIXME this is just for testing, remove eventually
+      # - name: archive
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: images-mac
+      #     path: |
+      #       release/build/*.dmg
+      #       release/build/*.zip
+      #     retention-days: 3
 
   windows:
     runs-on: windows-latest
