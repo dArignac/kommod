@@ -30,8 +30,8 @@
     ]
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "ElToggl",
+    "appId": "rocks.torv.ElToggl",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
