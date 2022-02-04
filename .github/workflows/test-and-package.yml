@@ -1,9 +1,9 @@
-name: Test
+name: Test & Package
 
 on: [push, pull_request]
 
 jobs:
-  tests-ubuntu:
+  ubuntu:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,7 +28,7 @@ jobs:
           npm exec tsc
           npm test
 
-  tests-macos:
+  macos:
     runs-on: macos-latest
 
     steps:
@@ -55,7 +55,10 @@ jobs:
           npm exec tsc
           npm test
 
-  tests-windows:
+      - name: package
+        run: npm package:mac
+
+  windows:
     runs-on: windows-latest
 
     steps:
