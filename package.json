@@ -232,5 +232,8 @@
       }
     ],
     "singleQuote": true
+  },
+  "volta": {
+    "node": "16.13.2"
   }
 }
