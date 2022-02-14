@@ -1,11 +1,11 @@
 [package]
-name = "app"
+name = "el_toggl"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
-default-run = "app"
+description = "A toggl.com client"
+authors = ["Alexander Herrmann"]
+license = "MIT"
+repository = "https://github.com/dArignac/el-toggl"
+default-run = "el_toggl"
 edition = "2021"
 rust-version = "1.57"
 
