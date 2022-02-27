@@ -23,7 +23,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
@@ -46,9 +47,14 @@
   "devDependencies": {
     "@tauri-apps/cli": "^1.0.0-rc.5",
     "cross-env": "^7.0.3",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.4",
     "prettier": "^2.5.1"
   },
   "volta": {
     "node": "16.14.0"
+  },
+  "lint-staged": {
+    "*.{js,ts,tdx,css,md,html}": "prettier --write"
   }
 }
