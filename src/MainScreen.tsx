@@ -1,9 +1,12 @@
 import { styled } from "@stitches/react"
 import React from "react"
+import { Footer } from "./Footer"
+import { theme } from "./themes"
 
 // FIXME align dimensions with tauri app window
 const MainGrid = styled("div", {
   display: "grid",
+  gridTemplateColumns: theme.tauri.width.computedValue,
   gridTemplateRows: "60px 300px 30px",
 })
 
@@ -22,7 +25,7 @@ export function MainScreen() {
         <div>Settings</div>
       </TopRow>
       <MainRow>MainRow</MainRow>
-      <div>Footer</div>
+      <Footer />
     </MainGrid>
   )
 }

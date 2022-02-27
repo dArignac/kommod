@@ -18,19 +18,32 @@ const { theme } = createStitches({
       family: "Arial, sans-serif",
       size: "14px",
     },
+    // check tauri.conf.json for set dimensions
+    tauri: {
+      height: "600px",
+      width: "800px",
+    },
   },
 })
+
+export { theme }
 
 export const globalStyles = globalCss({
   "*": {
     margin: 0,
     padding: 0,
   },
+  "#root": {
+    border: "1px solid red",
+  },
   body: {
     background: theme.colors.background.computedValue,
     color: theme.colors.primary.computedValue,
     fontFamily: theme.fonts.family.computedValue,
     fontSize: theme.fonts.size.computedValue,
-    margin: theme.space.space1.computedValue,
+    height: theme.tauri.height.computedValue, // FIXME just for development without tauri + decide if we allow resizing
+    margin: 0,
+    padding: 0,
+    width: theme.tauri.width.computedValue, // FIXME just for development without tauri + decide if we allow resizing
   },
 })
