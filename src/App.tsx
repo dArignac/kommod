@@ -1,10 +1,9 @@
-import React from 'react'
-import './App.css'
+import React from "react"
+import { globalStyles } from "./themes"
 
 function App() {
-  return (
-    <div>Hello</div>
-  )
+  globalStyles()
+  return <div>Hello</div>
 }
 
 export default App

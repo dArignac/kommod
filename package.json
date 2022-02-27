@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@stitches/react": "^1.2.7",
     "@tauri-apps/api": "^1.0.0-rc.1",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.3",
@@ -44,7 +45,8 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.0.0-rc.5",
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "prettier": "^2.5.1"
   },
   "volta": {
     "node": "16.14.0"
