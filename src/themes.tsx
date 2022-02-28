@@ -34,7 +34,7 @@ export const globalStyles = globalCss({
     padding: 0,
   },
   "#root": {
-    border: "1px solid red",
+    boxShadow: "inset 0 0 0 1px #f00"
   },
   body: {
     background: theme.colors.background.computedValue,
