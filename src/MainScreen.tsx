@@ -7,7 +7,7 @@ import { theme } from "./themes"
 const MainGrid = styled("div", {
   display: "grid",
   gridTemplateColumns: theme.tauri.width.computedValue,
-  gridTemplateRows: "60px 500px 40px",
+  gridTemplateRows: "70px 500px 30px",
 })
 
 const TopRow = styled("div", {

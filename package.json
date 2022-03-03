@@ -56,6 +56,6 @@
     "node": "16.14.0"
   },
   "lint-staged": {
-    "*.{js,ts,tdx,css,md,html}": "prettier --write"
+    "*.{js,ts,tsx,css,md,html}": "prettier --write"
   }
 }

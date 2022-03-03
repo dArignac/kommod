@@ -6,5 +6,4 @@ test("Renders default components", () => {
   render(<App />)
   expect(screen.getByText(/Settings/i)).toBeInTheDocument()
   expect(screen.getByText(/MainRow/i)).toBeInTheDocument()
-  expect(screen.getByText(/Footer/i)).toBeInTheDocument()
 })
