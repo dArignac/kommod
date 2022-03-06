@@ -1,8 +1,6 @@
 import { styled } from "@stitches/react"
-import React from "react"
-import { Footer } from "./Footer"
-import { Navigation } from "./Navigation"
-import { theme } from "./themes"
+import { ReactNode } from "react"
+import { theme } from "../themes"
 
 const MainGrid = styled("div", {
   display: "grid",
@@ -18,15 +16,22 @@ const TopRow = styled("div", {
 
 const MainRow = styled("div", {})
 
-export function MainScreen() {
+interface GridProps {
+  topRowLeft: ReactNode
+  topRowRight: ReactNode
+  mainRow: ReactNode
+  footerRow: ReactNode
+}
+
+export function Grid({ topRowLeft, topRowRight, mainRow, footerRow }: GridProps) {
   return (
     <MainGrid>
       <TopRow>
-        <div>EntryCreator</div>
-        <Navigation />
+        <div>{topRowLeft}</div>
+        <div>{topRowRight}</div>
       </TopRow>
-      <MainRow>MainRow</MainRow>
-      <Footer />
+      <MainRow>{mainRow}</MainRow>
+      {footerRow}
     </MainGrid>
   )
 }
