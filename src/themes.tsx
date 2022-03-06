@@ -9,7 +9,7 @@ const { theme } = createStitches({
       secondary: "#C9ADA7",
       //   auxiliary: '#9A8C98',
       background: "#22223B", // if changed, also adjust index.html
-      backgroundLight: '#4A4E69'
+      backgroundLight: "#4A4E69",
     },
     space: {
       space1: "4px",
@@ -34,11 +34,15 @@ export const globalStyles = globalCss({
     padding: 0,
   },
   "#root": {
-    boxShadow: "inset 0 0 0 1px #f00"
+    boxShadow: "inset 0 0 0 1px #f00",
   },
   a: {
     color: theme.colors.primary,
-    display: 'inline-block'
+    display: "inline-block",
+    textDecoration: "none",
+  },
+  "a:hover": {
+    color: theme.colors.secondary,
   },
   body: {
     background: theme.colors.background.computedValue,

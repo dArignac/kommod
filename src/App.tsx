@@ -7,7 +7,7 @@ export function App() {
   globalStyles()
   return (
     <Switch>
-      <Route>
+      <Route path="/">
         <MainScreen />
       </Route>
       <Route path="/settings">TODO Settings</Route>
