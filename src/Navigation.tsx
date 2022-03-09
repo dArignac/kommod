@@ -1,17 +1,13 @@
-import { styled } from "@stitches/react"
-import { Link } from "wouter"
-
-const Wrapper = styled("div", {
-  padding: 10,
-  textAlign: "right",
-})
+import { Button } from "antd"
+import { useLocation } from "wouter"
 
 export function Navigation() {
+  const [, setLocation] = useLocation()
   return (
-    <Wrapper>
-      <Link data-testid="link-settings" href="/settings">
+    <>
+      <Button data-testid="link-settings" onClick={() => setLocation("/settings")}>
         Settings
-      </Link>
-    </Wrapper>
+      </Button>
+    </>
   )
 }

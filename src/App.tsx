@@ -1,16 +1,22 @@
+import { Layout, PageHeader } from "antd"
 import React from "react"
 import { Route, Switch } from "wouter"
+import "./App.css"
 import { Footer } from "./Footer"
-import { Grid } from "./layout/Grid"
 import { Navigation } from "./Navigation"
-import { globalStyles } from "./themes"
+
+const { Content } = Layout
 
 export function App() {
-  globalStyles()
   return (
     <Switch>
       <Route path="/">
-        <Grid topRowLeft={<div>EntryCreator</div>} topRowRight={<Navigation />} mainRow={<>MainRow</>} footerRow={<Footer />} />
+        <Layout>
+          <Content>
+            <PageHeader className="site-page-header" title="El Toggl" extra={[<Navigation key="nav" />]} />
+          </Content>
+          <Footer />
+        </Layout>
       </Route>
       <Route path="/settings">TODO Settings</Route>
     </Switch>

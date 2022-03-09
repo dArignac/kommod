@@ -6,8 +6,7 @@ import { App } from "./App"
 test("Renders default components", () => {
   render(<App />)
   expect(screen.getByText(/Settings/i)).toBeInTheDocument()
-  expect(screen.getByText(/MainRow/i)).toBeInTheDocument()
-  expect(screen.getByText(/El Toggl/)).toBeInTheDocument()
+  // expect(screen.getByText(/El Toggl/)).toBeInTheDocument()
 })
 
 test("Navigation to settings works", () => {
