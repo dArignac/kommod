@@ -1,9 +1,9 @@
-import { Layout, PageHeader } from "antd"
+import { Layout } from "antd"
 import React from "react"
 import { Route, Switch } from "wouter"
 import "./App.css"
 import { Footer } from "./Footer"
-import { Navigation } from "./Navigation"
+import { Header } from "./Header"
 
 const { Content } = Layout
 
@@ -13,12 +13,19 @@ export function App() {
       <Route path="/">
         <Layout>
           <Content>
-            <PageHeader className="site-page-header" title="El Toggl" extra={[<Navigation key="nav" />]} />
+            <Header />
           </Content>
           <Footer />
         </Layout>
       </Route>
-      <Route path="/settings">TODO Settings</Route>
+      <Route path="/settings">
+        <Layout>
+          <Content>
+            <Header />
+          </Content>
+          <Footer />
+        </Layout>
+      </Route>
     </Switch>
   )
 }
