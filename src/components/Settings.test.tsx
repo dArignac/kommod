@@ -20,3 +20,7 @@ test("Renders the form", async () => {
   expect(screen.getByText(/toggl.com Token/i)).toBeInTheDocument()
   expect(screen.getByText(/Submit/)).toBeInTheDocument()
 })
+
+test("It saves and loads the token value", async () => {
+  render(<Settings />)
+})
