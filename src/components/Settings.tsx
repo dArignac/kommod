@@ -1,5 +1,5 @@
 import { Button, Col, Form, Input, Row } from "antd"
-import { LocalStorageFactory } from "./LocalStorageFactory"
+import { ServiceFactory } from "../services/ServiceFactory"
 
 interface FormFields {
   token: string
@@ -7,7 +7,7 @@ interface FormFields {
 
 export function Settings() {
   const [form] = Form.useForm()
-  const storage = new LocalStorageFactory().getInstance()
+  const storage = ServiceFactory.getInstance().getStorage()
   const initialValues = {
     token: storage.getValue("token") || "",
   }

@@ -1,6 +1,5 @@
 import { LocalStorage } from "./LocalStorage"
-import { Storage } from "./Storage"
-import { StorageFactory } from "./StorageFactory"
+import { StorageFactory, Storage } from "./StorageFactory"
 
 export class LocalStorageFactory extends StorageFactory {
   public getInstance(): Storage {

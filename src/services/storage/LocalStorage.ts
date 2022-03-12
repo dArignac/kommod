@@ -1,4 +1,4 @@
-import { Storage } from "./Storage"
+import { Storage } from "./StorageFactory"
 
 export class LocalStorage implements Storage {
   getValue(key: string): string {
