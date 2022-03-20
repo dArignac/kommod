@@ -1,26 +1,29 @@
 import { Layout } from "antd"
 import React from "react"
+import { QueryClient, QueryClientProvider } from "react-query"
 import { Route, Switch } from "wouter"
 import "./App.css"
 import { Settings } from "./components/Settings"
+import { TimeEntryList } from "./components/TimeEntryList"
 import { Footer } from "./Footer"
 import { Header } from "./Header"
-import { TogglService } from "./services/toggl/TogglService"
+import { ReactQueryDevtools } from "react-query/devtools"
 
+const queryClient = new QueryClient()
 const { Content } = Layout
 
 // FIXME refactor the layout components that are duplicated here
 export function App() {
-  // FIXME move to appropriate component
-  const toggl = TogglService.getInstance()
-  console.log(toggl.getTimeEntries())
-
   return (
     <Switch>
       <Route path="/">
         <Layout>
           <Content>
             <Header />
+            <QueryClientProvider client={queryClient}>
+              <TimeEntryList />
+              <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
           </Content>
           <Footer />
         </Layout>
