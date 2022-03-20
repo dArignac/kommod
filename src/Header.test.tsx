@@ -1,8 +1,9 @@
 import { render, screen } from "@testing-library/react"
 import React from "react"
-import { Navigation } from "./Navigation"
+import { Header } from "./Header"
 
 test("Renders navigation", async () => {
-  render(<Navigation />)
+  render(<Header />)
+  expect(screen.getByText(/El Toggl/i)).toBeInTheDocument()
   expect(screen.getByText(/Settings/i)).toBeInTheDocument()
 })
