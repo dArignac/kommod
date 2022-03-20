@@ -13,7 +13,7 @@ export class TogglService {
     this.ax = axios.create({
       baseURL: "https://api.track.toggl.com/api/v8",
       auth: {
-        username: ServiceFactory.getInstance().getStorage().getValue("token"),
+        username: ServiceFactory.getInstance().getStorage().getToken(),
         password: "api_token",
       },
     })
