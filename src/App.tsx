@@ -1,41 +1,29 @@
-import { Layout } from "antd"
 import React from "react"
 import { QueryClient, QueryClientProvider } from "react-query"
+import { ReactQueryDevtools } from "react-query/devtools"
 import { Route, Switch } from "wouter"
 import "./App.css"
 import { Settings } from "./components/Settings"
 import { TimeEntryList } from "./components/TimeEntryList"
-import { Footer } from "./Footer"
-import { Header } from "./Header"
-import { ReactQueryDevtools } from "react-query/devtools"
+import { BaseLayout } from "./layout/BaseLayout"
 
 const queryClient = new QueryClient()
-const { Content } = Layout
 
-// FIXME refactor the layout components that are duplicated here
 export function App() {
   return (
     <Switch>
       <Route path="/">
-        <Layout>
-          <Content>
-            <Header />
+        <BaseLayout
+          content={
             <QueryClientProvider client={queryClient}>
               <TimeEntryList />
               <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
-          </Content>
-          <Footer />
-        </Layout>
+          }
+        />
       </Route>
       <Route path="/settings">
-        <Layout>
-          <Content>
-            <Header />
-            <Settings />
-          </Content>
-          <Footer />
-        </Layout>
+        <BaseLayout content={<Settings />} />
       </Route>
     </Switch>
   )
