@@ -5,7 +5,7 @@ interface Config {
 }
 
 export const config: Config = {
-  overwriteToday: false,
+  overwriteToday: true,
   overwriteTodayValue: "2022-04-08T00:00:00",
   storageClass: "LocalStorage",
 }
