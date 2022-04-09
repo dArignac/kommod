@@ -1,3 +1,5 @@
+import { config } from "../../config"
+
 export class DateService {
   private static instance: DateService
   private constructor() {}
@@ -12,7 +14,7 @@ export class DateService {
     if (hour < 0 || hour > 23) hour = 0
     if (minute < 0 || minute > 59) minute = 0
     if (second < 0 || second > 59) second = 0
-    let x = new Date()
+    let x = config.overwriteToday ? new Date(config.overwriteTodayValue!!) : new Date()
     return new Date(Date.UTC(x.getUTCFullYear(), x.getUTCMonth(), x.getUTCDate(), hour, minute, second))
   }
 
