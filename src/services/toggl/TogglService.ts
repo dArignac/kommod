@@ -1,7 +1,11 @@
 import axios, { AxiosInstance } from "axios"
+import { config } from "../../config"
+import { isDev } from "../../helpers"
+import { UserStore } from "../../store"
+import { TimeEntry, User } from "../../types"
 import { DateService } from "../date/DateService"
 import { ServiceFactory } from "../ServiceFactory"
-import { TimeEntry, TogglTimeEntry } from "./types"
+import { TogglTimeEntry, TogglUserResponse } from "./types"
 
 export class TogglService {
   private static instance: TogglService
@@ -19,10 +23,51 @@ export class TogglService {
     })
   }
 
+  /**
+   * Helper to delay the actual network calls. Used for testing loading indicators etc.
+   * @param ms delay in milliseconds
+   * @returns Promise
+   */
+  private sleep(ms = 2000): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  }
+
+  public async fetchUser(): Promise<User> {
+    if (isDev() && config.development.networkDelays.fetchUser > 0) {
+      await this.sleep(config.development.networkDelays.fetchUser)
+    }
+
+    // fetch data
+    let { data } = await this.ax.get<TogglUserResponse>("/me", { params: { with_related_data: true } })
+
+    // map data
+    // we map only what we need - adjust tests accordingly
+    const user = {
+      email: data.data.email,
+      id: data.data.id,
+    } as User
+
+    // update store
+    UserStore.update((s) => {
+      s.user = user
+    })
+
+    return user
+  }
+
+  /**
+   * Fetches the time entries of the current day for the user.
+   * @returns list of TimeEntry
+   */
   public async fetchTimeEntriesOfToday(): Promise<TimeEntry[]> {
+    if (isDev() && config.development.networkDelays.fetchEntries > 0) {
+      await this.sleep(config.development.networkDelays.fetchEntries)
+    }
+
     const { data } = await this.ax.get<TogglTimeEntry[]>("/time_entries", {
       params: { start_date: this.dateService.getTodaysStart().toISOString(), end_date: this.dateService.getTodaysEnd().toISOString() },
     })
+
     // we map only what we need - adjust tests accordingly
     return (
       data

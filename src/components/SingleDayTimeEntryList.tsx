@@ -1,19 +1,25 @@
 import { Table } from "antd"
 import { useQuery } from "react-query"
 import { ServiceFactory } from "../services/ServiceFactory"
-import { TimeEntry } from "../services/toggl/types"
+import { TimeEntry } from "../types"
 
 const { Column } = Table
 
 export function SingleDayTimeEntryList() {
-  // FIXME add gloab error handling?
-  const { status, data, error } = useQuery<TimeEntry[], Error>(
-    ["todaysTimeEntries"],
-    async () => {
-      return ServiceFactory.getInstance().getTogglService().fetchTimeEntriesOfToday()
-    },
-    { retry: 0 }
-  )
+  // FIXME add global error handling?
+
+  // FIXME enable
+  // const { status, data, error } = useQuery<TimeEntry[], Error>(
+  //   ["todaysTimeEntries"],
+  //   async () => {
+  //     return ServiceFactory.getInstance().getTogglService().fetchTimeEntriesOfToday()
+  //   },
+  //   { retry: 0 }
+  // )
+
+  // FIXME remove
+  let data: TimeEntry[] = []
+
   // FIXME no project in data yet
   // FIXME hide head showHeader={false}
   // FIXME show day with selection (prev day, next day)
