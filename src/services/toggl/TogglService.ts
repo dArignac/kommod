@@ -24,20 +24,23 @@ export class TogglService {
       params: { start_date: this.dateService.getTodaysStart().toISOString(), end_date: this.dateService.getTodaysEnd().toISOString() },
     })
     // we map only what we need - adjust tests accordingly
-    return data
-      .map((entry: TogglTimeEntry) => {
-        return {
-          description: entry.description,
-          id: entry.id,
-          start: new Date(entry.start),
-          stop: new Date(entry.stop),
-        } as TimeEntry
-      })
-      .sort((a: TimeEntry, b: TimeEntry) => {
-        if (a.start.getTime() < b.start.getTime()) return -1
-        if (a.start.getTime() > b.start.getTime()) return 1
-        return 0
-      })
+    return (
+      data
+        .map((entry: TogglTimeEntry) => {
+          return {
+            description: entry.description,
+            id: entry.id,
+            start: new Date(entry.start),
+            stop: new Date(entry.stop),
+          } as TimeEntry
+        })
+        // sort entries
+        .sort((a: TimeEntry, b: TimeEntry) => {
+          if (a.start.getTime() < b.start.getTime()) return -1
+          if (a.start.getTime() > b.start.getTime()) return 1
+          return 0
+        })
+    )
   }
 
   public static getInstance(): TogglService {

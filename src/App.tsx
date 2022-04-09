@@ -4,7 +4,7 @@ import { ReactQueryDevtools } from "react-query/devtools"
 import { Route, Switch } from "wouter"
 import "./App.css"
 import { Settings } from "./components/Settings"
-import { TimeEntryList } from "./components/TimeEntryList"
+import { SingleDayTimeEntryList } from "./components/SingleDayTimeEntryList"
 import { BaseLayout } from "./layout/BaseLayout"
 
 const queryClient = new QueryClient()
@@ -16,7 +16,7 @@ export function App() {
         <BaseLayout
           content={
             <QueryClientProvider client={queryClient}>
-              <TimeEntryList />
+              <SingleDayTimeEntryList />
               <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
           }

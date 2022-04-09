@@ -1,5 +1,6 @@
 import { config } from "../../config"
 
+// FIXME use https://github.com/iamkun/dayjs/ or https://date-fns.org/?
 export class DateService {
   private static instance: DateService
   private constructor() {}
