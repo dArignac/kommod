@@ -7,4 +7,4 @@ exclude_patterns:
   - "**/*.d.ts"
   - "**/node_modules/"
   - "**/*.test.*"
-  - "mocks.ts"
+  - "**/mocks.ts"
