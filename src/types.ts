@@ -1,4 +1,10 @@
+export type Client = {
+  id: number
+  name: string
+}
+
 export type Project = {
+  client: Client
   id: number
   name: string
 }

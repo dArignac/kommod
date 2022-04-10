@@ -1,23 +1,48 @@
 import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
 import { mockTimeEntries, mockUser } from "../../mocks"
-import { ProjectStore, UserStore } from "../../store"
+import { ClientStore, ProjectStore, UserStore } from "../../store"
 import { TogglService } from "./TogglService"
 
 const mock = new MockAdapter(axios)
 
 afterEach(() => mock.resetHandlers())
 
-test("fetches and transforms user correctly", async () => {
+test("fetches and transforms user data correctly", async () => {
   mock.onGet("/me").reply(200, mockUser)
 
   const user = await TogglService.getInstance().fetchUser()
+  const storeClients = ClientStore.getRawState().clients
   const storeProjects = ProjectStore.getRawState().projects
   const storeUser = UserStore.getRawState().user
 
+  // clients
+  expect(storeClients.length).toBe(1)
+  expect(storeClients).toContainEqual({
+    id: 923476,
+    name: "Client A",
+  })
+
+  // projects
   expect(storeProjects.length).toBe(2)
-  expect(storeProjects).toContainEqual({ id: 1230994, name: "Important project" })
-  expect(storeProjects).toContainEqual({ id: 1230995, name: "Important project #2" })
+  expect(storeProjects).toContainEqual({
+    client: {
+      id: 923476,
+      name: "Client A",
+    },
+    id: 1230994,
+    name: "Project A",
+  })
+  expect(storeProjects).toContainEqual({
+    client: {
+      id: 923476,
+      name: "Client A",
+    },
+    id: 1230995,
+    name: "Project B",
+  })
+
+  // user
   expect(user.id).toBe(9000)
   expect(user.email).toBe("johnt@swift.com")
   expect(storeUser).toBe(user)
@@ -39,8 +64,12 @@ test("fetches and transforms todays entries correctly", async () => {
     description: "Meeting with the client",
     id: 436691234,
     project: {
+      client: {
+        id: 923476,
+        name: "Client A",
+      },
       id: 1230994,
-      name: "Important project",
+      name: "Project A",
     },
     start: new Date("2013-03-11T11:36:00.000Z"),
     stop: new Date("2013-03-11T15:36:00.000Z"),
@@ -49,8 +78,12 @@ test("fetches and transforms todays entries correctly", async () => {
     description: "important work",
     id: 436776436,
     project: {
+      client: {
+        id: 923476,
+        name: "Client A",
+      },
       id: 1230995,
-      name: "Important project #2",
+      name: "Project B",
     },
     start: new Date("2013-03-12T10:32:43.000Z"),
     stop: new Date("2013-03-12T14:32:43.000Z"),

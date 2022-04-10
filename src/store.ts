@@ -1,6 +1,14 @@
 import { registerInDevtools, Store } from "pullstate"
 import { config } from "./config"
-import { Project, User } from "./types"
+import { Client, Project, User } from "./types"
+
+interface ClientStoreInterface {
+  clients: Client[]
+}
+
+export const ClientStore = new Store<ClientStoreInterface>({
+  clients: [],
+})
 
 interface ProjectStoreInterface {
   projects: Project[]

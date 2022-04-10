@@ -20,10 +20,12 @@ export function SingleDayTimeEntryList() {
   )
 
   function renderProject(record: TimeEntry) {
-    return <>{record.project.name}</>
+    return (
+      <>
+        {record.project.name} | <i>{record.project.client.name}</i>
+      </>
+    )
   }
-
-  // let data: TimeEntry[] = []
 
   // FIXME no project in data yet
   // FIXME hide head showHeader={false}

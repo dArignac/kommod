@@ -1,8 +1,8 @@
 import axios, { AxiosInstance } from "axios"
 import { config } from "../../config"
 import { isDev } from "../../helpers"
-import { ProjectStore, UserStore } from "../../store"
-import { Project, TimeEntry, User } from "../../types"
+import { ClientStore, ProjectStore, UserStore } from "../../store"
+import { Client, Project, TimeEntry, User } from "../../types"
 import { DateService } from "../date/DateService"
 import { ServiceFactory } from "../ServiceFactory"
 import { TogglTimeEntry, TogglUserResponse } from "./types"
@@ -41,9 +41,15 @@ export class TogglService {
     let { data } = await this.ax.get<TogglUserResponse>("/me", { params: { with_related_data: true } })
 
     // map data
-    // we map only what we need - adjust tests accordingly
+    const clients = data.data.clients.map((client) => {
+      return {
+        id: client.id,
+        name: client.name,
+      } as Client
+    })
     const projects = data.data.projects.map((project) => {
       return {
+        client: clients.find((client) => client.id === project.cid),
         id: project.id,
         name: project.name,
       } as Project
@@ -54,6 +60,9 @@ export class TogglService {
     } as User
 
     // update stores
+    ClientStore.update((s) => {
+      s.clients = clients
+    })
     ProjectStore.update((s) => {
       s.projects = projects
     })
