@@ -1,10 +1,14 @@
-import { Store, registerInDevtools } from "pullstate"
+import { registerInDevtools, Store } from "pullstate"
 import { config } from "./config"
+import { Project, User } from "./types"
 
-type User = {
-  email: string
-  id: number
+interface ProjectStoreInterface {
+  projects: Project[]
 }
+
+export const ProjectStore = new Store<ProjectStoreInterface>({
+  projects: [],
+})
 
 interface UserStoreInterface {
   user: User
@@ -18,5 +22,5 @@ export const UserStore = new Store<UserStoreInterface>({
 })
 
 if (config.development.reduxDevTools) {
-  registerInDevtools({ UserStore })
+  registerInDevtools({ ProjectStore, UserStore })
 }

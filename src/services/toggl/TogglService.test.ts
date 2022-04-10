@@ -1,6 +1,6 @@
 import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
-import { UserStore } from "../../store"
+import { ProjectStore, UserStore } from "../../store"
 import { TogglService } from "./TogglService"
 import { TogglTimeEntry } from "./types"
 
@@ -59,6 +59,15 @@ test("fetches and transforms user correctly", async () => {
           at: "2013-03-06T09:13:31+00:00",
           color: "5",
         },
+        {
+          id: 1230995,
+          wid: 778,
+          name: "Important project #2",
+          billable: false,
+          active: false,
+          at: "2013-03-06T09:13:31+00:00",
+          color: "5",
+        },
       ],
       tags: [
         {
@@ -96,8 +105,12 @@ test("fetches and transforms user correctly", async () => {
   mock.onGet("/me").reply(200, mockUser)
 
   const user = await TogglService.getInstance().fetchUser()
+  const storeProjects = ProjectStore.getRawState().projects
   const storeUser = UserStore.getRawState().user
 
+  expect(storeProjects.length).toBe(2)
+  expect(storeProjects).toContainEqual({ id: 1230994, name: "Important project" })
+  expect(storeProjects).toContainEqual({ id: 1230995, name: "Important project #2" })
   expect(user.id).toBe(9000)
   expect(user.email).toBe("johnt@swift.com")
   expect(storeUser).toBe(user)

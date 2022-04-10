@@ -1,8 +1,8 @@
 import axios, { AxiosInstance } from "axios"
 import { config } from "../../config"
 import { isDev } from "../../helpers"
-import { UserStore } from "../../store"
-import { TimeEntry, User } from "../../types"
+import { ProjectStore, UserStore } from "../../store"
+import { Project, TimeEntry, User } from "../../types"
 import { DateService } from "../date/DateService"
 import { ServiceFactory } from "../ServiceFactory"
 import { TogglTimeEntry, TogglUserResponse } from "./types"
@@ -42,12 +42,21 @@ export class TogglService {
 
     // map data
     // we map only what we need - adjust tests accordingly
+    const projects = data.data.projects.map((project) => {
+      return {
+        id: project.id,
+        name: project.name,
+      } as Project
+    })
     const user = {
       email: data.data.email,
       id: data.data.id,
     } as User
 
-    // update store
+    // update stores
+    ProjectStore.update((s) => {
+      s.projects = projects
+    })
     UserStore.update((s) => {
       s.user = user
     })

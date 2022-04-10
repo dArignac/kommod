@@ -1,6 +1,6 @@
-export type User = {
-  email: string
+export type Project = {
   id: number
+  name: string
 }
 
 export type TimeEntry = {
@@ -9,4 +9,9 @@ export type TimeEntry = {
   id: number
   start: Date
   stop: Date
+}
+
+export type User = {
+  email: string
+  id: number
 }
