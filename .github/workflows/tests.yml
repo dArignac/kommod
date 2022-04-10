@@ -25,4 +25,9 @@ jobs:
     - name: Build
       run: |
         npm ci
-        npm run test
+        npm run test:coverage
+
+    - name: Report coverage
+      uses: paambaati/codeclimate-action@v3.0.0
+      env:
+        CC_TEST_REPORTER_ID: ${{ secret.CODECLIMATE_REPORTER_ID }}

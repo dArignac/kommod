@@ -28,9 +28,16 @@
     "start": "cross-env BROWSER=none react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --no-cache --watchAll=false",
     "eject": "react-scripts eject",
     "tauri": "tauri",
     "prepare": "husky install"
+  },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "src/index.ts",
+      "src/reportWebVitals.ts"
+    ]
   },
   "eslintConfig": {
     "extends": [
