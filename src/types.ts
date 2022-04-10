@@ -7,6 +7,7 @@ export type TimeEntry = {
   billable: boolean
   description: string
   id: number
+  project: Project
   start: Date
   stop: Date
 }

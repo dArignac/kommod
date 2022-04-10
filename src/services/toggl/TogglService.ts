@@ -77,13 +77,17 @@ export class TogglService {
       params: { start_date: this.dateService.getTodaysStart().toISOString(), end_date: this.dateService.getTodaysEnd().toISOString() },
     })
 
+    const projects = ProjectStore.getRawState().projects
+
     // we map only what we need - adjust tests accordingly
     return (
       data
         .map((entry: TogglTimeEntry) => {
+          const project = projects.find((project) => project.id === entry.pid)
           return {
             description: entry.description,
             id: entry.id,
+            project,
             start: new Date(entry.start),
             stop: new Date(entry.stop),
           } as TimeEntry

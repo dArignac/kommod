@@ -78,7 +78,7 @@ export type TogglWorkspace = {
 export type TogglUser = {
   api_token: string
   at: string
-  beginning_of_week: string
+  beginning_of_week: number
   clients: TogglClient[]
   created_at: string
   date_format: string
