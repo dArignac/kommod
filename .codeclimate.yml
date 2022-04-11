@@ -9,3 +9,4 @@ exclude_patterns:
   - "**/*.test.*"
   - "**/mocks.ts"
   - "**/types.ts"
+  - "**/testUtils.tsx"
