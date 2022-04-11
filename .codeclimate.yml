@@ -8,3 +8,5 @@ exclude_patterns:
   - "**/node_modules/"
   - "**/*.test.*"
   - "**/mocks.ts"
+  - "**/types.ts"
+  - "**/testUtils.tsx"

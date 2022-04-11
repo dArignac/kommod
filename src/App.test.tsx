@@ -1,18 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import MatchMediaMock from "jest-matchmedia-mock"
 import React from "react"
 import { App } from "./App"
-
-let matchMedia: MatchMediaMock
-
-beforeAll(() => {
-  matchMedia = new MatchMediaMock()
-})
-
-afterEach(() => {
-  matchMedia.clear()
-})
 
 test("Renders default components", () => {
   render(<App />)
