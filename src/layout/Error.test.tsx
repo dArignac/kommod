@@ -1,18 +1,5 @@
-import { cleanup, render, screen } from "@testing-library/react"
-import MatchMediaMock from "jest-matchmedia-mock"
+import { render, screen } from "@testing-library/react"
 import { Error } from "./Error"
-
-let matchMedia: MatchMediaMock
-
-beforeEach(cleanup)
-
-beforeAll(() => {
-  matchMedia = new MatchMediaMock()
-})
-
-afterEach(() => {
-  matchMedia.clear()
-})
 
 test("Renders with required properties", () => {
   render(<Error status="error" title="The Title" />)
