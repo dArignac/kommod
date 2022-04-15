@@ -3,11 +3,19 @@ name: Test and Release
 on:
   push
 
+env:
+  NODE_VERSION: 16.14.2
+
 jobs:
-  test:
+
+  # this installs the React dependencies, runs the tests and creates a new release/tag on Github if on main branch
+  # creating the tauri binaries for the release happens in the tauri job
+  build:
+
+    # as long as the tests are not OS specific we just run it on ubuntu
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latests]
+        os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -16,19 +24,10 @@ jobs:
       with:
         persist-credentials: false
 
-    # - name: Get npm cache directory
-    #   id: npm-cache-dir
-    #   run: |
-    #     echo "::set-output name=dir::$(npm config get cache)"
-
-    # - name: Cache npm
-    #   uses: actions/cache@v3
-    #   id: npm-cache
-    #   with:
-    #     path: ${{ steps.npm-cache-dir.outputs.dir }}
-    #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-    #     restore-keys: |
-    #       ${{ runner.os }}-node-
+    - name: Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: $NODE_VERSION
 
     - name: Cache node_modules
       uses: actions/cache@v3
@@ -38,11 +37,6 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
-
-    - name: Setup node
-      uses: actions/setup-node@v1
-      with:
-        node-version: 16.14.2
 
     - name: Install packages
       if: steps.node-cache.outputs.cache-hit != 'true'
@@ -55,35 +49,61 @@ jobs:
       uses: paambaati/codeclimate-action@v3.0.0
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_REPORTER_ID }}
-  
-  release:
-    needs: test
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    runs-on: ${{ matrix.os }}
-
-    if: |
-      startsWith(github.ref, 'refs/tags/v')
-
-    steps:
-    - name: Setup node
-      uses: actions/setup-node@v1
-      with:
-        node-version: 16.14.2
-
-    - name: Install packages
-      if: steps.npm-cache.outputs.cache-hit != 'true'
-      run: npm ci
-
-    # create release including tags, only once on ubuntu
+    
+    # this will create a new Github release/tag if it was executed on the main branch
+    # semantic-release checks the branch itself
     - name: Release
       if: matrix.os == 'ubuntu-latest'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npx semantic-release --dry-run
+  
+  # this builds the tauri binaries for the different OS
+  # it attaches them to the release/tag
+  tauri:
+    needs: build
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latests]
+
+    runs-on: ${{ matrix.os }}
+
+    # only run this, if the tag was created by the release step above
+    if: |
+      startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+
+    - name: Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: $NODE_VERSION
+
+    - name: Cache node_modules
+      uses: actions/cache@v3
+      id: node-cache
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Setup Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
     
+    - name: Cache Rust
+      uses: Swatinem/rust-cache@v1
+
+    - name: Install node packages
+      if: steps.npm-cache.outputs.cache-hit != 'true'
+      run: npm ci
+
+    # TODO install os specific requirements for tauri build
+    # TODO code signing stuff if necessary
     # TODO build the tauri binary for the current os
     # TODO attach the binary to the tag
