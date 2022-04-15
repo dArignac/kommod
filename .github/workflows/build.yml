@@ -55,6 +55,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    steps:
+
     - name: Setup node
       uses: actions/setup-node@v1
       with:
@@ -71,7 +73,7 @@ jobs:
   # this builds the tauri binaries for the different OS
   # it attaches them to the release/tag
   tauri:
-    needs: build
+    needs: release
 
     strategy:
       matrix:
