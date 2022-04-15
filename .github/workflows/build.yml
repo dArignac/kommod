@@ -75,6 +75,10 @@ jobs:
 
     steps:
 
+    - uses: actions/checkout@v2
+      with:
+        persist-credentials: false
+
     - name: Setup node
       uses: actions/setup-node@v1
       with:
@@ -103,7 +107,9 @@ jobs:
       if: steps.npm-cache.outputs.cache-hit != 'true'
       run: npm ci
 
-    # TODO install os specific requirements for tauri build
-    # TODO code signing stuff if necessary
-    # TODO build the tauri binary for the current os
+    - name: Bundle application
+      run: npm run tauri build
+
+    # TODO reflect the release version in the tauri version
+    # TODO code signing stuff for macos and windows if necessary
     # TODO attach the binary to the tag
