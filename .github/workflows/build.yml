@@ -49,14 +49,24 @@ jobs:
       uses: paambaati/codeclimate-action@v3.0.0
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_REPORTER_ID }}
-    
+  
+  release:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    - name: Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
     # this will create a new Github release/tag if it was executed on the main branch
     # semantic-release checks the branch itself
     - name: Release
       if: matrix.os == 'ubuntu-latest'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: npx semantic-release --dry-run
+      run: npx semantic-release
   
   # this builds the tauri binaries for the different OS
   # it attaches them to the release/tag
@@ -65,7 +75,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latests]
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -116,6 +126,5 @@ jobs:
     - name: Bundle application
       run: npm run tauri build
 
-    # TODO reflect the release version in the tauri version
     # TODO code signing stuff for macos and windows if necessary
     # TODO attach the binary to the tag
