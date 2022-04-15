@@ -50,6 +50,12 @@ jobs:
   release:
     needs: build
 
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
     if: |
       startsWith(github.ref, 'refs/tags/v')
 
