@@ -12,7 +12,8 @@ export function SingleDayTimeEntryList() {
   // FIXME add global error handling?
   const projects = useStoreState(ProjectStore)
 
-  const { status, data, error } = useQuery<TimeEntry[], Error>(
+  // const { status, data, error } = useQuery<TimeEntry[], Error>(
+  const { data } = useQuery<TimeEntry[], Error>(
     ["todaysTimeEntries"],
     async () => {
       return ServiceFactory.getInstance().getTogglService().fetchTimeEntriesOfToday()
