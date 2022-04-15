@@ -1,6 +1,6 @@
 {
   "name": "el-toggl",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
@@ -97,7 +97,9 @@
         {
           "replacements": [
             {
-              "files": ["src-tauri/Cargo.toml"],
+              "files": [
+                "src-tauri/Cargo.toml"
+              ],
               "from": "version = \".*\"",
               "to": "version =\"${nextRelease.version}\"",
               "results": [
@@ -110,7 +112,9 @@
               ]
             },
             {
-              "files": ["src-tauri/tauri.conf.json"],
+              "files": [
+                "src-tauri/tauri.conf.json"
+              ],
               "from": "\"version\": \".*\"",
               "to": "\"version\": \"${nextRelease.version}\"",
               "results": [
@@ -125,10 +129,17 @@
           ]
         }
       ],
-      ["@semantic-release/git", {
-        "assets": ["src-tauri/Cargo.toml", "src-tauri/tauri.conf.json", "package.json"],
-        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-      }],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "src-tauri/Cargo.toml",
+            "src-tauri/tauri.conf.json",
+            "package.json"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ],
       "@semantic-release/github"
     ]
   }
