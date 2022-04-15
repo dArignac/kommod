@@ -58,17 +58,47 @@
     ]
   },
   "devDependencies": {
+    "@semantic-release/exec": "^6.0.3",
     "@tauri-apps/cli": "^1.0.0-rc.8",
     "cross-env": "^7.0.3",
+    "cz-conventional-changelog": "^3.3.0",
     "husky": "^7.0.4",
     "jest-matchmedia-mock": "^1.1.0",
     "lint-staged": "^12.3.4",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "semantic-release": "^19.0.2"
   },
   "volta": {
     "node": "16.14.2"
   },
   "lint-staged": {
     "*.{js,ts,tsx,css,md,html}": "prettier --write"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/github",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "echo \"preparing ${nextRelease.version}\"",
+          "publishCmd": "echo \"dummy publish\""
+        }
+      ]
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "exec < /dev/tty && npx cz --hook || true"
+    }
   }
 }

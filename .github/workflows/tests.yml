@@ -1,4 +1,4 @@
-name: React Tests
+name: Test and Release
 
 on:
   push:
@@ -16,6 +16,8 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
+      with:
+        persist-credentials: false
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
@@ -31,3 +33,8 @@ jobs:
       uses: paambaati/codeclimate-action@v3.0.0
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_REPORTER_ID }}
+
+    - name: Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npx semantic-release
