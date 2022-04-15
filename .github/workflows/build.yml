@@ -4,7 +4,7 @@ on:
   push
 
 jobs:
-  build:
+  test:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latests]
@@ -16,16 +16,25 @@ jobs:
       with:
         persist-credentials: false
 
-    - name: Get npm cache directory
-      id: npm-cache-dir
-      run: |
-        echo "::set-output name=dir::$(npm config get cache)"
+    # - name: Get npm cache directory
+    #   id: npm-cache-dir
+    #   run: |
+    #     echo "::set-output name=dir::$(npm config get cache)"
 
-    - name: Cache npm
+    # - name: Cache npm
+    #   uses: actions/cache@v3
+    #   id: npm-cache
+    #   with:
+    #     path: ${{ steps.npm-cache-dir.outputs.dir }}
+    #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-node-
+
+    - name: Cache node_modules
       uses: actions/cache@v3
-      id: npm-cache
+      id: node-cache
       with:
-        path: ${{ steps.npm-cache-dir.outputs.dir }}
+        path: node_modules
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
@@ -36,7 +45,7 @@ jobs:
         node-version: 16.14.2
 
     - name: Install packages
-      if: steps.npm-cache.outputs.cache-hit != 'true'
+      if: steps.node-cache.outputs.cache-hit != 'true'
       run: npm ci
     
     - name: Run tests
