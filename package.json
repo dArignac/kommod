@@ -19,43 +19,10 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-query": "^3.34.16",
-    "react-scripts": "5.0.0",
+    "react-scripts": "5.0.1",
     "typescript": "^4.6.3",
     "web-vitals": "^2.1.4",
     "wouter": "^2.8.0-alpha.2"
-  },
-  "scripts": {
-    "start": "cross-env BROWSER=none react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:coverage": "react-scripts test --coverage --no-cache --watchAll=false",
-    "eject": "react-scripts eject",
-    "tauri": "tauri",
-    "prepare": "husky install"
-  },
-  "jest": {
-    "coveragePathIgnorePatterns": [
-      "src/index.ts",
-      "src/reportWebVitals.ts"
-    ]
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   },
   "devDependencies": {
     "@semantic-release/exec": "^6.0.3",
@@ -71,8 +38,51 @@
   "volta": {
     "node": "16.14.2"
   },
+  "scripts": {
+    "start": "cross-env BROWSER=none react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --no-cache --watchAll=false",
+    "eject": "react-scripts eject",
+    "tauri": "tauri",
+    "prepare": "husky install"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
   "lint-staged": {
     "*.{js,ts,tsx,css,md,html}": "prettier --write"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "exec < /dev/tty && npx cz --hook || true"
+    }
+  },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "src/index.ts",
+      "src/reportWebVitals.ts"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "release": {
     "branches": [
@@ -90,15 +100,5 @@
         }
       ]
     ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "prepare-commit-msg": "exec < /dev/tty && npx cz --hook || true"
-    }
   }
 }
