@@ -55,6 +55,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    # only run on main (=release) branch
+    if: |
+      startsWith(github.ref, 'refs/head/main')
+
     steps:
 
     - name: Setup node
@@ -80,7 +84,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
-    # only run this, if the tag was created by the release step above
+    # only run this if the tag was created by the release step above
     if: |
       startsWith(github.ref, 'refs/tags/v')
 
