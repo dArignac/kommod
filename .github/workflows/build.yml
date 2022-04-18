@@ -1,0 +1,135 @@
+name: Test and Release
+
+on:
+  push
+
+env:
+  NODE_VERSION: 16.14.2
+
+jobs:
+
+  # this installs the React dependencies, runs the tests and creates a new release/tag on Github if on main branch
+  # creating the tauri binaries for the release happens in the tauri job
+  build:
+
+    # as long as the tests are not OS specific we just run it on ubuntu
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        persist-credentials: false
+
+    - name: Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: Cache node_modules
+      uses: actions/cache@v3
+      id: node-cache
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install packages
+      if: steps.node-cache.outputs.cache-hit != 'true'
+      run: npm ci
+    
+    - name: Run tests
+      run: npm run test:coverage
+
+    - name: Report coverage
+      uses: paambaati/codeclimate-action@v3.0.0
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_REPORTER_ID }}
+  
+  release:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    # only run on main (=release) branch
+    if: |
+      startsWith(github.ref, 'refs/head/main')
+
+    steps:
+
+    - name: Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    # this will create a new Github release/tag if it was executed on the main branch
+    # semantic-release checks the branch itself
+    - name: Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npx semantic-release
+  
+  # this builds the tauri binaries for the different OS
+  # it attaches them to the release/tag
+  tauri:
+    needs: release
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    # only run this if the tag was created by the release step above
+    if: |
+      startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+
+    - uses: actions/checkout@v2
+      with:
+        persist-credentials: false
+
+    - name: Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: Cache node_modules
+      uses: actions/cache@v3
+      id: node-cache
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Setup Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
+    
+    - name: Cache Rust
+      uses: Swatinem/rust-cache@v1
+
+    - name: Install Dependencies for Ubuntu
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
+
+    - name: Install node packages
+      if: steps.npm-cache.outputs.cache-hit != 'true'
+      run: npm ci
+
+    - name: Bundle application
+      run: npm run tauri build
+
+    - name: Attach binary to tags
+      run: scripts/attachBinariesToRelease.mjs ${{ matrix.os }}
