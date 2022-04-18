@@ -128,5 +128,7 @@ jobs:
     - name: Bundle application
       run: npm run tauri build
 
+    - name: Attach binary to tah
+      run: scripts/attachBinariesToRelease.mjs ${{ matrix.os }}
+
     # TODO code signing stuff for macos and windows if necessary
-    # TODO attach the binary to the tag

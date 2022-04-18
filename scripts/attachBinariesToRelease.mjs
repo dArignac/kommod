@@ -3,7 +3,7 @@ import * as fs from "fs"
 import { globby } from "globby"
 import * as path from "path"
 
-async function updateRelease() {
+async function updateRelease(os) {
   if (process.env.GITHUB_TOKEN === undefined) {
     throw new Error("GITHUB_TOKEN is not set")
   }
@@ -34,19 +34,24 @@ async function updateRelease() {
     })
   }
 
-  // FIXME differentiate in which os we are to select the correct path
-  // FIXME add windows
-  const assets = [
-    "src-tauri/target/release/bundle/appimage/*_amd64.AppImage",
-    "src-tauri/target/release/bundle/deb/*_amd64.deb",
-    "src-tauri/target/release/bundle/macos/*.app",
-    "src-tauri/target/release/bundle/dmg/*_x64.dmg",
-  ]
+  // differentiate in which os we are to select the correct path
+  let assets = []
+  if (os === "ubuntu-latest") {
+    assets = ["src-tauri/target/release/bundle/appimage/*_amd64.AppImage", "src-tauri/target/release/bundle/deb/*_amd64.deb"]
+  } else if (os === "macos-latest") {
+    assets = ["src-tauri/target/release/bundle/macos/*.app", "src-tauri/target/release/bundle/dmg/*_x64.dmg"]
+  } else if (os === "windows-latest") {
+    // FIXME add windows path
+    assets = []
+  }
 
-  for (const asset of assets) {
-    const file = await globby([asset])
-    await uploadAsset(release.id, path.basename(file[0]), fs.readFileSync(file[0]))
+  if (assets.length > 0) {
+    for (const asset of assets) {
+      const file = await globby([asset])
+      await uploadAsset(release.id, path.basename(file[0]), fs.readFileSync(file[0]))
+    }
   }
 }
 
-await updateRelease()
+const os = process.argv.slice(2)[0]
+await updateRelease(os)
