@@ -41,8 +41,7 @@ async function updateRelease(os) {
   } else if (os === "macos-latest") {
     assets = ["src-tauri/target/release/bundle/macos/*.app", "src-tauri/target/release/bundle/dmg/*_x64.dmg"]
   } else if (os === "windows-latest") {
-    // FIXME add windows path
-    assets = []
+    assets = ["src-tauri\\target\\release\\bundle\\msi\\*.msi"]
   }
 
   if (assets.length > 0) {

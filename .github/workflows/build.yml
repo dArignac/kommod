@@ -65,7 +65,6 @@ jobs:
     # this will create a new Github release/tag if it was executed on the main branch
     # semantic-release checks the branch itself
     - name: Release
-      if: matrix.os == 'ubuntu-latest'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npx semantic-release
@@ -128,7 +127,5 @@ jobs:
     - name: Bundle application
       run: npm run tauri build
 
-    - name: Attach binary to tah
+    - name: Attach binary to tags
       run: scripts/attachBinariesToRelease.mjs ${{ matrix.os }}
-
-    # TODO code signing stuff for macos and windows if necessary
