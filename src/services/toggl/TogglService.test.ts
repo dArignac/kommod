@@ -56,12 +56,13 @@ test("fetches and transforms todays entries correctly", async () => {
   expect(results.length).toBe(mockTimeEntries.length)
 
   // sorting
-  expect(results[0].id).toBe(436691234)
-  expect(results[1].id).toBe(436776436)
+  expect(results[0].id).toBe(436776436)
+  expect(results[1].id).toBe(436691234)
 
   // transformation
   expect(results).toContainEqual({
     description: "Meeting with the client",
+    duration: 14400,
     id: 436691234,
     project: {
       client: {
@@ -76,6 +77,7 @@ test("fetches and transforms todays entries correctly", async () => {
   })
   expect(results).toContainEqual({
     description: "important work",
+    duration: 18400,
     id: 436776436,
     project: {
       client: {

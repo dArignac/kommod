@@ -1,6 +1,7 @@
 import { Table } from "antd"
 import { useStoreState } from "pullstate"
 import { useQuery } from "react-query"
+import { formatDuration } from "../services/date"
 import { ServiceFactory } from "../services/ServiceFactory"
 import { ProjectStore } from "../store"
 import { TimeEntry } from "../types"
@@ -33,8 +34,8 @@ export function SingleDayTimeEntryList() {
     return <>Start/Stop</>
   }
 
-  function renderSum() {
-    return <>Sum</>
+  function renderSum(record: TimeEntry) {
+    return <>{formatDuration(record.duration)}</>
   }
 
   function renderActions() {

@@ -10,8 +10,8 @@ export type Project = {
 }
 
 export type TimeEntry = {
-  billable: boolean
   description: string
+  duration: number
   id: number
   project: Project
   start: Date

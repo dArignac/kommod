@@ -24,7 +24,7 @@ export const config: Config = {
       fetchEntries: 0,
     },
     overwriteToday: true,
-    overwriteTodayValue: "2022-04-08T00:00:00",
+    overwriteTodayValue: "2022-04-22",
     reactQueryDevTools: true,
     reduxDevTools: true,
   },

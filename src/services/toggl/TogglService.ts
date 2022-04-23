@@ -3,17 +3,15 @@ import { config } from "../../config"
 import { isDev } from "../../helpers"
 import { ClientStore, ProjectStore, UserStore } from "../../store"
 import { Client, Project, TimeEntry, User } from "../../types"
-import { DateService } from "../date/DateService"
+import { getTodaysEnd, getTodaysStart } from "../date"
 import { ServiceFactory } from "../ServiceFactory"
 import { TogglTimeEntry, TogglUserResponse } from "./types"
 
 export class TogglService {
   private static instance: TogglService
   private ax: AxiosInstance
-  private dateService: DateService
 
   private constructor() {
-    this.dateService = ServiceFactory.getInstance().getDateService()
     this.ax = axios.create({
       baseURL: "https://api.track.toggl.com/api/v8",
       auth: {
@@ -83,7 +81,7 @@ export class TogglService {
     }
 
     const { data } = await this.ax.get<TogglTimeEntry[]>("/time_entries", {
-      params: { start_date: this.dateService.getTodaysStart().toISOString(), end_date: this.dateService.getTodaysEnd().toISOString() },
+      params: { start_date: getTodaysStart().toISOString(), end_date: getTodaysEnd().toISOString() },
     })
 
     const projects = ProjectStore.getRawState().projects
@@ -95,6 +93,7 @@ export class TogglService {
           const project = projects.find((project) => project.id === entry.pid)
           return {
             description: entry.description,
+            duration: entry.duration,
             id: entry.id,
             project,
             start: new Date(entry.start),
@@ -103,8 +102,8 @@ export class TogglService {
         })
         // sort entries
         .sort((a: TimeEntry, b: TimeEntry) => {
-          if (a.start.getTime() < b.start.getTime()) return -1
-          if (a.start.getTime() > b.start.getTime()) return 1
+          if (a.start.getTime() > b.start.getTime()) return -1
+          if (a.start.getTime() < b.start.getTime()) return 1
           return 0
         })
     )

@@ -15,6 +15,7 @@
     "antd": "^4.19.1",
     "axios": "^0.26.1",
     "axios-mock-adapter": "^1.20.0",
+    "date-fns": "^2.28.0",
     "pullstate": "^1.23.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -44,8 +45,8 @@
   "scripts": {
     "start": "cross-env BROWSER=none react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:coverage": "react-scripts test --coverage --no-cache --watchAll=false",
+    "test": "TZ=UTC react-scripts test",
+    "test:coverage": "TZ=UTC react-scripts test --coverage --no-cache --watchAll=false",
     "eject": "react-scripts eject",
     "tauri": "tauri",
     "prepare": "husky install"
