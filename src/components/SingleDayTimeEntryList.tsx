@@ -2,8 +2,8 @@ import { Table } from "antd"
 import { useStoreState } from "pullstate"
 import { useQuery } from "react-query"
 import { formatDuration } from "../services/date"
-import { ServiceFactory } from "../services/ServiceFactory"
-import { ProjectStore } from "../store"
+import { TogglService } from "../services/toggl/TogglService"
+import { ProjectStore, SettingsStore } from "../store"
 import { TimeEntry } from "../types"
 
 const { Column } = Table
@@ -12,14 +12,15 @@ const { Column } = Table
 export function SingleDayTimeEntryList() {
   // FIXME add global error handling?
   const projects = useStoreState(ProjectStore)
+  const token = useStoreState(SettingsStore, (s) => s.token)
 
   // const { status, data, error } = useQuery<TimeEntry[], Error>(
   const { data } = useQuery<TimeEntry[], Error>(
     ["todaysTimeEntries"],
     async () => {
-      return ServiceFactory.getInstance().getTogglService().fetchTimeEntriesOfToday()
+      return TogglService.getInstance(token).fetchTimeEntriesOfToday()
     },
-    { enabled: projects.projects.length > 0, retry: 0 }
+    { enabled: projects.projects.length > 0 && !!token, retry: 0 }
   )
 
   function renderProject(record: TimeEntry) {

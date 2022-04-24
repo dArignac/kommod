@@ -28,5 +28,5 @@ export const config: Config = {
     reactQueryDevTools: true,
     reduxDevTools: true,
   },
-  storageClass: "LocalStorage",
+  storageClass: process.env.REACT_APP_VARIANT !== undefined && process.env.REACT_APP_VARIANT === "browser" ? "LocalStorage" : "StrongholdStorage",
 }

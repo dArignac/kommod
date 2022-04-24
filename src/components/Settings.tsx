@@ -1,47 +1,53 @@
 import { Button, Col, Form, Input, Row } from "antd"
-import { ServiceFactory } from "../services/ServiceFactory"
+import { useStoreState } from "pullstate"
+import { Controller, useForm } from "react-hook-form"
+import { SkeletonLoading } from "../layout/SkeletonLoading"
+import { SettingsStore } from "../store"
 
-interface FormFields {
+type FormValues = {
   token: string
 }
 
 export function Settings() {
-  const [form] = Form.useForm()
-  const storage = ServiceFactory.getInstance().getStorage()
-  const initialValues = {
-    token: storage.getToken() || "",
-  }
+  const settings = useStoreState(SettingsStore)
 
-  const onFinish = (values: FormFields) => {
-    if (storage.setToken(values.token.trim())) {
-      // FIXME snackbar
-      console.log("save successfully")
-    } else {
-      // FIXME snackback
-      console.log("failed to save")
-    }
-  }
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>()
 
+  const onSubmit = handleSubmit((data) => {
+    SettingsStore.update((s) => {
+      s.token = data.token.trim()
+    })
+  })
+
+  // FIXME remove the storage ready stuff as handled in App.tsx
   return (
     <Row>
       <Col flex={1} style={{ padding: "0 20px" }}>
-        <Form form={form} onFinish={onFinish} initialValues={initialValues}>
-          <Form.Item
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 12, offset: 0 }}
-            label="toggl.com Token"
-            name="token"
-            rules={[{ required: true, message: "Please provide your toggl.com token!" }]}
-            required
-          >
-            <Input data-testid="token" />
-          </Form.Item>
-          <Form.Item wrapperCol={{ span: 4, offset: 4 }}>
-            <Button type="primary" htmlType="submit" data-testid="submit">
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
+        {settings.isStorageReady ? (
+          <form onSubmit={onSubmit}>
+            <Form.Item labelCol={{ span: 4 }} wrapperCol={{ span: 12, offset: 0 }} label="toggl.com Token">
+              <Controller
+                name="token"
+                control={control}
+                rules={{ required: true }}
+                defaultValue={settings.token}
+                render={({ field }) => <Input data-testid="token" {...field} />}
+              />
+            </Form.Item>
+            <Form.Item wrapperCol={{ span: 4, offset: 4 }}>
+              <Button type="primary" htmlType="submit" data-testid="submit">
+                Submit
+              </Button>
+            </Form.Item>
+            {errors.token && <>FIXME (styling) Token is required</>}
+          </form>
+        ) : (
+          <SkeletonLoading />
+        )}
       </Col>
     </Row>
   )

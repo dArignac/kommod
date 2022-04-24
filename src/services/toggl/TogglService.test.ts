@@ -11,7 +11,7 @@ afterEach(() => mock.resetHandlers())
 test("fetches and transforms user data correctly", async () => {
   mock.onGet("/me").reply(200, mockUser)
 
-  const user = await TogglService.getInstance().fetchUser()
+  const user = await TogglService.getInstance("").fetchUser()
   const storeClients = ClientStore.getRawState().clients
   const storeProjects = ProjectStore.getRawState().projects
   const storeUser = UserStore.getRawState().user
@@ -51,7 +51,7 @@ test("fetches and transforms user data correctly", async () => {
 test("fetches and transforms todays entries correctly", async () => {
   mock.onGet("/time_entries").reply(200, mockTimeEntries)
 
-  const results = await TogglService.getInstance().fetchTimeEntriesOfToday()
+  const results = await TogglService.getInstance("").fetchTimeEntriesOfToday()
 
   expect(results.length).toBe(mockTimeEntries.length)
 

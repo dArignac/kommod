@@ -18,6 +18,16 @@ export const ProjectStore = new Store<ProjectStoreInterface>({
   projects: [],
 })
 
+export interface SettingsStoreInterface {
+  isStorageReady: boolean
+  token: string
+}
+
+export const SettingsStore = new Store<SettingsStoreInterface>({
+  isStorageReady: false,
+  token: "",
+})
+
 interface UserStoreInterface {
   user: User
 }
@@ -30,5 +40,5 @@ export const UserStore = new Store<UserStoreInterface>({
 })
 
 if (config.development.reduxDevTools) {
-  registerInDevtools({ ProjectStore, UserStore })
+  registerInDevtools({ ClientStore, ProjectStore, SettingsStore, UserStore })
 }

@@ -1,10 +1,12 @@
 import { Button } from "antd"
+import { useStoreState } from "pullstate"
 import { ReactNode } from "react"
 import { useQuery } from "react-query"
 import { useLocation } from "wouter"
 import { Error } from "../layout/Error"
 import { SkeletonLoading } from "../layout/SkeletonLoading"
-import { ServiceFactory } from "../services/ServiceFactory"
+import { TogglService } from "../services/toggl/TogglService"
+import { SettingsStore } from "../store"
 
 interface DataInitWrapperProps {
   content: ReactNode
@@ -12,13 +14,14 @@ interface DataInitWrapperProps {
 
 export function DataInitWrapper({ content }: DataInitWrapperProps) {
   const [, setLocation] = useLocation()
+  const token = useStoreState(SettingsStore, (s) => s.token)
 
   const { status } = useQuery<any, Error>(
     ["user"],
     async () => {
-      return ServiceFactory.getInstance().getTogglService().fetchUser()
+      return TogglService.getInstance(token).fetchUser()
     },
-    { initialDataUpdatedAt: +new Date(), staleTime: 5 * 60 * 1000, retry: 0 }
+    { initialDataUpdatedAt: +new Date(), staleTime: 5 * 60 * 1000, retry: 0, enabled: !!token }
   )
 
   const errorDisplay = (

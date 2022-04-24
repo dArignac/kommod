@@ -4,18 +4,17 @@ import { isDev } from "../../helpers"
 import { ClientStore, ProjectStore, UserStore } from "../../store"
 import { Client, Project, TimeEntry, User } from "../../types"
 import { getTodaysEnd, getTodaysStart } from "../date"
-import { ServiceFactory } from "../ServiceFactory"
 import { TogglTimeEntry, TogglUserResponse } from "./types"
 
 export class TogglService {
   private static instance: TogglService
   private ax: AxiosInstance
 
-  private constructor() {
+  private constructor(token: string) {
     this.ax = axios.create({
       baseURL: "https://api.track.toggl.com/api/v8",
       auth: {
-        username: ServiceFactory.getInstance().getStorage().getToken(),
+        username: token,
         password: "api_token",
       },
     })
@@ -109,9 +108,9 @@ export class TogglService {
     )
   }
 
-  public static getInstance(): TogglService {
+  public static getInstance(token: string): TogglService {
     if (!TogglService.instance) {
-      TogglService.instance = new TogglService()
+      TogglService.instance = new TogglService(token)
     }
     return TogglService.instance
   }

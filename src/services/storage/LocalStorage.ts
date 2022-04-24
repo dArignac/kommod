@@ -1,3 +1,4 @@
+import { SettingsStore, SettingsStoreInterface } from "../../store"
 import { Storage } from "./StorageFactory"
 
 export class LocalStorage implements Storage {
@@ -16,11 +17,21 @@ export class LocalStorage implements Storage {
     }
   }
 
-  public getToken(): string {
-    return this.getValue(this.keyToken)
+  public async initialize() {
+    SettingsStore.update((s) => {
+      s.token = this.getValue(this.keyToken)
+      s.isStorageReady = true
+    })
+    SettingsStore.subscribe((s) => s.token, this.handleTokenChange.bind(this))
   }
 
-  public setToken(value: string): boolean {
-    return this.setValue(this.keyToken, value)
+  private handleTokenChange(newValue: string, allState: SettingsStoreInterface, lastValue: string) {
+    if (newValue !== lastValue) {
+      if (this.setValue(this.keyToken, newValue)) {
+        // FIXME add saving state
+      } else {
+        // FIXME add saving state
+      }
+    }
   }
 }

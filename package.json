@@ -19,8 +19,10 @@
     "pullstate": "^1.23.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-hook-form": "^7.30.0",
     "react-query": "^3.34.16",
     "react-scripts": "5.0.1",
+    "tauri-plugin-stronghold-api": "github:darignac/tauri-plugin-stronghold",
     "typescript": "^4.6.3",
     "web-vitals": "^2.1.4",
     "wouter": "^2.8.0-alpha.2"
@@ -44,6 +46,7 @@
   },
   "scripts": {
     "start": "cross-env BROWSER=none react-scripts start",
+    "start:browser": "REACT_APP_VARIANT=browser cross-env BROWSER=none react-scripts start",
     "build": "react-scripts build",
     "test": "TZ=UTC react-scripts test",
     "test:coverage": "TZ=UTC react-scripts test --coverage --no-cache --watchAll=false",
