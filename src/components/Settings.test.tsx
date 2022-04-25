@@ -1,6 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import React from "react"
-import { act } from "react-dom/test-utils"
 import { SettingsStore } from "../store"
 import { Settings } from "./Settings"
 
@@ -11,7 +10,7 @@ test("Renders the form", async () => {
 })
 
 test("It saves and loads the token value", async () => {
-  render(<Settings />)
+  await render(<Settings />)
 
   const input = screen.getByTestId("token") as HTMLInputElement
   const submit = screen.getByTestId("submit") as HTMLButtonElement
@@ -20,9 +19,7 @@ test("It saves and loads the token value", async () => {
   fireEvent.change(input, { target: { value: "testToken1" } })
   expect(input.value).toBe("testToken1")
 
-  await act(() => {
-    fireEvent.click(submit)
-  })
+  fireEvent.click(submit)
 
-  expect(SettingsStore.getRawState().token).toBe("testToken1")
+  await waitFor(() => expect(SettingsStore.getRawState().token).toBe("testToken1"))
 })
