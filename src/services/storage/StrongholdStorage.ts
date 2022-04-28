@@ -1,6 +1,6 @@
 import { createDir, Dir } from "@tauri-apps/api/fs"
 import { dataDir } from "@tauri-apps/api/path"
-import { Location, Store, Stronghold } from "tauri-plugin-stronghold-api"
+import { Location, Store, Stronghold } from "./stronghold-plugin"
 import { SettingsStore, SettingsStoreInterface } from "../../store"
 import { Storage } from "./StorageFactory"
 

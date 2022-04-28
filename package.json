@@ -23,7 +23,6 @@
     "react-hook-form": "^7.30.0",
     "react-query": "^3.34.16",
     "react-scripts": "5.0.1",
-    "tauri-plugin-stronghold-api": "github:darignac/tauri-plugin-stronghold#bea8ba0",
     "typescript": "^4.6.3",
     "web-vitals": "^2.1.4",
     "wouter": "^2.8.0-alpha.2"
