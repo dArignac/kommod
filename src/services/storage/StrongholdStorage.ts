@@ -13,13 +13,14 @@ export class StrongholdStorage implements Storage {
     const dir = `${await dataDir()}el-toggl`
     await createDir(dir, { dir: Dir.Data, recursive: true })
     this.stronghold = new Stronghold(`${dir}/vault.stronghold`, "")
-    this.store = await this.stronghold?.getStore("vault", [])
+    this.store = this.stronghold?.getStore("vault", [])
 
-    let token = ""
+    let token: string
     try {
       token = await this.store?.get(this.location)
     } catch {
-      // do nothing here, if the vault is empty fall back to the default state value of storageToken
+      // if the vault is empty set to the default state value of storageToken
+      token = ""
     }
 
     SettingsStore.update((s) => {
