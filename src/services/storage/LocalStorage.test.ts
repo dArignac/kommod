@@ -11,12 +11,6 @@ test("initializes and gets token", async () => {
   expect(localStorage.getItem).toBeCalledWith("token")
 })
 
-export async function waitSeconds(seconds: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, 1000 * seconds)
-  })
-}
-
 test("sets token", async () => {
   jest.spyOn(window.localStorage.__proto__, "setItem")
   window.localStorage.__proto__.setItem = jest.fn()

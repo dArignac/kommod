@@ -8,6 +8,7 @@ export class StrongholdStorage implements Storage {
   private stronghold: Stronghold | null = null
   private store: Store | null = null
   private location = Location.generic("vault", "token")
+  private storeSubscription: (() => void) | undefined
 
   public async initialize() {
     const dir = `${await dataDir()}el-toggl`
@@ -28,7 +29,13 @@ export class StrongholdStorage implements Storage {
       s.isStorageReady = true
     })
 
-    SettingsStore.subscribe((s) => s.token, this.handleTokenChange.bind(this))
+    this.storeSubscription = SettingsStore.subscribe((s) => s.token, this.handleTokenChange.bind(this))
+  }
+
+  public cancelStoreSubscription() {
+    if (this.storeSubscription) {
+      this.storeSubscription()
+    }
   }
 
   private async handleTokenChange(newValue: string, allState: SettingsStoreInterface, lastValue: string) {

@@ -3,6 +3,7 @@ import { Storage } from "./StorageFactory"
 
 export class LocalStorage implements Storage {
   private keyToken = "token"
+  private storeSubscription: (() => void) | undefined
 
   private getValue(key: string): string {
     return localStorage.getItem(key) || ""
@@ -22,7 +23,14 @@ export class LocalStorage implements Storage {
       s.token = this.getValue(this.keyToken)
       s.isStorageReady = true
     })
-    SettingsStore.subscribe((s) => s.token, this.handleTokenChange.bind(this))
+
+    this.storeSubscription = SettingsStore.subscribe((s) => s.token, this.handleTokenChange.bind(this))
+  }
+
+  public cancelStoreSubscription() {
+    if (this.storeSubscription) {
+      this.storeSubscription()
+    }
   }
 
   private handleTokenChange(newValue: string, allState: SettingsStoreInterface, lastValue: string) {

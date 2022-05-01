@@ -1,5 +1,4 @@
 import { FsDirOptions } from "@tauri-apps/api/fs"
-import { Settings } from "../../components/Settings"
 import { SettingsStore } from "../../store"
 import { Store, Stronghold } from "./stronghold-plugin"
 import { StrongholdStorage } from "./StrongholdStorage"
@@ -20,10 +19,6 @@ jest.mock("@tauri-apps/api/fs", () => {
   }
 })
 
-// FIXME if any of the test is the only test here, everything is fine
-// FIXME if they run together the assumptions are wrong - why? some state issue?
-// FIXME store is not isolated between tests
-
 test("Initializes correctly", async () => {
   const spyStoreGet = jest.spyOn(Store.prototype, "get").mockResolvedValue("initialToken1")
   const spyStoreInsert = jest.spyOn(Store.prototype, "insert")
@@ -39,6 +34,8 @@ test("Initializes correctly", async () => {
   })
   expect(spyStoreInsert).toBeCalledTimes(0)
   expect(spyStrongholdSave).toBeCalledTimes(0)
+
+  storage.cancelStoreSubscription()
 })
 
 test("Changed token gets stored to storage", async () => {
@@ -63,6 +60,8 @@ test("Changed token gets stored to storage", async () => {
     token: "newToken",
   })
   expect(spyStrongholdSave).toBeCalled()
+
+  storage.cancelStoreSubscription()
 })
 
 test("Changed token with same value as before does not get stored to storage", async () => {
@@ -87,4 +86,6 @@ test("Changed token with same value as before does not get stored to storage", a
     token: "initialToken3",
   })
   expect(spyStrongholdSave).toBeCalledTimes(0)
+
+  storage.cancelStoreSubscription()
 })
