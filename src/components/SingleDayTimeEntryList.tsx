@@ -1,4 +1,4 @@
-import { Table } from "antd"
+import { Table, Tag } from "antd"
 import { useStoreState } from "pullstate"
 import { useQuery } from "react-query"
 import { formatDuration } from "../services/date"
@@ -25,12 +25,11 @@ export function SingleDayTimeEntryList() {
     { enabled: projects.projects.length > 0 && !!token, retry: 0 }
   )
 
-  // FIXME could be done with a antd tag
   function renderProject(record: TimeEntry) {
     return (
-      <>
-        {record.project.name} | <i>{record.project.client.name}</i>
-      </>
+      <Tag color={record.project.color}>
+        {record.project.name} | {record.project.client.name}
+      </Tag>
     )
   }
 

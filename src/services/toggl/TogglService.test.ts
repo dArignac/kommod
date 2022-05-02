@@ -30,6 +30,7 @@ test("fetches and transforms user data correctly", async () => {
       id: 923476,
       name: "Client A",
     },
+    color: "#ff0000",
     id: 1230994,
     name: "Project A",
   })
@@ -38,6 +39,7 @@ test("fetches and transforms user data correctly", async () => {
       id: 923476,
       name: "Client A",
     },
+    color: "#0000aa",
     id: 1230995,
     name: "Project B",
   })
@@ -73,6 +75,7 @@ test("fetches and transforms todays entries correctly", async () => {
         id: 923476,
         name: "Client A",
       },
+      color: "#ff0000",
       id: 1230994,
       name: "Project A",
     },
@@ -88,6 +91,7 @@ test("fetches and transforms todays entries correctly", async () => {
         id: 923476,
         name: "Client A",
       },
+      color: "#0000aa",
       id: 1230995,
       name: "Project B",
     },

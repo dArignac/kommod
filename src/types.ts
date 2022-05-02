@@ -5,6 +5,7 @@ export type Client = {
 
 export type Project = {
   client: Client
+  color: string
   id: number
   name: string
 }

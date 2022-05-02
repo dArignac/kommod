@@ -47,6 +47,7 @@ export class TogglService {
     const projects = data.data.projects.map((project) => {
       return {
         client: clients.find((client) => client.id === project.cid),
+        color: project.hex_color,
         id: project.id,
         name: project.name,
       } as Project
