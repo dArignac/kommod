@@ -1,5 +1,5 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons"
-import { Button, Col, Row, Space } from "antd"
+import { Button, Space } from "antd"
 import generatePicker from "antd/lib/date-picker/generatePicker"
 import addDays from "date-fns/addDays"
 import subDays from "date-fns/subDays"
@@ -29,18 +29,16 @@ export function DaySelector() {
   }
 
   return (
-    <Row className="day-selector">
-      <Col span={4} offset={20}>
-        <Space>
-          <Button data-testid="day-select-previous" onClick={goToPreviousDay}>
-            <LeftOutlined />
-          </Button>
-          <DatePicker data-testid="date-picker" value={day} format={"DD.MM.YYYY"} onChange={onChangeDate} />
-          <Button data-testid="day-select-next" onClick={goToNextDay}>
-            <RightOutlined />
-          </Button>
-        </Space>
-      </Col>
-    </Row>
+    <div className="day-selector">
+      <Space>
+        <Button data-testid="day-select-previous" onClick={goToPreviousDay}>
+          <LeftOutlined />
+        </Button>
+        <DatePicker data-testid="date-picker" value={day} format={"DD.MM.YYYY"} onChange={onChangeDate} />
+        <Button data-testid="day-select-next" onClick={goToNextDay}>
+          <RightOutlined />
+        </Button>
+      </Space>
+    </div>
   )
 }

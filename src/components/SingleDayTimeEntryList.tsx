@@ -1,7 +1,7 @@
-import { Table, Tag } from "antd"
+import { Input, Table, Tag } from "antd"
 import { useStoreState } from "pullstate"
 import { useQuery } from "react-query"
-import { formatDuration } from "../services/date"
+import { formatDuration, formatTime } from "../services/date"
 import { TogglService } from "../services/toggl/TogglService"
 import { ProjectStore, SettingsStore, SingleDayViewStore } from "../store"
 import { TimeEntry } from "../types"
@@ -33,8 +33,13 @@ export function SingleDayTimeEntryList() {
     )
   }
 
-  function renderStartStop() {
-    return <>Start/Stop</>
+  function renderStartStop(record: TimeEntry) {
+    return (
+      <div className="wrap-start-end">
+        <Input defaultValue={formatTime(record.start)} />
+        <Input defaultValue={formatTime(record.stop)} />
+      </div>
+    )
   }
 
   function renderSum(record: TimeEntry) {
@@ -50,11 +55,11 @@ export function SingleDayTimeEntryList() {
     <>
       <DaySelector />
       <Table dataSource={data} rowKey="id" showHeader={false} pagination={false}>
-        <Column title="Description" dataIndex="description" key="description" />
-        <Column title="Project/Client" key="project" render={renderProject} />
-        <Column title="Start/Stop" key="startstop" render={renderStartStop} />
-        <Column title="Sum" key="sum" render={renderSum} />
-        <Column title="Actions" key="actions" render={renderActions} />
+        <Column title="Description" dataIndex="description" key="description" width="42%" />
+        <Column title="Project/Client" key="project" render={renderProject} width="30%" />
+        <Column title="Start/Stop" key="startstop" render={renderStartStop} width="12%" />
+        <Column title="Sum" key="sum" render={renderSum} width="8%" />
+        <Column title="Actions" key="actions" render={renderActions} width="8%" />
       </Table>
     </>
   )

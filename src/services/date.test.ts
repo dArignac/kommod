@@ -1,4 +1,4 @@
-import { formatDuration, setToBeforeMidnight, setToMidnight } from "./date"
+import { formatDuration, formatTime, setToBeforeMidnight, setToMidnight } from "./date"
 
 test("timezone is set to UTC", () => {
   expect(new Date().getTimezoneOffset()).toBe(0)
@@ -11,11 +11,13 @@ test("formats duration", () => {
 })
 
 test("sets to midnight right", () => {
-  const day = new Date("2022-01-16T12:33:00Z")
-  expect(setToMidnight(day).toISOString()).toBe("2022-01-16T00:00:00.000Z")
+  expect(setToMidnight(new Date("2022-01-16T12:33:00Z")).toISOString()).toBe("2022-01-16T00:00:00.000Z")
 })
 
 test("sets to before midnight right", () => {
-  const day = new Date("2022-01-16T12:33:00Z")
-  expect(setToBeforeMidnight(day).toISOString()).toBe("2022-01-16T23:59:59.000Z")
+  expect(setToBeforeMidnight(new Date("2022-01-16T12:33:00Z")).toISOString()).toBe("2022-01-16T23:59:59.000Z")
+})
+
+test("formats time correctly", () => {
+  expect(formatTime(new Date("2022-01-16T12:33:00Z"))).toBe("12:33")
 })

@@ -1,5 +1,27 @@
 @import "~antd/dist/antd.css";
 
 .day-selector {
-  padding-bottom: 10px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  justify-content: end;
+  justify-items: end;
+  align-items: center;
+  grid-template-areas: ".";
+
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+.wrap-start-end {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 0px 4px;
+  grid-auto-flow: row;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
 }
