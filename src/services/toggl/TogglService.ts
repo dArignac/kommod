@@ -3,7 +3,7 @@ import { config } from "../../config"
 import { isDev } from "../../helpers"
 import { ClientStore, ProjectStore, UserStore } from "../../store"
 import { Client, Project, TimeEntry, User } from "../../types"
-import { getTodaysEnd, getTodaysStart } from "../date"
+import { setToBeforeMidnight, setToMidnight } from "../date"
 import { TogglTimeEntry, TogglUserResponse } from "./types"
 
 export class TogglService {
@@ -70,18 +70,18 @@ export class TogglService {
     return user
   }
 
-  // FIXME parameterize with SingleDayViewStore
   /**
-   * Fetches the time entries of the current day for the user.
+   * Fetches the time entries of the given day for the user.
+   * @param day the day to use
    * @returns list of TimeEntry
    */
-  public async fetchTimeEntriesOfToday(): Promise<TimeEntry[]> {
+  public async fetchTimeEntriesOfDay(day: Date): Promise<TimeEntry[]> {
     if (isDev() && config.development.networkDelays.fetchEntries > 0) {
       await this.sleep(config.development.networkDelays.fetchEntries)
     }
 
     const { data } = await this.ax.get<TogglTimeEntry[]>("/time_entries", {
-      params: { start_date: getTodaysStart().toISOString(), end_date: getTodaysEnd().toISOString() },
+      params: { start_date: setToMidnight(day).toISOString(), end_date: setToBeforeMidnight(day).toISOString() },
     })
 
     const projects = ProjectStore.getRawState().projects

@@ -51,8 +51,12 @@ test("fetches and transforms user data correctly", async () => {
 test("fetches and transforms todays entries correctly", async () => {
   mock.onGet("/time_entries").reply(200, mockTimeEntries)
 
-  const results = await TogglService.getInstance("").fetchTimeEntriesOfToday()
+  const day = new Date("2022-01-16T12:33:00Z")
+  const results = await TogglService.getInstance("").fetchTimeEntriesOfDay(day)
+  const history = mock.history.get.filter((h) => h.url === "/time_entries")[0]
 
+  expect(history.params.start_date).toBe("2022-01-16T00:00:00.000Z")
+  expect(history.params.end_date).toBe("2022-01-16T23:59:59.000Z")
   expect(results.length).toBe(mockTimeEntries.length)
 
   // sorting

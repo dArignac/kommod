@@ -3,7 +3,7 @@ import { useStoreState } from "pullstate"
 import { useQuery } from "react-query"
 import { formatDuration } from "../services/date"
 import { TogglService } from "../services/toggl/TogglService"
-import { ProjectStore, SettingsStore } from "../store"
+import { ProjectStore, SettingsStore, SingleDayViewStore } from "../store"
 import { TimeEntry } from "../types"
 import { DaySelector } from "./DaySelector"
 
@@ -14,12 +14,13 @@ export function SingleDayTimeEntryList() {
   // FIXME add global error handling?
   const projects = useStoreState(ProjectStore)
   const token = useStoreState(SettingsStore, (s) => s.token)
+  const day = useStoreState(SingleDayViewStore, (s) => s.day)
 
   // const { status, data, error } = useQuery<TimeEntry[], Error>(
   const { data } = useQuery<TimeEntry[], Error>(
-    ["todaysTimeEntries"],
+    ["todaysTimeEntries", day],
     async () => {
-      return TogglService.getInstance(token).fetchTimeEntriesOfToday()
+      return TogglService.getInstance(token).fetchTimeEntriesOfDay(day)
     },
     { enabled: projects.projects.length > 0 && !!token, retry: 0 }
   )
