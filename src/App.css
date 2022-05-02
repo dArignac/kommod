@@ -1,1 +1,5 @@
 @import "~antd/dist/antd.css";
+
+.day-selector {
+  padding-bottom: 10px;
+}

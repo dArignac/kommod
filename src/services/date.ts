@@ -1,4 +1,7 @@
-import { format, setHours, setMinutes, setSeconds } from "date-fns"
+import format from "date-fns/format"
+import setHours from "date-fns/setHours"
+import setMinutes from "date-fns/setMinutes"
+import setSeconds from "date-fns/setSeconds"
 import { config } from "../config"
 
 export function formatDuration(seconds: number): string {

@@ -12,3 +12,5 @@ A toggl.com client.
 Ensure to have commitizen installed globally: `npm install commitizen -g`.
 
 Commit with `git cz -S`.
+
+Start just the React app with `npm run start:browser` or run fully fledged with tauri with `npm run tauri dev`.

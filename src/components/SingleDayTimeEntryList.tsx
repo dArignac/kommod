@@ -5,6 +5,7 @@ import { formatDuration } from "../services/date"
 import { TogglService } from "../services/toggl/TogglService"
 import { ProjectStore, SettingsStore } from "../store"
 import { TimeEntry } from "../types"
+import { DaySelector } from "./DaySelector"
 
 const { Column } = Table
 
@@ -23,6 +24,7 @@ export function SingleDayTimeEntryList() {
     { enabled: projects.projects.length > 0 && !!token, retry: 0 }
   )
 
+  // FIXME could be done with a antd tag
   function renderProject(record: TimeEntry) {
     return (
       <>
@@ -43,15 +45,17 @@ export function SingleDayTimeEntryList() {
     return <>Actions</>
   }
 
-  // FIXME show day with selection (prev day, next day)
   // FIXME wrap the table into a form, render start+end as inputs already
   return (
-    <Table dataSource={data} rowKey="id" showHeader={false} pagination={false}>
-      <Column title="Description" dataIndex="description" key="description" />
-      <Column title="Project/Client" key="project" render={renderProject} />
-      <Column title="Start/Stop" key="startstop" render={renderStartStop} />
-      <Column title="Sum" key="sum" render={renderSum} />
-      <Column title="Actions" key="actions" render={renderActions} />
-    </Table>
+    <>
+      <DaySelector />
+      <Table dataSource={data} rowKey="id" showHeader={false} pagination={false}>
+        <Column title="Description" dataIndex="description" key="description" />
+        <Column title="Project/Client" key="project" render={renderProject} />
+        <Column title="Start/Stop" key="startstop" render={renderStartStop} />
+        <Column title="Sum" key="sum" render={renderSum} />
+        <Column title="Actions" key="actions" render={renderActions} />
+      </Table>
+    </>
   )
 }

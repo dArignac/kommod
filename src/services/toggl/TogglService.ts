@@ -70,6 +70,7 @@ export class TogglService {
     return user
   }
 
+  // FIXME parameterize with SingleDayViewStore
   /**
    * Fetches the time entries of the current day for the user.
    * @returns list of TimeEntry

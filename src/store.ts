@@ -28,6 +28,14 @@ export const SettingsStore = new Store<SettingsStoreInterface>({
   token: "",
 })
 
+export interface SingleDayViewStoreInterface {
+  day: Date
+}
+
+export const SingleDayViewStore = new Store<SingleDayViewStoreInterface>({
+  day: new Date(),
+})
+
 interface UserStoreInterface {
   user: User
 }
@@ -40,5 +48,5 @@ export const UserStore = new Store<UserStoreInterface>({
 })
 
 if (config.development.reduxDevTools) {
-  registerInDevtools({ ClientStore, ProjectStore, SettingsStore, UserStore })
+  registerInDevtools({ ClientStore, ProjectStore, SettingsStore, SingleDayViewStore, UserStore })
 }
