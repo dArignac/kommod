@@ -98,7 +98,7 @@ export class TogglService {
             id: entry.id,
             project,
             start: new Date(entry.start),
-            stop: new Date(entry.stop),
+            stop: "stop" in entry ? new Date(entry.stop) : null,
           } as TimeEntry
         })
         // sort entries

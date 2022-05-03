@@ -121,7 +121,6 @@ export const mockTimeEntries = [
     wid: 777,
     billable: false,
     start: "2013-03-12T10:32:43+00:00",
-    stop: "2013-03-12T14:32:43+00:00",
     duration: 18400,
     description: "important work",
     tags: [""],

@@ -16,7 +16,7 @@ export type TimeEntry = {
   id: number
   project: Project
   start: Date
-  stop: Date
+  stop: Date | null
 }
 
 export type User = {

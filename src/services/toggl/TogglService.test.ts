@@ -96,6 +96,6 @@ test("fetches and transforms todays entries correctly", async () => {
       name: "Project B",
     },
     start: new Date("2013-03-12T10:32:43.000Z"),
-    stop: new Date("2013-03-12T14:32:43.000Z"),
+    stop: null,
   })
 })

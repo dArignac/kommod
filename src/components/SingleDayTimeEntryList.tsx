@@ -34,10 +34,11 @@ export function SingleDayTimeEntryList() {
   }
 
   function renderStartStop(record: TimeEntry) {
+    const stop = record.stop === null ? "" : formatTime(record.stop)
     return (
       <div className="wrap-start-end">
         <Input defaultValue={formatTime(record.start)} />
-        <Input defaultValue={formatTime(record.stop)} />
+        <Input defaultValue={stop} />
       </div>
     )
   }
