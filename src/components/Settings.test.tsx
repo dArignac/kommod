@@ -23,3 +23,15 @@ test("It saves and loads the token value", async () => {
 
   await waitFor(() => expect(SettingsStore.getRawState().token).toBe("testToken1"))
 })
+
+test("Empty token triggers error message", async () => {
+  await render(<Settings />)
+
+  const input = screen.getByTestId("token") as HTMLInputElement
+  const submit = screen.getByTestId("submit") as HTMLButtonElement
+
+  fireEvent.change(input, { target: { value: "" } })
+  fireEvent.click(submit)
+
+  await waitFor(() => expect(screen.getByText("Token is required, please provide!")).toBeVisible())
+})
