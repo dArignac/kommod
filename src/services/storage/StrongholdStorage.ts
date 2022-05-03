@@ -30,6 +30,8 @@ export class StrongholdStorage implements Storage {
     })
 
     this.storeSubscription = SettingsStore.subscribe((s) => s.token, this.handleTokenChange.bind(this))
+    // FIXME we cannot use SettingsStore.createReaction here as the update function cannot call async code
+    // FIXME so there is no way to update the store after the async stuff in handleTokenChange has been executed
   }
 
   public cancelStoreSubscription() {

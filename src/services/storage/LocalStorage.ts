@@ -1,4 +1,4 @@
-import { SettingsStore, SettingsStoreInterface } from "../../store"
+import { SettingsStore } from "../../store"
 import { Storage } from "./StorageFactory"
 
 export class LocalStorage implements Storage {
@@ -24,22 +24,23 @@ export class LocalStorage implements Storage {
       s.isStorageReady = true
     })
 
-    this.storeSubscription = SettingsStore.subscribe((s) => s.token, this.handleTokenChange.bind(this))
+    this.storeSubscription = SettingsStore.createReaction(
+      (s) => s.token,
+      (watched, draft, _, lastWatched) => {
+        if (watched !== lastWatched) {
+          if (this.setValue(this.keyToken, watched)) {
+            draft.tokenSaveStatus = "success"
+          } else {
+            draft.tokenSaveStatus = "error"
+          }
+        }
+      }
+    )
   }
 
   public cancelStoreSubscription() {
     if (this.storeSubscription) {
       this.storeSubscription()
-    }
-  }
-
-  private handleTokenChange(newValue: string, allState: SettingsStoreInterface, lastValue: string) {
-    if (newValue !== lastValue) {
-      if (this.setValue(this.keyToken, newValue)) {
-        // FIXME add saving state
-      } else {
-        // FIXME add saving state
-      }
     }
   }
 }

@@ -31,6 +31,7 @@ test("Initializes correctly", async () => {
   expect(SettingsStore.getRawState()).toEqual({
     isStorageReady: true,
     token: "initialToken1",
+    tokenSaveStatus: "na",
   })
   expect(spyStoreInsert).toBeCalledTimes(0)
   expect(spyStrongholdSave).toBeCalledTimes(0)
@@ -58,6 +59,7 @@ test("Changed token gets stored to storage", async () => {
   expect(SettingsStore.getRawState()).toEqual({
     isStorageReady: true,
     token: "newToken",
+    tokenSaveStatus: "na",
   })
   expect(spyStrongholdSave).toBeCalled()
 
@@ -84,6 +86,7 @@ test("Changed token with same value as before does not get stored to storage", a
   expect(SettingsStore.getRawState()).toEqual({
     isStorageReady: true,
     token: "initialToken3",
+    tokenSaveStatus: "na",
   })
   expect(spyStrongholdSave).toBeCalledTimes(0)
 

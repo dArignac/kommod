@@ -1,4 +1,4 @@
-import { Alert, Button, Col, Form, Input, Row } from "antd"
+import { Alert, Button, Col, Form, Input, notification, Row } from "antd"
 import { useStoreState } from "pullstate"
 import { Controller, useForm } from "react-hook-form"
 import { SettingsStore } from "../store"
@@ -21,6 +21,24 @@ export function Settings() {
       s.token = data.token.trim()
     })
   })
+
+  SettingsStore.createReaction(
+    (s) => s.tokenSaveStatus,
+    (watched, draft) => {
+      if (watched === "success") {
+        notification.success({
+          message: "Token saved",
+          description: "The token was saved successfully.",
+        })
+      } else if (watched === "error") {
+        notification.error({
+          message: "Error",
+          description: "Unable to save the",
+        })
+      }
+      draft.tokenSaveStatus = "na"
+    }
+  )
 
   return (
     <Row>

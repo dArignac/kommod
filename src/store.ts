@@ -21,11 +21,13 @@ export const ProjectStore = new Store<ProjectStoreInterface>({
 export interface SettingsStoreInterface {
   isStorageReady: boolean
   token: string
+  tokenSaveStatus: "na" | "success" | "error"
 }
 
 export const SettingsStore = new Store<SettingsStoreInterface>({
   isStorageReady: false,
   token: "",
+  tokenSaveStatus: "na",
 })
 
 export interface SingleDayViewStoreInterface {
