@@ -1,8 +1,8 @@
 import { createDir, Dir } from "@tauri-apps/api/fs"
 import { dataDir } from "@tauri-apps/api/path"
-import { Location, Store, Stronghold } from "./stronghold-plugin"
 import { SettingsStore, SettingsStoreInterface } from "../../store"
 import { Storage } from "./StorageFactory"
+import { Location, Store, Stronghold } from "./stronghold-plugin"
 
 export class StrongholdStorage implements Storage {
   private stronghold: Stronghold | null = null
@@ -29,7 +29,15 @@ export class StrongholdStorage implements Storage {
       s.isStorageReady = true
     })
 
-    this.storeSubscription = SettingsStore.subscribe((s) => s.token, this.handleTokenChange.bind(this))
+    // FIXME remove this line
+    // this.storeSubscription = SettingsStore.subscribe((s) => s.token, this.handleTokenChange.bind(this))
+
+    this.storeSubscription = SettingsStore.subscribe(
+      (s) => s.token,
+      (watched, original, lastWatched) => {
+        this.handleTokenChange(watched, original, lastWatched)
+      }
+    )
     // FIXME we cannot use SettingsStore.createReaction here as the update function cannot call async code
     // FIXME so there is no way to update the store after the async stuff in handleTokenChange has been executed
   }
@@ -45,9 +53,11 @@ export class StrongholdStorage implements Storage {
       try {
         await this.store?.insert(this.location, newValue)
         await this.stronghold?.save()
-        // FIXME add saving state
-      } catch {
-        // FIXME add saving state
+        SettingsStore.update((s) => (s.tokenSaveStatus = "success"))
+      } catch (e) {
+        // FIXME remove console
+        console.log("error", e)
+        SettingsStore.update((s) => (s.tokenSaveStatus = "error"))
       }
     }
   }
