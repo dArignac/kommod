@@ -10,14 +10,17 @@ export type Project = {
   name: string
 }
 
+export type StartStopable = {
+  start: Date
+  stop: Date | null
+}
+
 export type TimeEntry = {
   description: string
   duration: number
   id: number
   project: Project
-  start: Date
-  stop: Date | null
-}
+} & StartStopable
 
 export type User = {
   email: string

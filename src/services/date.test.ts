@@ -1,4 +1,4 @@
-import { formatDuration, formatTime, setToBeforeMidnight, setToMidnight } from "./date"
+import { formatDuration, formatTime, setToBeforeMidnight, setToMidnight, sort } from "./date"
 
 test("timezone is set to UTC", () => {
   expect(new Date().getTimezoneOffset()).toBe(0)
@@ -20,4 +20,33 @@ test("sets to before midnight right", () => {
 
 test("formats time correctly", () => {
   expect(formatTime(new Date("2022-01-16T12:33:00Z"))).toBe("12:33")
+})
+
+test("compares StartStopables correctly", () => {
+  const a = { start: new Date("2022-05-05T12:00:00Z"), stop: new Date("2022-05-05T12:30:00Z") }
+  const b = { start: new Date("2022-05-05T12:30:00Z"), stop: new Date("2022-05-05T13:00:00Z") }
+  const c = { start: new Date("2022-05-05T12:30:00Z"), stop: null }
+  const d = { start: new Date("2022-05-05T14:30:00Z"), stop: null }
+
+  // both have stop attribute
+  expect(sort(a, b)).toBe(-1)
+  expect(sort(b, a)).toBe(1)
+  expect(sort(a, a)).toBe(0)
+
+  // none has stop attribute
+  expect(sort(c, d)).toBe(-1)
+  expect(sort(d, c)).toBe(1)
+
+  // FIXME fix type issues
+  // first has stop attribute, second not
+  expect(sort(a, d)).toBe(1)
+  expect(sort(a, c)).toBe(1)
+  expect(sort(b, d)).toBe(1)
+  expect(sort(b, c)).toBe(1)
+
+  // first has no stop attribute, second has
+  expect(sort(c, a)).toBe(-1)
+  expect(sort(c, b)).toBe(-1)
+  expect(sort(d, a)).toBe(-1)
+  expect(sort(d, b)).toBe(-1)
 })

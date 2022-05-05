@@ -3,7 +3,7 @@ import { config } from "../../config"
 import { isDev } from "../../helpers"
 import { ClientStore, ProjectStore, UserStore } from "../../store"
 import { Client, Project, TimeEntry, User } from "../../types"
-import { setToBeforeMidnight, setToMidnight } from "../date"
+import { setToBeforeMidnight, setToMidnight, sort } from "../date"
 import { TogglTimeEntry, TogglUserResponse } from "./types"
 
 export class TogglService {
@@ -102,11 +102,7 @@ export class TogglService {
           } as TimeEntry
         })
         // sort entries
-        .sort((a: TimeEntry, b: TimeEntry) => {
-          if (a.start.getTime() > b.start.getTime()) return -1
-          if (a.start.getTime() < b.start.getTime()) return 1
-          return 0
-        })
+        .sort(sort)
     )
   }
 

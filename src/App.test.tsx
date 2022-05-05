@@ -4,7 +4,7 @@ import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
 import React from "react"
 import { App } from "./App"
-import { mockTimeEntries, mockUser } from "./mocks"
+import { mockTimeEntries1, mockUser } from "./mocks"
 import { SettingsStore } from "./store"
 
 const mock = new MockAdapter(axios)
@@ -16,7 +16,7 @@ test("Initially shows skeleton loading", () => {
 
 test("Renders default components", async () => {
   mock.onGet("/me").reply(200, mockUser)
-  mock.onGet("/time_entries").reply(200, mockTimeEntries)
+  mock.onGet("/time_entries").reply(200, mockTimeEntries1)
 
   SettingsStore.update((s) => {
     s.isStorageReady = true
@@ -34,7 +34,7 @@ test("Renders default components", async () => {
 test("Navigation to settings works", () => {
   const leftClick = { button: 0 }
   mock.onGet("/me").reply(200, mockUser)
-  mock.onGet("/time_entries").reply(200, mockTimeEntries)
+  mock.onGet("/time_entries").reply(200, mockTimeEntries1)
 
   SettingsStore.update((s) => {
     s.isStorageReady = true
