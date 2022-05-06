@@ -12,7 +12,7 @@ export type Project = {
 
 export type StartStopable = {
   start: Date
-  stop: Date | null
+  stop?: Date
 }
 
 export type TimeEntry = {

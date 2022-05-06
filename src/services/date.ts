@@ -21,14 +21,18 @@ export function setToBeforeMidnight(day: Date): Date {
   return setSeconds(setMinutes(setHours(day, 23), 59), 59)
 }
 
+function hasOwnProperty<X extends {}, Y extends PropertyKey>(obj: X, prop: Y): obj is X & Record<Y, unknown> {
+  return obj.hasOwnProperty(prop)
+}
+
 export function sort<T extends StartStopable>(a: T, b: T): number {
-  if (a.stop !== null && b.stop !== null) {
+  if (hasOwnProperty(a, "stop") && hasOwnProperty(b, "stop")) {
     return compareAsc(a.stop!, b.stop!)
-  } else if (a.stop === null && b.stop === null) {
+  } else if (!hasOwnProperty(a, "stop") && !hasOwnProperty(b, "stop")) {
     return compareAsc(a.start, b.start)
-  } else if (a.stop === null && b.stop !== null) {
+  } else if (!hasOwnProperty(a, "stop") && hasOwnProperty(b, "stop")) {
     return -1
-  } else if (a.stop !== null && b.stop === null) {
+  } else if (hasOwnProperty(a, "stop") && !hasOwnProperty(b, "stop")) {
     return 1
   }
   return 0

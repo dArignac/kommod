@@ -96,21 +96,20 @@ test("fetches and transforms todays entries correctly", async () => {
       name: "Project B",
     },
     start: new Date("2013-03-12T10:32:43.000Z"),
-    stop: null,
   })
 })
 
-// test("active entries are always sorted to the top and by their start time", async () => {
-//   mock.onGet("/time_entries").reply(200, [
-//     { id: 1, start: "2022-05-05T10:00:00+00:00", stop: "2022-05-05T11:00:00+00:00" },
-//     { id: 2, start: "2022-05-05T10:00:00+00:00" },
-//     { id: 3, start: "2022-05-05T09:00:00+00:00", stop: "2022-05-05T10:00:00+00:00" },
-//   ])
+test("active entries are always sorted to the top and by their start time", async () => {
+  mock.onGet("/time_entries").reply(200, [
+    { id: 1, start: "2022-05-05T10:00:00+00:00", stop: "2022-05-05T11:00:00+00:00" },
+    { id: 2, start: "2022-05-05T10:00:00+00:00" },
+    { id: 3, start: "2022-05-05T09:00:00+00:00", stop: "2022-05-05T10:00:00+00:00" },
+  ])
 
-//   const results = await TogglService.getInstance("").fetchTimeEntriesOfDay(new Date("2022-01-16T12:33:00Z"))
+  const results = await TogglService.getInstance("").fetchTimeEntriesOfDay(new Date("2022-01-16T12:33:00Z"))
 
-//   // sorting
-//   expect(results[0].id).toBe(2)
-//   expect(results[1].id).toBe(1)
-//   expect(results[2].id).toBe(3)
-// })
+  // sorting
+  expect(results[0].id).toBe(2)
+  expect(results[1].id).toBe(3)
+  expect(results[2].id).toBe(1)
+})

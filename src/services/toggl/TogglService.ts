@@ -92,14 +92,17 @@ export class TogglService {
       data
         .map((entry: TogglTimeEntry) => {
           const project = projects.find((project) => project.id === entry.pid)
-          return {
+          const item = {
             description: entry.description,
             duration: entry.duration,
             id: entry.id,
             project,
             start: new Date(entry.start),
-            stop: "stop" in entry ? new Date(entry.stop) : null,
           } as TimeEntry
+          if ("stop" in entry) {
+            item.stop = new Date(entry.stop)
+          }
+          return item
         })
         // sort entries
         .sort(sort)

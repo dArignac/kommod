@@ -25,8 +25,8 @@ test("formats time correctly", () => {
 test("compares StartStopables correctly", () => {
   const a = { start: new Date("2022-05-05T12:00:00Z"), stop: new Date("2022-05-05T12:30:00Z") }
   const b = { start: new Date("2022-05-05T12:30:00Z"), stop: new Date("2022-05-05T13:00:00Z") }
-  const c = { start: new Date("2022-05-05T12:30:00Z"), stop: null }
-  const d = { start: new Date("2022-05-05T14:30:00Z"), stop: null }
+  const c = { start: new Date("2022-05-05T12:30:00Z") }
+  const d = { start: new Date("2022-05-05T14:30:00Z") }
 
   // both have stop attribute
   expect(sort(a, b)).toBe(-1)
@@ -37,7 +37,6 @@ test("compares StartStopables correctly", () => {
   expect(sort(c, d)).toBe(-1)
   expect(sort(d, c)).toBe(1)
 
-  // FIXME fix type issues
   // first has stop attribute, second not
   expect(sort(a, d)).toBe(1)
   expect(sort(a, c)).toBe(1)
