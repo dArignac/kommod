@@ -34,7 +34,7 @@ export function SingleDayTimeEntryList() {
   }
 
   function renderStartStop(record: TimeEntry) {
-    const stop = record.stop === null ? "" : formatTime(record.stop)
+    const stop = "stop" in record ? formatTime(record.stop!) : ""
     return (
       <div className="wrap-start-end">
         <Input defaultValue={formatTime(record.start)} />
@@ -52,6 +52,7 @@ export function SingleDayTimeEntryList() {
   }
 
   // FIXME wrap the table into a form, render start+end as inputs already
+  // FIXME move table to own component incl. renderers to enable for better testing
   return (
     <>
       <DaySelector />
