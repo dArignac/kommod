@@ -29,7 +29,8 @@ export function TimeEntryList({ entries }: TimeEntryListProps) {
   }
 
   function renderSum(record: TimeEntry) {
-    return <>{formatDuration(record.duration)}</>
+    if ("stop" in record) return <>{formatDuration(record.duration)}</>
+    return ""
   }
 
   function renderActions() {
