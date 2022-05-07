@@ -1,11 +1,11 @@
 [package]
-name = "el_toggl"
+name = "kommod"
 version = "1.0.0"
 description = "A toggl.com client"
 authors = ["Alexander Herrmann"]
 license = "MIT"
-repository = "https://github.com/dArignac/el-toggl"
-default-run = "el_toggl"
+repository = "https://github.com/dArignac/kommod"
+default-run = "kommod"
 edition = "2021"
 rust-version = "1.57"
 

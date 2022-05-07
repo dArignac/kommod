@@ -11,7 +11,7 @@ export class StrongholdStorage implements Storage {
   private storeSubscription: (() => void) | undefined
 
   public async initialize() {
-    const dir = `${await dataDir()}el-toggl`
+    const dir = `${await dataDir()}kommod`
     await createDir(dir, { dir: Dir.Data, recursive: true })
     this.stronghold = new Stronghold(`${dir}/vault.stronghold`, "")
     this.store = this.stronghold?.getStore("vault", [])

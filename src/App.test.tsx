@@ -28,7 +28,7 @@ test("Renders default components", async () => {
     expect(screen.getByText(/Settings/i)).toBeInTheDocument()
   })
 
-  expect(screen.getByText(/El Toggl/)).toBeInTheDocument()
+  expect(screen.getByText(/kommod/)).toBeInTheDocument()
 })
 
 test("Navigation to settings works", () => {
@@ -43,7 +43,7 @@ test("Navigation to settings works", () => {
   render(<App />)
 
   userEvent.click(screen.getByTestId("link-settings"), leftClick)
-  expect(screen.getByText(/El Toggl - Settings/)).toBeInTheDocument()
+  expect(screen.getByText(/kommod - Settings/)).toBeInTheDocument()
   userEvent.click(screen.getByTestId("link-home"), leftClick)
-  expect(screen.getByText(/El Toggl/)).toBeInTheDocument()
+  expect(screen.getByText(/kommod/)).toBeInTheDocument()
 })

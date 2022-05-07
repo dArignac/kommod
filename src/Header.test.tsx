@@ -4,6 +4,6 @@ import { Header } from "./Header"
 
 test("Renders navigation", async () => {
   render(<Header />)
-  expect(screen.getByText(/El Toggl/i)).toBeInTheDocument()
+  expect(screen.getByText(/kommod/i)).toBeInTheDocument()
   expect(screen.getByText(/Settings/i)).toBeInTheDocument()
 })

@@ -1,6 +1,6 @@
 {
   "package": {
-    "productName": "el-toggl",
+    "productName": "kommod",
     "version": "1.0.0"
   },
   "build": {
@@ -58,7 +58,7 @@
     },
     "windows": [
       {
-        "title": "El Toggl",
+        "title": "kommod",
         "width": 1400,
         "height": 800,
         "resizable": true,
