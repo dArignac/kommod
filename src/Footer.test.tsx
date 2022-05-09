@@ -5,5 +5,5 @@ import { Footer } from "./Footer"
 test("Renders footer", () => {
   render(<Footer />)
   expect(screen.getByText(/Source:/i)).toBeInTheDocument()
-  expect(screen.getByText(/Github/)).toHaveAttribute("href", "https://github.com/darignac/el-toggl")
+  expect(screen.getByText(/Github/)).toHaveAttribute("href", "https://github.com/darignac/kommod")
 })

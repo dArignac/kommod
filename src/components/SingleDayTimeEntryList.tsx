@@ -1,55 +1,33 @@
-import { Table } from "antd"
+import format from "date-fns/format"
 import { useStoreState } from "pullstate"
 import { useQuery } from "react-query"
-import { ServiceFactory } from "../services/ServiceFactory"
-import { ProjectStore } from "../store"
+import { TogglService } from "../services/toggl/TogglService"
+import { ProjectStore, SettingsStore, SingleDayViewStore } from "../store"
 import { TimeEntry } from "../types"
-
-const { Column } = Table
+import { DaySelector } from "./DaySelector"
+import { TimeEntryList } from "./TimeEntryList"
 
 // FIXME write some tests
 export function SingleDayTimeEntryList() {
   // FIXME add global error handling?
   const projects = useStoreState(ProjectStore)
+  const token = useStoreState(SettingsStore, (s) => s.token)
+  const day = useStoreState(SingleDayViewStore, (s) => s.day)
 
   // const { status, data, error } = useQuery<TimeEntry[], Error>(
   const { data } = useQuery<TimeEntry[], Error>(
-    ["todaysTimeEntries"],
+    ["todaysTimeEntries", format(day, "yyyy-MM-dd")],
     async () => {
-      return ServiceFactory.getInstance().getTogglService().fetchTimeEntriesOfToday()
+      return TogglService.getInstance(token).fetchTimeEntriesOfDay(day)
     },
-    { enabled: projects.projects.length > 0, retry: 0 }
+    { enabled: projects.projects.length > 0 && !!token, retry: 0 }
   )
 
-  function renderProject(record: TimeEntry) {
-    return (
-      <>
-        {record.project.name} | <i>{record.project.client.name}</i>
-      </>
-    )
-  }
-
-  function renderStartStop() {
-    return <>Start/Stop</>
-  }
-
-  function renderSum() {
-    return <>Sum</>
-  }
-
-  function renderActions() {
-    return <>Actions</>
-  }
-
-  // FIXME show day with selection (prev day, next day)
   // FIXME wrap the table into a form, render start+end as inputs already
   return (
-    <Table dataSource={data} rowKey="id" showHeader={false} pagination={false}>
-      <Column title="Description" dataIndex="description" key="description" />
-      <Column title="Project/Client" key="project" render={renderProject} />
-      <Column title="Start/Stop" key="startstop" render={renderStartStop} />
-      <Column title="Sum" key="sum" render={renderSum} />
-      <Column title="Actions" key="actions" render={renderActions} />
-    </Table>
+    <>
+      <DaySelector />
+      <TimeEntryList entries={data} />
+    </>
   )
 }

@@ -18,7 +18,7 @@ export function Header() {
     ),
   ]
 
-  let title = "El Toggl"
+  let title = "kommod"
   if (isOnSettingsPage) title += " - Settings"
 
   return <PageHeader className="site-page-header" title={title} extra={navigation} />

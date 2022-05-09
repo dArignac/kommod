@@ -18,6 +18,26 @@ export const ProjectStore = new Store<ProjectStoreInterface>({
   projects: [],
 })
 
+export interface SettingsStoreInterface {
+  isStorageReady: boolean
+  token: string
+  tokenSaveStatus: "na" | "success" | "error"
+}
+
+export const SettingsStore = new Store<SettingsStoreInterface>({
+  isStorageReady: false,
+  token: "",
+  tokenSaveStatus: "na",
+})
+
+export interface SingleDayViewStoreInterface {
+  day: Date
+}
+
+export const SingleDayViewStore = new Store<SingleDayViewStoreInterface>({
+  day: new Date(),
+})
+
 interface UserStoreInterface {
   user: User
 }
@@ -30,5 +50,5 @@ export const UserStore = new Store<UserStoreInterface>({
 })
 
 if (config.development.reduxDevTools) {
-  registerInDevtools({ ProjectStore, UserStore })
+  registerInDevtools({ ClientStore, ProjectStore, SettingsStore, SingleDayViewStore, UserStore })
 }

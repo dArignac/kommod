@@ -1,6 +1,7 @@
-import { ServiceFactory } from "./ServiceFactory"
 import { config } from "../config"
+import { ServiceFactory } from "./ServiceFactory"
 import { LocalStorage } from "./storage/LocalStorage"
+import { StrongholdStorage } from "./storage/StrongholdStorage"
 
 test("ServiceFactory is a singleton", () => {
   const a = ServiceFactory.getInstance()
@@ -13,8 +14,7 @@ test("Return LocalStorage if configured", () => {
   expect(ServiceFactory.getInstance().getStorage()).toBeInstanceOf(LocalStorage)
 })
 
-test("Throw exception when StrongholdStorage is configured", () => {
+test("Return StrongholdStorage if configured", () => {
   config.storageClass = "StrongholdStorage"
-  expect(() => ServiceFactory.getInstance().getStorage()).toThrow(Error)
-  expect(() => ServiceFactory.getInstance().getStorage()).toThrow("Storage is not implemented for StrongholdStorage")
+  expect(ServiceFactory.getInstance().getStorage()).toBeInstanceOf(StrongholdStorage)
 })

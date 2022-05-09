@@ -3,21 +3,18 @@ import { config } from "../../config"
 import { isDev } from "../../helpers"
 import { ClientStore, ProjectStore, UserStore } from "../../store"
 import { Client, Project, TimeEntry, User } from "../../types"
-import { DateService } from "../date/DateService"
-import { ServiceFactory } from "../ServiceFactory"
+import { setToBeforeMidnight, setToMidnight, sort } from "../date"
 import { TogglTimeEntry, TogglUserResponse } from "./types"
 
 export class TogglService {
   private static instance: TogglService
   private ax: AxiosInstance
-  private dateService: DateService
 
-  private constructor() {
-    this.dateService = ServiceFactory.getInstance().getDateService()
+  private constructor(token: string) {
     this.ax = axios.create({
       baseURL: "https://api.track.toggl.com/api/v8",
       auth: {
-        username: ServiceFactory.getInstance().getStorage().getToken(),
+        username: token,
         password: "api_token",
       },
     })
@@ -50,6 +47,7 @@ export class TogglService {
     const projects = data.data.projects.map((project) => {
       return {
         client: clients.find((client) => client.id === project.cid),
+        color: project.hex_color,
         id: project.id,
         name: project.name,
       } as Project
@@ -74,16 +72,17 @@ export class TogglService {
   }
 
   /**
-   * Fetches the time entries of the current day for the user.
+   * Fetches the time entries of the given day for the user.
+   * @param day the day to use
    * @returns list of TimeEntry
    */
-  public async fetchTimeEntriesOfToday(): Promise<TimeEntry[]> {
+  public async fetchTimeEntriesOfDay(day: Date): Promise<TimeEntry[]> {
     if (isDev() && config.development.networkDelays.fetchEntries > 0) {
       await this.sleep(config.development.networkDelays.fetchEntries)
     }
 
     const { data } = await this.ax.get<TogglTimeEntry[]>("/time_entries", {
-      params: { start_date: this.dateService.getTodaysStart().toISOString(), end_date: this.dateService.getTodaysEnd().toISOString() },
+      params: { start_date: setToMidnight(day).toISOString(), end_date: setToBeforeMidnight(day).toISOString() },
     })
 
     const projects = ProjectStore.getRawState().projects
@@ -93,26 +92,26 @@ export class TogglService {
       data
         .map((entry: TogglTimeEntry) => {
           const project = projects.find((project) => project.id === entry.pid)
-          return {
+          const item = {
             description: entry.description,
+            duration: entry.duration,
             id: entry.id,
             project,
             start: new Date(entry.start),
-            stop: new Date(entry.stop),
           } as TimeEntry
+          if ("stop" in entry) {
+            item.stop = new Date(entry.stop)
+          }
+          return item
         })
         // sort entries
-        .sort((a: TimeEntry, b: TimeEntry) => {
-          if (a.start.getTime() < b.start.getTime()) return -1
-          if (a.start.getTime() > b.start.getTime()) return 1
-          return 0
-        })
+        .sort(sort)
     )
   }
 
-  public static getInstance(): TogglService {
+  public static getInstance(token: string): TogglService {
     if (!TogglService.instance) {
-      TogglService.instance = new TogglService()
+      TogglService.instance = new TogglService(token)
     }
     return TogglService.instance
   }

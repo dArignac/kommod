@@ -3,10 +3,17 @@ import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
 import { QueryCache, QueryClient } from "react-query"
 import { mockUser } from "../mocks"
+import { SettingsStore } from "../store"
 import { renderWithClient } from "../testUtils"
 import { DataInitWrapper } from "./DataInitWrapper"
 
 const mock = new MockAdapter(axios)
+
+beforeEach(() => {
+  SettingsStore.update((s) => {
+    s.token = "token123"
+  })
+})
 
 test("Renders normally", async () => {
   const queryCache = new QueryCache()
@@ -26,7 +33,7 @@ test("Renders error", async () => {
   const queryCache = new QueryCache()
   const queryClient = new QueryClient({ queryCache })
 
-  mock.onGet("/me").reply(500, {})
+  mock.onGet("/me").networkError()
   renderWithClient(queryClient, <DataInitWrapper content={<>Solor</>} />)
 
   await waitFor(() => expect(screen.getByText(/Unable to fetch user data from toggl./)).toBeVisible())

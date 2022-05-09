@@ -1,7 +1,9 @@
+import { SettingsStore } from "../../store"
 import { Storage } from "./StorageFactory"
 
 export class LocalStorage implements Storage {
   private keyToken = "token"
+  private storeSubscription: (() => void) | undefined
 
   private getValue(key: string): string {
     return localStorage.getItem(key) || ""
@@ -16,11 +18,29 @@ export class LocalStorage implements Storage {
     }
   }
 
-  public getToken(): string {
-    return this.getValue(this.keyToken)
+  public async initialize() {
+    SettingsStore.update((s) => {
+      s.token = this.getValue(this.keyToken)
+      s.isStorageReady = true
+    })
+
+    this.storeSubscription = SettingsStore.createReaction(
+      (s) => s.token,
+      (watched, draft, _, lastWatched) => {
+        if (watched !== lastWatched) {
+          if (this.setValue(this.keyToken, watched)) {
+            draft.tokenSaveStatus = "success"
+          } else {
+            draft.tokenSaveStatus = "error"
+          }
+        }
+      }
+    )
   }
 
-  public setToken(value: string): boolean {
-    return this.setValue(this.keyToken, value)
+  public cancelStoreSubscription() {
+    if (this.storeSubscription) {
+      this.storeSubscription()
+    }
   }
 }

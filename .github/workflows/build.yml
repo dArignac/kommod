@@ -132,4 +132,4 @@ jobs:
       run: npm run tauri build
 
     - name: Attach binary to tags
-      run: scripts/attachBinariesToRelease.mjs ${{ matrix.os }}
+      run: ci/attachBinariesToRelease.mjs ${{ matrix.os }}

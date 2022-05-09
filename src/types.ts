@@ -5,18 +5,22 @@ export type Client = {
 
 export type Project = {
   client: Client
+  color: string
   id: number
   name: string
 }
 
+export type StartStopable = {
+  start: Date
+  stop?: Date
+}
+
 export type TimeEntry = {
-  billable: boolean
   description: string
+  duration: number
   id: number
   project: Project
-  start: Date
-  stop: Date
-}
+} & StartStopable
 
 export type User = {
   email: string

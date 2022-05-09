@@ -1,7 +1,6 @@
-// FIXME to generic, add at least specific methods for token etc.
 export interface Storage {
-  getToken(): string
-  setToken(value: string): boolean
+  initialize(): Promise<void>
+  cancelStoreSubscription(): void
 }
 
 export abstract class StorageFactory {

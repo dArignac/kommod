@@ -1,6 +1,6 @@
 import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
-import { mockTimeEntries, mockUser } from "../../mocks"
+import { mockTimeEntries1, mockUser } from "../../mocks"
 import { ClientStore, ProjectStore, UserStore } from "../../store"
 import { TogglService } from "./TogglService"
 
@@ -11,7 +11,7 @@ afterEach(() => mock.resetHandlers())
 test("fetches and transforms user data correctly", async () => {
   mock.onGet("/me").reply(200, mockUser)
 
-  const user = await TogglService.getInstance().fetchUser()
+  const user = await TogglService.getInstance("").fetchUser()
   const storeClients = ClientStore.getRawState().clients
   const storeProjects = ProjectStore.getRawState().projects
   const storeUser = UserStore.getRawState().user
@@ -19,7 +19,7 @@ test("fetches and transforms user data correctly", async () => {
   // clients
   expect(storeClients.length).toBe(1)
   expect(storeClients).toContainEqual({
-    id: 923476,
+    id: 1,
     name: "Client A",
   })
 
@@ -27,18 +27,20 @@ test("fetches and transforms user data correctly", async () => {
   expect(storeProjects.length).toBe(2)
   expect(storeProjects).toContainEqual({
     client: {
-      id: 923476,
+      id: 1,
       name: "Client A",
     },
-    id: 1230994,
+    color: "#ff0000",
+    id: 1,
     name: "Project A",
   })
   expect(storeProjects).toContainEqual({
     client: {
-      id: 923476,
+      id: 1,
       name: "Client A",
     },
-    id: 1230995,
+    color: "#0000aa",
+    id: 2,
     name: "Project B",
   })
 
@@ -49,26 +51,32 @@ test("fetches and transforms user data correctly", async () => {
 })
 
 test("fetches and transforms todays entries correctly", async () => {
-  mock.onGet("/time_entries").reply(200, mockTimeEntries)
+  mock.onGet("/time_entries").reply(200, mockTimeEntries1)
 
-  const results = await TogglService.getInstance().fetchTimeEntriesOfToday()
+  const day = new Date("2022-01-16T12:33:00Z")
+  const results = await TogglService.getInstance("").fetchTimeEntriesOfDay(day)
+  const history = mock.history.get.filter((h) => h.url === "/time_entries")[0]
 
-  expect(results.length).toBe(mockTimeEntries.length)
+  expect(history.params.start_date).toBe("2022-01-16T00:00:00.000Z")
+  expect(history.params.end_date).toBe("2022-01-16T23:59:59.000Z")
+  expect(results.length).toBe(mockTimeEntries1.length)
 
   // sorting
-  expect(results[0].id).toBe(436691234)
-  expect(results[1].id).toBe(436776436)
+  expect(results[0].id).toBe(2)
+  expect(results[1].id).toBe(1)
 
   // transformation
   expect(results).toContainEqual({
     description: "Meeting with the client",
-    id: 436691234,
+    duration: 14400,
+    id: 1,
     project: {
       client: {
-        id: 923476,
+        id: 1,
         name: "Client A",
       },
-      id: 1230994,
+      color: "#ff0000",
+      id: 1,
       name: "Project A",
     },
     start: new Date("2013-03-11T11:36:00.000Z"),
@@ -76,16 +84,32 @@ test("fetches and transforms todays entries correctly", async () => {
   })
   expect(results).toContainEqual({
     description: "important work",
-    id: 436776436,
+    duration: 18400,
+    id: 2,
     project: {
       client: {
-        id: 923476,
+        id: 1,
         name: "Client A",
       },
-      id: 1230995,
+      color: "#0000aa",
+      id: 2,
       name: "Project B",
     },
     start: new Date("2013-03-12T10:32:43.000Z"),
-    stop: new Date("2013-03-12T14:32:43.000Z"),
   })
+})
+
+test("active entries are always sorted to the top and by their start time", async () => {
+  mock.onGet("/time_entries").reply(200, [
+    { id: 1, start: "2022-05-05T10:00:00+00:00", stop: "2022-05-05T11:00:00+00:00" },
+    { id: 2, start: "2022-05-05T10:00:00+00:00" },
+    { id: 3, start: "2022-05-05T09:00:00+00:00", stop: "2022-05-05T10:00:00+00:00" },
+  ])
+
+  const results = await TogglService.getInstance("").fetchTimeEntriesOfDay(new Date("2022-01-16T12:33:00Z"))
+
+  // sorting
+  expect(results[0].id).toBe(2)
+  expect(results[1].id).toBe(3)
+  expect(results[2].id).toBe(1)
 })

@@ -1,21 +1,26 @@
+import { SettingsStore } from "../../store"
 import { LocalStorage } from "./LocalStorage"
 
-test("sets token", () => {
-  jest.spyOn(window.localStorage.__proto__, "setItem")
-  window.localStorage.__proto__.setItem = jest.fn()
-
-  const ls = new LocalStorage()
-
-  expect(ls.setToken("value")).toBeTruthy()
-  expect(localStorage.setItem).toBeCalledWith("token", "value")
-})
-
-test("gets token", () => {
+test("initializes and gets token", async () => {
   jest.spyOn(window.localStorage.__proto__, "getItem")
   window.localStorage.__proto__.getItem = jest.fn()
 
   const ls = new LocalStorage()
-  ls.getToken()
+  await ls.initialize()
 
   expect(localStorage.getItem).toBeCalledWith("token")
+})
+
+test("sets token", async () => {
+  jest.spyOn(window.localStorage.__proto__, "setItem")
+  window.localStorage.__proto__.setItem = jest.fn()
+
+  const ls = new LocalStorage()
+  await ls.initialize()
+
+  SettingsStore.update((s) => {
+    s.token = "test123"
+  })
+
+  expect(localStorage.setItem).toBeCalledWith("token", "test123")
 })

@@ -3,6 +3,7 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom"
+import { randomFillSync } from "crypto"
 import MatchMediaMock from "jest-matchmedia-mock"
 import { setLogger } from "react-query"
 
@@ -15,3 +16,14 @@ setLogger({
   warn: (message) => {},
   error: (message) => {},
 })
+
+Object.defineProperty(window.self, "crypto", {
+  value: {
+    getRandomValues: function <T extends ArrayBufferView | null>(array: T): T {
+      //@ts-ignore
+      return randomFillSync(array)
+    },
+  },
+})
+
+window.__TAURI_IPC__ = () => {}

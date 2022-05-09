@@ -6,6 +6,7 @@ checks:
 exclude_patterns:
   - "public/**"
   - "src-tauri/**"
+  - "src/services/storage/stronghold-plugin.ts"
   - "**/*.d.ts"
   - "**/node_modules/"
   - "**/*.test.*"
