@@ -110,8 +110,8 @@
               "files": [
                 "src-tauri/Cargo.toml"
               ],
-              "from": "version = \".*\"",
-              "to": "version =\"${nextRelease.version}\"",
+              "from": "^version = \".*\"",
+              "to": "version = \"${nextRelease.version}\"",
               "results": [
                 {
                   "file": "src-tauri/Cargo.toml",
@@ -119,14 +119,15 @@
                   "numMatches": 1,
                   "numReplacements": 1
                 }
-              ]
+              ],
+              "countMatches": true
             },
             {
               "files": [
                 "src-tauri/tauri.conf.json"
               ],
-              "from": "\"version\": \".*\"",
-              "to": "\"version\": \"${nextRelease.version}\"",
+              "from": "    \"version\": \".*\"",
+              "to": "    \"version\": \"${nextRelease.version}\"",
               "results": [
                 {
                   "file": "src-tauri/tauri.conf.json",
@@ -134,7 +135,8 @@
                   "numMatches": 1,
                   "numReplacements": 1
                 }
-              ]
+              ],
+              "countMatches": true
             }
           ]
         }
