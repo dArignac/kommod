@@ -8,7 +8,6 @@ interface TimeEntryListProps {
   entries: TimeEntry[] | undefined
 }
 
-// FIXME add tests for #41
 export function TimeEntryList({ entries }: TimeEntryListProps) {
   function renderProject(record: TimeEntry) {
     return (

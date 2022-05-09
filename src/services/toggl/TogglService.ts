@@ -9,15 +9,30 @@ import { TogglTimeEntry, TogglUserResponse } from "./types"
 export class TogglService {
   private static instance: TogglService
   private ax: AxiosInstance
+  private _token = ""
 
   private constructor(token: string) {
+    this.token = token
     this.ax = axios.create({
       baseURL: "https://api.track.toggl.com/api/v8",
+    })
+  }
+
+  private getAuth() {
+    return {
       auth: {
-        username: token,
+        username: this.token,
         password: "api_token",
       },
-    })
+    }
+  }
+
+  get token() {
+    return this._token
+  }
+
+  public set token(token: string) {
+    this._token = token
   }
 
   /**
@@ -35,7 +50,10 @@ export class TogglService {
     }
 
     // fetch data
-    let { data } = await this.ax.get<TogglUserResponse>("/me", { params: { with_related_data: true } })
+    let { data } = await this.ax.get<TogglUserResponse>("/me", {
+      ...this.getAuth(),
+      params: { with_related_data: true },
+    })
 
     // map data
     const clients = data.data.clients.map((client) => {
@@ -82,6 +100,7 @@ export class TogglService {
     }
 
     const { data } = await this.ax.get<TogglTimeEntry[]>("/time_entries", {
+      ...this.getAuth(),
       params: { start_date: setToMidnight(day).toISOString(), end_date: setToBeforeMidnight(day).toISOString() },
     })
 
@@ -112,6 +131,8 @@ export class TogglService {
   public static getInstance(token: string): TogglService {
     if (!TogglService.instance) {
       TogglService.instance = new TogglService(token)
+    } else {
+      TogglService.instance.token = token
     }
     return TogglService.instance
   }
