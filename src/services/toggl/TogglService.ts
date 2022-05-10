@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios"
 import { config } from "../../config"
 import { isDev } from "../../helpers"
-import { ClientStore, ProjectStore, UserStore } from "../../store"
+import { TogglStore } from "../../store"
 import { Client, Project, TimeEntry, User } from "../../types"
 import { setToBeforeMidnight, setToMidnight, sort } from "../date"
 import { TogglTimeEntry, TogglUserResponse } from "./types"
@@ -37,6 +37,8 @@ export class TogglService {
     // fetch data
     let { data } = await this.ax.get<TogglUserResponse>("/me", { params: { with_related_data: true } })
 
+    // FIXME use time_entries to extract task names
+
     // map data
     const clients = data.data.clients.map((client) => {
       return {
@@ -58,13 +60,9 @@ export class TogglService {
     } as User
 
     // update stores
-    ClientStore.update((s) => {
+    TogglStore.update((s) => {
       s.clients = clients
-    })
-    ProjectStore.update((s) => {
       s.projects = projects
-    })
-    UserStore.update((s) => {
       s.user = user
     })
 
@@ -85,7 +83,7 @@ export class TogglService {
       params: { start_date: setToMidnight(day).toISOString(), end_date: setToBeforeMidnight(day).toISOString() },
     })
 
-    const projects = ProjectStore.getRawState().projects
+    const projects = TogglStore.getRawState().projects
 
     // we map only what we need - adjust tests accordingly
     return (

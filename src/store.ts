@@ -2,20 +2,19 @@ import { registerInDevtools, Store } from "pullstate"
 import { config } from "./config"
 import { Client, Project, User } from "./types"
 
-interface ClientStoreInterface {
+interface TogglStoreInterface {
   clients: Client[]
-}
-
-export const ClientStore = new Store<ClientStoreInterface>({
-  clients: [],
-})
-
-interface ProjectStoreInterface {
   projects: Project[]
+  user: User
 }
 
-export const ProjectStore = new Store<ProjectStoreInterface>({
+export const TogglStore = new Store<TogglStoreInterface>({
+  clients: [],
   projects: [],
+  user: {
+    email: "",
+    id: 0,
+  },
 })
 
 export interface SettingsStoreInterface {
@@ -38,17 +37,6 @@ export const SingleDayViewStore = new Store<SingleDayViewStoreInterface>({
   day: new Date(),
 })
 
-interface UserStoreInterface {
-  user: User
-}
-
-export const UserStore = new Store<UserStoreInterface>({
-  user: {
-    email: "",
-    id: 0,
-  },
-})
-
 if (config.development.reduxDevTools) {
-  registerInDevtools({ ClientStore, ProjectStore, SettingsStore, SingleDayViewStore, UserStore })
+  registerInDevtools({ TogglStore, SettingsStore, SingleDayViewStore })
 }

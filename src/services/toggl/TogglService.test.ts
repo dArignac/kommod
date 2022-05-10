@@ -1,7 +1,7 @@
 import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
 import { mockTimeEntries1, mockUser } from "../../mocks"
-import { ClientStore, ProjectStore, UserStore } from "../../store"
+import { TogglStore } from "../../store"
 import { TogglService } from "./TogglService"
 
 const mock = new MockAdapter(axios)
@@ -12,20 +12,18 @@ test("fetches and transforms user data correctly", async () => {
   mock.onGet("/me").reply(200, mockUser)
 
   const user = await TogglService.getInstance("").fetchUser()
-  const storeClients = ClientStore.getRawState().clients
-  const storeProjects = ProjectStore.getRawState().projects
-  const storeUser = UserStore.getRawState().user
+  const storeToggl = TogglStore.getRawState()
 
   // clients
-  expect(storeClients.length).toBe(1)
-  expect(storeClients).toContainEqual({
+  expect(storeToggl.clients.length).toBe(1)
+  expect(storeToggl.clients).toContainEqual({
     id: 1,
     name: "Client A",
   })
 
   // projects
-  expect(storeProjects.length).toBe(2)
-  expect(storeProjects).toContainEqual({
+  expect(storeToggl.projects.length).toBe(2)
+  expect(storeToggl.projects).toContainEqual({
     client: {
       id: 1,
       name: "Client A",
@@ -34,7 +32,7 @@ test("fetches and transforms user data correctly", async () => {
     id: 1,
     name: "Project A",
   })
-  expect(storeProjects).toContainEqual({
+  expect(storeToggl.projects).toContainEqual({
     client: {
       id: 1,
       name: "Client A",
@@ -47,7 +45,7 @@ test("fetches and transforms user data correctly", async () => {
   // user
   expect(user.id).toBe(9000)
   expect(user.email).toBe("johnt@swift.com")
-  expect(storeUser).toBe(user)
+  expect(storeToggl.user).toBe(user)
 })
 
 test("fetches and transforms todays entries correctly", async () => {
