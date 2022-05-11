@@ -55,8 +55,6 @@ export class TogglService {
       params: { with_related_data: true },
     })
 
-    // FIXME use time_entries to extract task names
-
     // map data
     const clients = data.data.clients.map((client) => {
       return {
@@ -72,6 +70,7 @@ export class TogglService {
         name: project.name,
       } as Project
     })
+    const tasks = data.data.time_entries.map((time_entry) => time_entry.description)
     const user = {
       email: data.data.email,
       id: data.data.id,
@@ -81,6 +80,7 @@ export class TogglService {
     TogglStore.update((s) => {
       s.clients = clients
       s.projects = projects
+      s.tasks = tasks
       s.user = user
     })
 

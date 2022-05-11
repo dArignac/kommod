@@ -1,4 +1,4 @@
-@import "~antd/dist/antd.compact.css";
+@import "~antd/dist/antd.css";
 
 .day-selector {
   display: grid;
@@ -24,4 +24,9 @@
   justify-content: center;
   justify-items: center;
   align-items: center;
+}
+
+tr.ant-table-row > td.ant-table-cell {
+  padding-top: 8px;
+  padding-bottom: 8px;
 }

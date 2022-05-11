@@ -21,6 +21,9 @@ test("fetches and transforms user data correctly", async () => {
     name: "Client A",
   })
 
+  // tasks
+  expect(storeToggl.tasks).toStrictEqual(["Time entries task a", "Time entries task b"])
+
   // projects
   expect(storeToggl.projects.length).toBe(2)
   expect(storeToggl.projects).toContainEqual({

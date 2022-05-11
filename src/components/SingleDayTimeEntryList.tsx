@@ -8,6 +8,7 @@ import { SkeletonLoading } from "../layout/SkeletonLoading"
 import { TogglService } from "../services/toggl/TogglService"
 import { SettingsStore, SingleDayViewStore, TogglStore } from "../store"
 import { TimeEntry } from "../types"
+import { CreateEntry } from "./CreateEntry"
 import { DaySelector } from "./DaySelector"
 import { TimeEntryList } from "./TimeEntryList"
 
@@ -50,6 +51,7 @@ export function SingleDayTimeEntryList() {
       ) : (
         <>
           <DaySelector />
+          <CreateEntry />
           <TimeEntryList entries={data} />
         </>
       )}

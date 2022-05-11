@@ -5,12 +5,14 @@ import { Client, Project, User } from "./types"
 interface TogglStoreInterface {
   clients: Client[]
   projects: Project[]
+  tasks: string[]
   user: User
 }
 
 export const TogglStore = new Store<TogglStoreInterface>({
   clients: [],
   projects: [],
+  tasks: [],
   user: {
     email: "",
     id: 0,
