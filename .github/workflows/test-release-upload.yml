@@ -20,12 +20,12 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         persist-credentials: false
 
     - name: Setup node
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ env.NODE_VERSION }}
 
@@ -61,12 +61,12 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         persist-credentials: false
 
     - name: Setup node
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ env.NODE_VERSION }}
 
@@ -106,13 +106,13 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         persist-credentials: false
         submodules: recursive
 
     - name: Setup node
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ env.NODE_VERSION }}
 
@@ -133,7 +133,7 @@ jobs:
         override: true
     
     - name: Cache Rust
-      uses: Swatinem/rust-cache@v1
+      uses: Swatinem/rust-cache@v3
 
     - name: Install Dependencies for Ubuntu
       if: matrix.os == 'ubuntu-latest'
