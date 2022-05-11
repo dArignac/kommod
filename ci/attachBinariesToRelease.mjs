@@ -43,6 +43,9 @@ async function updateRelease(token, os) {
   if (assets.length > 0) {
     for (const asset of assets) {
       const file = await globby([asset])
+      // FIXME #49 remove this
+      console.log(`uploading file ${file[0]}`)
+      console.log(`file name is ${path.basename(file[0])}`)
       await uploadAsset(release.id, path.basename(file[0]), fs.readFileSync(file[0]))
     }
   }
