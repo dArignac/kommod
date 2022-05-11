@@ -37,7 +37,7 @@ async function updateRelease(token, os) {
   } else if (os === "macos-latest") {
     assets = ["src-tauri/target/release/bundle/macos/*.app", "src-tauri/target/release/bundle/dmg/*_x64.dmg"]
   } else if (os === "windows-latest") {
-    assets = ["src-tauri\\target\\release\\bundle\\msi\\*.msi"]
+    assets = ["src-tauri/target/release/bundle/msi/*.msi"]
   }
 
   if (assets.length > 0) {
