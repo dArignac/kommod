@@ -99,7 +99,7 @@ test("fetches and transforms todays entries correctly", async () => {
   })
 })
 
-test("active entries are always sorted to the top and by their start time", async () => {
+test("active entries are always sorted to the top", async () => {
   mock.onGet("/time_entries").reply(200, [
     { id: 1, start: "2022-05-05T10:00:00+00:00", stop: "2022-05-05T11:00:00+00:00" },
     { id: 2, start: "2022-05-05T10:00:00+00:00" },
@@ -110,6 +110,6 @@ test("active entries are always sorted to the top and by their start time", asyn
 
   // sorting
   expect(results[0].id).toBe(2)
-  expect(results[1].id).toBe(3)
-  expect(results[2].id).toBe(1)
+  expect(results[1].id).toBe(1)
+  expect(results[2].id).toBe(3)
 })
