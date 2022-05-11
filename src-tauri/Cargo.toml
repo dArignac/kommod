@@ -1,6 +1,6 @@
 [package]
 name = "kommod"
-version = "1.1.0"
+version = "1.1.2"
 description = "A toggl.com client"
 authors = ["Alexander Herrmann"]
 license = "MIT"

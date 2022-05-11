@@ -1,4 +1,4 @@
-import compareAsc from "date-fns/compareAsc"
+import compareDesc from "date-fns/compareDesc"
 import format from "date-fns/format"
 import setHours from "date-fns/setHours"
 import setMinutes from "date-fns/setMinutes"
@@ -24,9 +24,9 @@ export function setToBeforeMidnight(day: Date): Date {
 
 export function sort<T extends StartStopable>(a: T, b: T): number {
   if (hasOwnProperty(a, "stop") && hasOwnProperty(b, "stop")) {
-    return compareAsc(a.stop!, b.stop!)
+    return compareDesc(a.stop!, b.stop!)
   } else if (!hasOwnProperty(a, "stop") && !hasOwnProperty(b, "stop")) {
-    return compareAsc(a.start, b.start)
+    return compareDesc(a.start, b.start)
   } else if (!hasOwnProperty(a, "stop") && hasOwnProperty(b, "stop")) {
     return -1
   } else if (hasOwnProperty(a, "stop") && !hasOwnProperty(b, "stop")) {
