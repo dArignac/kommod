@@ -29,13 +29,13 @@ test("compares StartStopables correctly", () => {
   const d = { start: new Date("2022-05-05T14:30:00Z") }
 
   // both have stop attribute
-  expect(sort(a, b)).toBe(-1)
-  expect(sort(b, a)).toBe(1)
+  expect(sort(a, b)).toBe(1)
+  expect(sort(b, a)).toBe(-1)
   expect(sort(a, a)).toBe(0)
 
   // none has stop attribute
-  expect(sort(c, d)).toBe(-1)
-  expect(sort(d, c)).toBe(1)
+  expect(sort(c, d)).toBe(1)
+  expect(sort(d, c)).toBe(-1)
 
   // first has stop attribute, second not
   expect(sort(a, d)).toBe(1)
