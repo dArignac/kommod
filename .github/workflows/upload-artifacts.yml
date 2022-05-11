@@ -1,9 +1,8 @@
 name: Build and Upload Artifacts
 
 on:
-  push:
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+  release:
+    types: [published]
 
 env:
   NODE_VERSION: 16.15.0
