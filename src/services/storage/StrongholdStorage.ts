@@ -14,11 +14,11 @@ export class StrongholdStorage implements Storage {
     const dir = `${await dataDir()}kommod`
     await createDir(dir, { dir: Dir.Data, recursive: true })
     this.stronghold = new Stronghold(`${dir}/vault.stronghold`, "")
-    this.store = this.stronghold?.getStore("vault", [])
+    this.store = this.stronghold.getStore("vault", [])
 
     let token: string
     try {
-      token = await this.store?.get(this.location)
+      token = await this.store.get(this.location)
     } catch {
       // if the vault is empty set to the default state value of storageToken
       token = ""
