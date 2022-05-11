@@ -1,8 +1,12 @@
+import { Button } from "antd"
 import format from "date-fns/format"
 import { useStoreState } from "pullstate"
 import { useQuery } from "react-query"
+import { useLocation } from "wouter"
+import { Error } from "../layout/Error"
+import { SkeletonLoading } from "../layout/SkeletonLoading"
 import { TogglService } from "../services/toggl/TogglService"
-import { TogglStore, SettingsStore, SingleDayViewStore } from "../store"
+import { SettingsStore, SingleDayViewStore, TogglStore } from "../store"
 import { TimeEntry } from "../types"
 import { DaySelector } from "./DaySelector"
 import { TimeEntryList } from "./TimeEntryList"
@@ -10,12 +14,25 @@ import { TimeEntryList } from "./TimeEntryList"
 // FIXME write some tests
 export function SingleDayTimeEntryList() {
   // FIXME add global error handling?
+  const [, setLocation] = useLocation()
   const projects = useStoreState(TogglStore, (s) => s.projects)
   const token = useStoreState(SettingsStore, (s) => s.token)
   const day = useStoreState(SingleDayViewStore, (s) => s.day)
 
-  // const { status, data, error } = useQuery<TimeEntry[], Error>(
-  const { data } = useQuery<TimeEntry[], Error>(
+  const errorDisplay = (
+    <Error
+      status="warning"
+      title="Unable to fetch user data from toggl."
+      subTitle="Please ensure the toggl.com API token is set in settings!"
+      extra={
+        <Button type="primary" data-testid="datainitwrapper-error-link-settings" onClick={() => setLocation("/settings")}>
+          Go to settings
+        </Button>
+      }
+    />
+  )
+
+  const { data, status } = useQuery<TimeEntry[], Error>(
     ["todaysTimeEntries", format(day, "yyyy-MM-dd")],
     async () => {
       return TogglService.getInstance(token).fetchTimeEntriesOfDay(day)
@@ -26,8 +43,16 @@ export function SingleDayTimeEntryList() {
   // FIXME wrap the table into a form, render start+end as inputs already
   return (
     <>
-      <DaySelector />
-      <TimeEntryList entries={data} />
+      {status === "loading" ? (
+        <SkeletonLoading />
+      ) : status === "error" ? (
+        errorDisplay
+      ) : (
+        <>
+          <DaySelector />
+          <TimeEntryList entries={data} />
+        </>
+      )}
     </>
   )
 }

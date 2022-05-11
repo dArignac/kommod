@@ -3,13 +3,9 @@ import * as fs from "fs"
 import { globby } from "globby"
 import * as path from "path"
 
-async function updateRelease(os) {
-  if (process.env.GITHUB_TOKEN === undefined) {
-    throw new Error("GITHUB_TOKEN is not set")
-  }
-
+async function updateRelease(token, os) {
   const options = { owner: context.repo.owner, repo: context.repo.repo }
-  const github = getOctokit(process.env.GITHUB_TOKEN)
+  const github = getOctokit(token)
 
   const { data: tags } = await github.rest.repos.listTags({
     ...options,
@@ -52,5 +48,4 @@ async function updateRelease(os) {
   }
 }
 
-const os = process.argv.slice(2)[0]
-await updateRelease(os)
+await updateRelease(process.argv.slice(2)[0], process.argv.slice(3)[0])

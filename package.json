@@ -1,6 +1,6 @@
 {
   "name": "kommod",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
@@ -43,7 +43,7 @@
     "semantic-release": "^19.0.2"
   },
   "volta": {
-    "node": "16.14.2"
+    "node": "16.15.0"
   },
   "scripts": {
     "start": "cross-env BROWSER=none react-scripts start",
@@ -131,6 +131,22 @@
               "results": [
                 {
                   "file": "src-tauri/tauri.conf.json",
+                  "hasChanged": true,
+                  "numMatches": 1,
+                  "numReplacements": 1
+                }
+              ],
+              "countMatches": true
+            },
+            {
+              "files": [
+                "package.json"
+              ],
+              "from": "  \"version\": \".*\",",
+              "to": "  \"version\": \"${nextRelease.version}\",",
+              "results": [
+                {
+                  "file": "package.json",
                   "hasChanged": true,
                   "numMatches": 1,
                   "numReplacements": 1
