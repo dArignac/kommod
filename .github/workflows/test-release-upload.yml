@@ -133,7 +133,7 @@ jobs:
         override: true
     
     - name: Cache Rust
-      uses: Swatinem/rust-cache@v3
+      uses: Swatinem/rust-cache@v1
 
     - name: Install Dependencies for Ubuntu
       if: matrix.os == 'ubuntu-latest'
