@@ -1,4 +1,4 @@
-@import "~antd/dist/antd.css";
+@import "~antd/dist/antd.dark.css";
 
 .day-selector {
   display: grid;
@@ -13,6 +13,18 @@
 
   margin-bottom: 10px;
   margin-right: 10px;
+}
+
+.create-entry {
+  display: grid;
+  grid-template-columns: 500px 400px;
+  grid-template-rows: 1fr;
+  gap: 10px 10px;
+  grid-template-areas: ". .";
+  justify-content: start;
+  justify-items: start;
+  align-items: center;
+  padding: 10px;
 }
 
 .wrap-start-end {
