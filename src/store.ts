@@ -3,6 +3,9 @@ import { config } from "./config"
 import { Client, Project, User } from "./types"
 
 interface TogglStoreInterface {
+  booking: {
+    projectId?: number
+  }
   clients: Client[]
   projects: Project[]
   tasks: string[]
@@ -10,6 +13,7 @@ interface TogglStoreInterface {
 }
 
 export const TogglStore = new Store<TogglStoreInterface>({
+  booking: {},
   clients: [],
   projects: [],
   tasks: [],

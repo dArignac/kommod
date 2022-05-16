@@ -22,7 +22,7 @@ export function setToBeforeMidnight(day: Date): Date {
   return setSeconds(setMinutes(setHours(day, 23), 59), 59)
 }
 
-export function sort<T extends StartStopable>(a: T, b: T): number {
+export function sortStartStopables<T extends StartStopable>(a: T, b: T): number {
   if (hasOwnProperty(a, "stop") && hasOwnProperty(b, "stop")) {
     return compareDesc(a.stop!, b.stop!)
   } else if (!hasOwnProperty(a, "stop") && !hasOwnProperty(b, "stop")) {

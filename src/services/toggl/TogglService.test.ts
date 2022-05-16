@@ -45,6 +45,10 @@ test("fetches and transforms user data correctly", async () => {
     name: "Project B",
   })
 
+  // sorting is alphabetically by name
+  expect(storeToggl.projects[0].id).toBe(1)
+  expect(storeToggl.projects[1].id).toBe(2)
+
   // user
   expect(user.id).toBe(9000)
   expect(user.email).toBe("johnt@swift.com")

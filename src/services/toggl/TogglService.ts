@@ -3,7 +3,7 @@ import { config } from "../../config"
 import { isDev } from "../../helpers"
 import { TogglStore } from "../../store"
 import { Client, Project, TimeEntry, User } from "../../types"
-import { setToBeforeMidnight, setToMidnight, sort } from "../date"
+import { setToBeforeMidnight, setToMidnight, sortStartStopables } from "../date"
 import { TogglTimeEntry, TogglUserResponse } from "./types"
 
 export class TogglService {
@@ -62,14 +62,18 @@ export class TogglService {
         name: client.name,
       } as Client
     })
-    const projects = data.data.projects.map((project) => {
-      return {
-        client: clients.find((client) => client.id === project.cid),
-        color: project.hex_color,
-        id: project.id,
-        name: project.name,
-      } as Project
-    })
+    const projects = data.data.projects
+      .map((project) => {
+        return {
+          client: clients.find((client) => client.id === project.cid),
+          color: project.hex_color,
+          id: project.id,
+          name: project.name,
+        } as Project
+      })
+      .sort(function (p1, p2) {
+        return p1.name.localeCompare(p2.name)
+      })
     const tasks = data.data.time_entries.map((time_entry) => time_entry.description)
     const user = {
       email: data.data.email,
@@ -122,7 +126,7 @@ export class TogglService {
           return item
         })
         // sort entries
-        .sort(sort)
+        .sort(sortStartStopables)
     )
   }
 

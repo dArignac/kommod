@@ -3,7 +3,11 @@ import { useStoreState } from "pullstate"
 import { useState } from "react"
 import { TogglStore } from "../store"
 
-export function TaskSelector() {
+interface TaskSelectorInterface {
+  tabIndex: number
+}
+
+export function TaskSelector({ tabIndex }: TaskSelectorInterface) {
   const [options, setOptions] = useState<{ value: string }[]>([])
   const tasks = useStoreState(TogglStore, (s) => s.tasks)
   const sortedTasks = Array.from(new Set(tasks)).sort()
@@ -23,5 +27,5 @@ export function TaskSelector() {
     setOptions(taskOptions)
   }
 
-  return <AutoComplete options={options} style={{ width: 500 }} onSelect={onSelect} onSearch={onSearch} onFocus={onFocus} tabIndex={1} />
+  return <AutoComplete data-testid="task-selector" options={options} style={{ width: 500 }} onSelect={onSelect} onSearch={onSearch} onFocus={onFocus} tabIndex={tabIndex} />
 }

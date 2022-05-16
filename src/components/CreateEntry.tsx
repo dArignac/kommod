@@ -5,8 +5,8 @@ import { TaskSelector } from "./TaskSelector"
 export function CreateEntry() {
   return (
     <div className="create-entry">
-      <TaskSelector />
-      <ProjectSelector />
+      <TaskSelector tabIndex={1} />
+      <ProjectSelector tabIndex={2} />
     </div>
   )
 }
