@@ -4,6 +4,7 @@ import { Client, Project, User } from "./types"
 
 interface TogglStoreInterface {
   booking: {
+    day: Date
     projectId?: number
   }
   clients: Client[]
@@ -13,7 +14,9 @@ interface TogglStoreInterface {
 }
 
 export const TogglStore = new Store<TogglStoreInterface>({
-  booking: {},
+  booking: {
+    day: new Date(),
+  },
   clients: [],
   projects: [],
   tasks: [],

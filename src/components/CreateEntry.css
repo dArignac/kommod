@@ -1,9 +1,9 @@
 .create-entry {
   display: grid;
-  grid-template-columns: 500px 400px;
+  grid-template-columns: 500px 400px 60px 60px 100px 120px;
   grid-template-rows: 1fr;
   gap: 10px 10px;
-  grid-template-areas: ". .";
+  grid-template-areas: ". . . . . .";
   justify-content: start;
   justify-items: start;
   align-items: center;
