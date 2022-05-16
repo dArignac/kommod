@@ -2,7 +2,7 @@ name: Build and Upload Artifacts
 
 on:
   release:
-    types: [published]
+    types: [published, created, prereleased, released]
 
 env:
   NODE_VERSION: 16.15.0
