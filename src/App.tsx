@@ -15,16 +15,10 @@ import { DataInitWrapper } from "./wrapper/DataInitWrapper"
 
 const storage = ServiceFactory.getInstance().getStorage()
 const queryClient = new QueryClient()
+storage.initialize()
 
 export function App() {
   const isStorageReady = useStoreState(SettingsStore, (s) => s.isStorageReady)
-
-  useEffect(() => {
-    async function setupStorage() {
-      await storage.initialize()
-    }
-    setupStorage()
-  }, [])
 
   if (!isStorageReady) {
     return <SkeletonLoading />
