@@ -20,14 +20,6 @@ storage.initialize()
 export function App() {
   const isStorageReady = useStoreState(SettingsStore, (s) => s.isStorageReady)
 
-  // useEffect(() => {
-  //   async function setupStorage() {
-  //     console.log("app")
-  //     await storage.initialize()
-  //   }
-  //   setupStorage()
-  // }, [])
-
   if (!isStorageReady) {
     return <SkeletonLoading />
   }
