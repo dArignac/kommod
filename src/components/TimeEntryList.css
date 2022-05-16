@@ -1,0 +1,15 @@
+.wrap-start-end {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 0px 4px;
+  grid-auto-flow: row;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+}
+
+tr.ant-table-row > td.ant-table-cell {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}

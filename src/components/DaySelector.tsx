@@ -6,6 +6,7 @@ import subDays from "date-fns/subDays"
 import { useStoreState } from "pullstate"
 import dateFnsGenerateConfig from "rc-picker/lib/generate/dateFns"
 import { SingleDayViewStore } from "../store"
+import "./DaySelector.css"
 
 const DatePicker = generatePicker<Date>(dateFnsGenerateConfig)
 

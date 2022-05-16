@@ -1,6 +1,7 @@
 import { Input, Table, Tag } from "antd"
 import { formatDuration, formatTime } from "../services/date"
 import { TimeEntry } from "../types"
+import "./TimeEntryList.css"
 
 const { Column } = Table
 

@@ -1,3 +1,4 @@
+import "./CreateEntry.css"
 import { ProjectSelector } from "./ProjectSelector"
 import { TaskSelector } from "./TaskSelector"
 
@@ -7,6 +8,10 @@ export function CreateEntry() {
     <div className="create-entry">
       <TaskSelector tabIndex={1} />
       <ProjectSelector tabIndex={2} />
+      <>Start time</>
+      <>End time</>
+      <>Date</>
+      <>Start/Save</>
     </div>
   )
 }
