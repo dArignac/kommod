@@ -3,7 +3,7 @@ import { useStoreState } from "pullstate"
 import { ReactNode } from "react"
 import { useQuery } from "react-query"
 import { useLocation } from "wouter"
-import { Error } from "../layout/Error"
+import { Error, TogglAPIError } from "../layout/Error"
 import { SkeletonLoading } from "../layout/SkeletonLoading"
 import { TogglService } from "../services/toggl/TogglService"
 import { SettingsStore } from "../store"
@@ -26,10 +26,7 @@ export function DataInitWrapper({ content }: DataInitWrapperProps) {
   )
 
   const errorDisplay = (
-    <Error
-      status="warning"
-      title="Unable to fetch user data from toggl."
-      subTitle="Please ensure the toggl.com API token is set in settings!"
+    <TogglAPIError
       extra={
         <Button type="primary" data-testid="datainitwrapper-error-link-settings" onClick={() => setLocation("/settings")}>
           Go to settings
