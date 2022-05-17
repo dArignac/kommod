@@ -8,7 +8,7 @@ import { SkeletonLoading } from "../layout/SkeletonLoading"
 import { TogglService } from "../services/toggl/TogglService"
 import { SettingsStore, SingleDayViewStore, TogglStore } from "../store"
 import { TimeEntry } from "../types"
-import { CreateEntry } from "./CreateEntry"
+import { CreateEntry } from "./create-entry/CreateEntry"
 import { DaySelector } from "./DaySelector"
 import { TimeEntryList } from "./TimeEntryList"
 

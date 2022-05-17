@@ -1,4 +1,4 @@
-import { formatDuration, formatTime, setToBeforeMidnight, setToMidnight, sortStartStopables } from "./date"
+import { formatDuration, formatTime, parseTime, setToBeforeMidnight, setToMidnight, sortStartStopables } from "./date"
 
 test("timezone is set to UTC", () => {
   expect(new Date().getTimezoneOffset()).toBe(0)
@@ -48,4 +48,15 @@ test("compares StartStopables correctly", () => {
   expect(sortStartStopables(c, b)).toBe(-1)
   expect(sortStartStopables(d, a)).toBe(-1)
   expect(sortStartStopables(d, b)).toBe(-1)
+})
+
+test("parsing time works", () => {
+  expect(parseTime("")).toBeNull()
+  expect(parseTime("12:00:00")).toBeNull()
+  expect(parseTime("lolz")).toBeNull()
+  expect(parseTime("09:00")).toBe("09:00")
+  expect(parseTime("09:13")).toBe("09:13")
+  expect(parseTime("9:13")).toBe("09:13")
+  expect(parseTime("913")).toBe("09:13")
+  expect(parseTime("23:59")).toBe("23:59")
 })

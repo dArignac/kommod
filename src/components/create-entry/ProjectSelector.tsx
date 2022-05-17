@@ -1,6 +1,6 @@
 import { Select } from "antd"
 import { useStoreState } from "pullstate"
-import { TogglStore } from "../store"
+import { BookingStore, TogglStore } from "../../store"
 
 const { Option } = Select
 
@@ -8,15 +8,13 @@ interface ProjectSelectorInterface {
   tabIndex: number
 }
 
-// FIXME #38 implement
-// FIXME make tabindex a prop
 export function ProjectSelector({ tabIndex }: ProjectSelectorInterface) {
   const projects = useStoreState(TogglStore, (s) => s.projects)
-  const selectedProject = useStoreState(TogglStore, (s) => s.booking.projectId)
+  const selectedProject = useStoreState(BookingStore, (s) => s.projectId)
 
   const onSelect = (projectId: number) => {
-    TogglStore.update((s) => {
-      s.booking.projectId = projectId
+    BookingStore.update((s) => {
+      s.projectId = projectId
     })
   }
 

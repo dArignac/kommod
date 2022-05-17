@@ -34,3 +34,15 @@ export function sortStartStopables<T extends StartStopable>(a: T, b: T): number 
   }
   return 0
 }
+
+export function parseTime(input: string): string | null {
+  if (input.length < 3 || input.length > 5) return null
+
+  input = input.replace(":", "")
+  const minutes = parseInt(input.slice(-2))
+  const hours = parseInt(input.slice(0, input.length - 2))
+
+  if (isNaN(minutes) || isNaN(hours)) return null
+
+  return String(hours).padStart(2, "0") + ":" + String(minutes).padStart(2, "0")
+}

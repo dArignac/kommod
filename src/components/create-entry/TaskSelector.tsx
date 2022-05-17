@@ -1,7 +1,7 @@
 import { AutoComplete } from "antd"
 import { useStoreState } from "pullstate"
 import { useState } from "react"
-import { TogglStore } from "../store"
+import { BookingStore, TogglStore } from "../../store"
 
 interface TaskSelectorInterface {
   tabIndex: number
@@ -10,19 +10,22 @@ interface TaskSelectorInterface {
 export function TaskSelector({ tabIndex }: TaskSelectorInterface) {
   const [options, setOptions] = useState<{ value: string }[]>([])
   const tasks = useStoreState(TogglStore, (s) => s.tasks)
+
   const sortedTasks = Array.from(new Set(tasks)).sort()
   let taskOptions = sortedTasks.map((task) => {
     return { value: task }
   })
+
   const onSearch = (searchText: string) => {
-    // FIXME remove
-    console.log("onSearch", searchText)
     setOptions([...taskOptions].filter((option) => option.value.toLowerCase().includes(searchText.toLowerCase())))
   }
-  const onSelect = (data: string) => {
-    // FIXME remove
-    console.log("onSelect", data)
+
+  const onSelect = (taskDescription: string) => {
+    BookingStore.update((s) => {
+      s.timeEntryDescription = taskDescription
+    })
   }
+
   const onFocus = () => {
     setOptions(taskOptions)
   }

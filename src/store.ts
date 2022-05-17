@@ -2,11 +2,22 @@ import { registerInDevtools, Store } from "pullstate"
 import { config } from "./config"
 import { Client, Project, User } from "./types"
 
+export type BookingStoreTimes = {
+  timeStart?: string
+  timeStop?: string
+}
+
+type BookingStoreType = {
+  day: Date
+  projectId?: number
+  timeEntryDescription?: string
+} & BookingStoreTimes
+
+export const BookingStore = new Store<BookingStoreType>({
+  day: new Date(),
+})
+
 interface TogglStoreInterface {
-  booking: {
-    day: Date
-    projectId?: number
-  }
   clients: Client[]
   projects: Project[]
   tasks: string[]
@@ -14,9 +25,6 @@ interface TogglStoreInterface {
 }
 
 export const TogglStore = new Store<TogglStoreInterface>({
-  booking: {
-    day: new Date(),
-  },
   clients: [],
   projects: [],
   tasks: [],
@@ -47,5 +55,5 @@ export const SingleDayViewStore = new Store<SingleDayViewStoreInterface>({
 })
 
 if (config.development.reduxDevTools) {
-  registerInDevtools({ TogglStore, SettingsStore, SingleDayViewStore })
+  registerInDevtools({ BookingStore, TogglStore, SettingsStore, SingleDayViewStore })
 }
