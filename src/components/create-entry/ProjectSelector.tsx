@@ -6,9 +6,10 @@ const { Option } = Select
 
 interface ProjectSelectorInterface {
   tabIndex: number
+  width: number
 }
 
-export function ProjectSelector({ tabIndex }: ProjectSelectorInterface) {
+export function ProjectSelector({ tabIndex, width }: ProjectSelectorInterface) {
   const projects = useStoreState(TogglStore, (s) => s.projects)
   const selectedProject = useStoreState(BookingStore, (s) => s.projectId)
 
@@ -19,7 +20,7 @@ export function ProjectSelector({ tabIndex }: ProjectSelectorInterface) {
   }
 
   return (
-    <Select data-testid="project-selector" style={{ width: 400 }} tabIndex={tabIndex} onSelect={onSelect} value={selectedProject}>
+    <Select data-testid="project-selector" style={{ width }} tabIndex={tabIndex} onSelect={onSelect} value={selectedProject}>
       {projects.map(function (project, idx) {
         return (
           <Option key={idx} value={project.id}>

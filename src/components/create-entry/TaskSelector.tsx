@@ -5,9 +5,11 @@ import { BookingStore, TogglStore } from "../../store"
 
 interface TaskSelectorInterface {
   tabIndex: number
+  width: number
 }
 
-export function TaskSelector({ tabIndex }: TaskSelectorInterface) {
+// FIXME #38 add the project and select it on selection (plus according changes on project selector)
+export function TaskSelector({ tabIndex, width }: TaskSelectorInterface) {
   const [options, setOptions] = useState<{ value: string }[]>([])
   const tasks = useStoreState(TogglStore, (s) => s.tasks)
 
@@ -30,5 +32,5 @@ export function TaskSelector({ tabIndex }: TaskSelectorInterface) {
     setOptions(taskOptions)
   }
 
-  return <AutoComplete data-testid="task-selector" options={options} style={{ width: 500 }} onSelect={onSelect} onSearch={onSearch} onFocus={onFocus} tabIndex={tabIndex} />
+  return <AutoComplete data-testid="task-selector" options={options} style={{ width }} onSelect={onSelect} onSearch={onSearch} onFocus={onFocus} tabIndex={tabIndex} />
 }
