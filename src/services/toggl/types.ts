@@ -111,3 +111,7 @@ export type TogglUserResponse = {
   data: TogglUser
   since: string
 }
+
+export type TogglCurrentTimeEntryResponse = {
+  data: TogglTimeEntry | null
+}

@@ -55,6 +55,12 @@ test("fetches and transforms user data correctly", async () => {
   expect(storeToggl.user).toBe(user)
 })
 
+// FIXME #38 implement
+test("fetches current time entry with no entry", () => {})
+
+// FIXME #38 implement
+test("fetches current time entry with existing entry", () => {})
+
 test("fetches and transforms todays entries correctly", async () => {
   mock.onGet("/time_entries").reply(200, mockTimeEntries1)
 

@@ -9,6 +9,7 @@ interface TaskSelectorInterface {
 }
 
 // FIXME #38 add the project and select it on selection (plus according changes on project selector)
+// FIXME #38 value is not set if prefilled store on active entry
 export function TaskSelector({ tabIndex, width }: TaskSelectorInterface) {
   const [options, setOptions] = useState<{ value: string }[]>([])
   const tasks = useStoreState(TogglStore, (s) => s.tasks)
