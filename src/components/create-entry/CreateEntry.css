@@ -1,6 +1,6 @@
 .create-entry {
   display: grid;
-  grid-template-columns: 500px 400px 60px 60px 100px 120px;
+  grid-template-columns: 500px 400px 60px 60px 100px 80px;
   grid-template-rows: 1fr;
   gap: 10px 10px;
   grid-template-areas: ". . . . . .";

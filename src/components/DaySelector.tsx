@@ -35,7 +35,7 @@ export function DaySelector() {
         <Button data-testid="day-select-previous" onClick={goToPreviousDay}>
           <LeftOutlined />
         </Button>
-        <DatePicker data-testid="date-picker" value={day} format={"DD.MM.YYYY"} onChange={onChangeDate} />
+        <DatePicker data-testid="date-picker" style={{ width: 120 }} value={day} format={"DD.MM.YYYY"} onChange={onChangeDate} />
         <Button data-testid="day-select-next" onClick={goToNextDay}>
           <RightOutlined />
         </Button>
