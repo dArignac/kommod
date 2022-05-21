@@ -5,7 +5,6 @@ import { BookingStore, TogglStore } from "../../store"
 import { Client, Project, TimeEntry, User } from "../../types"
 import { formatTime, setToBeforeMidnight, setToMidnight, sortStartStopables } from "../date"
 import { TogglCurrentTimeEntryResponse, TogglTimeEntry, TogglUserResponse } from "./types"
-import format from "date-fns/format"
 
 export class TogglService {
   private static instance: TogglService
@@ -108,6 +107,7 @@ export class TogglService {
         s.day = entry.start
         s.projectId = entry.project.id
         s.timeEntryDescription = entry.description
+        s.timEntryId = entry.id
         s.timeStart = formatTime(entry.start)
       })
 

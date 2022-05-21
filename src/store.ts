@@ -11,6 +11,7 @@ type BookingStoreType = {
   day: Date
   projectId?: number
   timeEntryDescription?: string
+  timEntryId?: number
 } & BookingStoreTimes
 
 export const BookingStore = new Store<BookingStoreType>({

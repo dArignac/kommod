@@ -1,12 +1,15 @@
 import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
-import { mockTimeEntries1, mockUser } from "../../mocks"
-import { TogglStore } from "../../store"
+import { mockTimeEntries1, mockTimeEntryCurrent, mockUser } from "../../mocks"
+import { BookingStore, TogglStore } from "../../store"
+import { Client, Project, TimeEntry } from "../../types"
 import { TogglService } from "./TogglService"
 
 const mock = new MockAdapter(axios)
 
-afterEach(() => mock.resetHandlers())
+afterEach(() => {
+  mock.resetHandlers()
+})
 
 test("fetches and transforms user data correctly", async () => {
   mock.onGet("/me").reply(200, mockUser)
@@ -55,11 +58,46 @@ test("fetches and transforms user data correctly", async () => {
   expect(storeToggl.user).toBe(user)
 })
 
-// FIXME #38 implement
-test("fetches current time entry with no entry", () => {})
+test("fetches current time entry with no entry", async () => {
+  mock.onGet("/me").reply(200, mockUser)
+  mock.onGet("/time_entries/current").reply(200, { data: null })
 
-// FIXME #38 implement
-test("fetches current time entry with existing entry", () => {})
+  const entry = await TogglService.getInstance("").fetchActiveTimeEntry()
+  const store = BookingStore.getRawState()
+
+  expect(entry).toBeNull()
+  expect(store).toHaveProperty("day")
+  expect(store).not.toHaveProperty("projectId")
+  expect(store).not.toHaveProperty("timeEntryDescription")
+  expect(store).not.toHaveProperty("timEntryId")
+  expect(store).not.toHaveProperty("timeStart")
+  expect(store).not.toHaveProperty("timeStop")
+})
+
+test("fetches current time entry with existing entry", async () => {
+  mock.onGet("/me").reply(200, mockUser)
+  mock.onGet("/time_entries/current").reply(200, mockTimeEntryCurrent)
+
+  const entry = await TogglService.getInstance("").fetchActiveTimeEntry()
+  const store = BookingStore.getRawState()
+
+  expect(entry).toEqual({
+    description: "The current, active entry",
+    duration: 14400,
+    id: 3,
+    project: {
+      client: {
+        id: 1,
+        name: "Client A",
+      } as Client,
+      color: "#ff0000",
+      id: 1,
+      name: "Project A",
+    } as Project,
+    start: new Date("2013-03-11T11:36:00+00:00"),
+  } as TimeEntry)
+  expect(store).not.toHaveProperty("stop")
+})
 
 test("fetches and transforms todays entries correctly", async () => {
   mock.onGet("/time_entries").reply(200, mockTimeEntries1)
