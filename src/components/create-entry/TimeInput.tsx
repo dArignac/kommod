@@ -1,4 +1,5 @@
 import { Input } from "antd"
+import { useStoreState } from "pullstate"
 import { ChangeEvent, useState } from "react"
 import { parseTime } from "../../services/date"
 import { BookingStore, BookingStoreTimes } from "../../store"
@@ -7,10 +8,12 @@ interface TimeInputProps {
   placeholder: string
   storeAttribute: keyof BookingStoreTimes
   tabIndex: number
+  validateOnEmpty: boolean
   width: number
 }
 
-export function TimeInput({ placeholder, storeAttribute, tabIndex, width }: TimeInputProps) {
+export function TimeInput({ placeholder, storeAttribute, tabIndex, validateOnEmpty, width }: TimeInputProps) {
+  const timeValue = useStoreState(BookingStore, (s) => s[storeAttribute])
   const [value, setValue] = useState("")
   const [status, setStatus] = useState<"" | "warning" | "error">("")
 
@@ -23,7 +26,11 @@ export function TimeInput({ placeholder, storeAttribute, tabIndex, width }: Time
       setValue(time)
       setStatus("")
     } else {
-      setStatus("error")
+      if (value.trim().length === 0 && !validateOnEmpty) {
+        setStatus("")
+      } else {
+        setStatus("error")
+      }
     }
   }
 
@@ -35,9 +42,9 @@ export function TimeInput({ placeholder, storeAttribute, tabIndex, width }: Time
     <Input
       onChange={onChange}
       onBlur={onBlur}
-      value={value}
+      value={value || timeValue}
       status={status}
-      data-testid="create-entry-time-start"
+      data-testid={`create-entry-${storeAttribute}`}
       maxLength={5}
       tabIndex={tabIndex}
       style={{ width }}

@@ -3,7 +3,7 @@ import { act } from "react-dom/test-utils"
 import { BookingStore } from "../../store"
 import { TimeInput } from "./TimeInput"
 
-const defaultProps = { placeholder: "", tabIndex: 1, width: 100 }
+const defaultProps = { validateOnEmpty: false, placeholder: "", tabIndex: 1, width: 100 }
 
 test("renders the component", () => {
   render(<TimeInput storeAttribute="timeStart" {...defaultProps} />)
@@ -11,7 +11,7 @@ test("renders the component", () => {
 
 test("filling a value updates the store", async () => {
   render(<TimeInput storeAttribute="timeStart" {...defaultProps} />)
-  const input = screen.getByTestId("create-entry-time-start")
+  const input = screen.getByTestId("create-entry-timeStart")
 
   act(() => input.focus())
   fireEvent.change(input, { target: { value: "09:00" } })
