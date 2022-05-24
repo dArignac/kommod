@@ -12,6 +12,7 @@ test("renders the component", () => {
 test("displays start button with default store", () => {
   render(<ActionButton {...defaultProps} />)
   expect(getButton().textContent).toBe("Start")
+  expect(getButton().disabled).toBeTruthy()
 })
 
 test("displays start button with setup store (scenario 1)", () => {
@@ -21,6 +22,7 @@ test("displays start button with setup store (scenario 1)", () => {
   })
   render(<ActionButton {...defaultProps} />)
   expect(getButton().textContent).toBe("Start")
+  expect(getButton().disabled).toBeFalsy()
 })
 
 test("displays start button with setup store (scenario 2)", () => {
@@ -31,6 +33,7 @@ test("displays start button with setup store (scenario 2)", () => {
   })
   render(<ActionButton {...defaultProps} />)
   expect(getButton().textContent).toBe("Start")
+  expect(getButton().disabled).toBeFalsy()
 })
 
 test("displays stop button with setup store (scenario 3)", () => {
@@ -42,6 +45,7 @@ test("displays stop button with setup store (scenario 3)", () => {
   })
   render(<ActionButton {...defaultProps} />)
   expect(getButton().textContent).toBe("Stop")
+  expect(getButton().disabled).toBeFalsy()
 })
 
 test("displays stop button with setup store (scenario 4)", () => {
@@ -53,4 +57,5 @@ test("displays stop button with setup store (scenario 4)", () => {
   })
   render(<ActionButton {...defaultProps} />)
   expect(getButton().textContent).toBe("Stop")
+  expect(getButton().disabled).toBeFalsy()
 })
