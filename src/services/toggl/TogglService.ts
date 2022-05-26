@@ -135,6 +135,8 @@ export class TogglService {
     return data.map((entry: TogglTimeEntry) => this.mapTimeEntry(entry, TogglStore.getRawState().projects)).sort(sortStartStopables)
   }
 
+  // FIXME analyze the API and create proper methods (or just one public) for creating/starting/stopping entries
+
   // we map only what we need - adjust tests accordingly
   private mapTimeEntry(entry: TogglTimeEntry, projects: Project[]): TimeEntry {
     const project = projects.find((project) => project.id === entry.pid)
