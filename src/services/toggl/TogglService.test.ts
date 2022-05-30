@@ -76,14 +76,13 @@ test("fetches current time entry with no entry", async () => {
 
 test("fetches current time entry with existing entry", async () => {
   mock.onGet("/me").reply(200, mockUser)
-  mock.onGet("/time_entries/current").reply(200, mockTimeEntryCurrent)
+  mock.onGet("/time_entries/current").reply(200, { data: mockTimeEntryCurrent })
 
   const entry = await TogglService.getInstance("").fetchActiveTimeEntry()
   const store = BookingStore.getRawState()
 
   expect(entry).toEqual({
     description: "The current, active entry",
-    duration: 14400,
     id: 3,
     project: {
       client: {
@@ -161,4 +160,38 @@ test("active entries are always sorted to the top", async () => {
   expect(results[0].id).toBe(2)
   expect(results[1].id).toBe(1)
   expect(results[2].id).toBe(3)
+})
+
+test("stops entry accordingly", async () => {
+  mock.onGet("/me").reply(200, mockUser)
+  const timeEntryStopped = { ...mockTimeEntryCurrent }
+  timeEntryStopped.duration = 222
+  mock.onPut("/time_entries/666/stop").reply(200, { data: timeEntryStopped })
+
+  await TogglService.getInstance("").fetchUser()
+  const entry = await TogglService.getInstance("").stopTimeEntry(666)
+
+  expect(entry).toEqual({
+    description: "The current, active entry",
+    duration: 222,
+    id: 3,
+    project: {
+      client: {
+        id: 1,
+        name: "Client A",
+      } as Client,
+      color: "#ff0000",
+      id: 1,
+      name: "Project A",
+    } as Project,
+    start: new Date(timeEntryStopped.start),
+  } as TimeEntry)
+})
+
+test("Returns correct if data cannot be stopped", async () => {
+  mock.onPut("/time_entries/666/stop").reply(404)
+
+  const entry = await TogglService.getInstance("").stopTimeEntry(666)
+
+  expect(entry).toBeNull()
 })

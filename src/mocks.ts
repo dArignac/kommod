@@ -140,15 +140,12 @@ export const mockTimeEntries1 = [
 ]
 
 export const mockTimeEntryCurrent = {
-  data: {
-    at: "2013-03-11T15:36:58+00:00",
-    billable: true,
-    description: "The current, active entry",
-    duration: 14400,
-    id: 3,
-    pid: 1,
-    start: "2013-03-11T11:36:00+00:00",
-    tags: [""],
-    wid: 1,
-  } as TogglTimeEntry,
-}
+  at: "2013-03-11T15:36:58+00:00",
+  billable: true,
+  description: "The current, active entry",
+  id: 3,
+  pid: 1,
+  start: "2013-03-11T11:36:00+00:00",
+  tags: [""],
+  wid: 1,
+} as TogglTimeEntry

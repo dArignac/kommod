@@ -8,9 +8,9 @@ interface TaskSelectorInterface {
   width: number
 }
 
-// FIXME #38 add the project and select it on selection (plus according changes on project selector)
 export function TaskSelector({ tabIndex, width }: TaskSelectorInterface) {
   const [options, setOptions] = useState<{ value: string }[]>([])
+  const [value, setValue] = useState("")
   const tasks = useStoreState(TogglStore, (s) => s.tasks)
   const activeTask = useStoreState(BookingStore, (s) => s.timeEntryDescription)
 
@@ -20,6 +20,7 @@ export function TaskSelector({ tabIndex, width }: TaskSelectorInterface) {
   })
 
   const onSearch = (searchText: string) => {
+    setValue(searchText)
     setOptions([...taskOptions].filter((option) => option.value.toLowerCase().includes(searchText.toLowerCase())))
   }
 
@@ -36,7 +37,7 @@ export function TaskSelector({ tabIndex, width }: TaskSelectorInterface) {
   return (
     <AutoComplete
       data-testid="task-selector"
-      value={activeTask || ""}
+      value={activeTask || value}
       options={options}
       style={{ width }}
       onSelect={onSelect}
