@@ -162,6 +162,24 @@ test("active entries are always sorted to the top", async () => {
   expect(results[2].id).toBe(3)
 })
 
+test("stop entry uses correct params and auth", async () => {
+  mock.onGet("/me").reply(200, mockUser)
+  const timeEntryStopped = { ...mockTimeEntryCurrent }
+  timeEntryStopped.duration = 222
+  mock.onPut("/time_entries/666/stop").reply(200, { data: timeEntryStopped })
+
+  await TogglService.getInstance("").fetchUser()
+  await TogglService.getInstance("").stopTimeEntry(666)
+  const history = mock.history.put.filter((h) => h.url === "/time_entries/666/stop")[0]
+
+  // params and auth
+  expect(history.params.id).toBe(666)
+  expect(history.auth).toEqual({
+    username: "",
+    password: "api_token",
+  })
+})
+
 test("stops entry accordingly", async () => {
   mock.onGet("/me").reply(200, mockUser)
   const timeEntryStopped = { ...mockTimeEntryCurrent }

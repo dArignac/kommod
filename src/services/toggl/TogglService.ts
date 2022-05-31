@@ -141,7 +141,7 @@ export class TogglService {
     }
 
     try {
-      const { data } = await this.ax.put<{ data: TogglTimeEntry }>(`/time_entries/${id}/stop`, { ...this.getAuth(), params: { id } })
+      const { data } = await this.ax.put<{ data: TogglTimeEntry }>(`/time_entries/${id}/stop`, {}, { ...this.getAuth(), params: { id } })
 
       if (data.data !== null) {
         const entry = this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
