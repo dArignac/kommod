@@ -28,7 +28,7 @@
     "wouter": "^2.8.0-alpha.2"
   },
   "volta": {
-    "node": "16.15.0"
+    "node": "16.15.1"
   },
   "scripts": {
     "start": "cross-env BROWSER=none react-scripts start",
@@ -167,7 +167,7 @@
     "globby": "^13.1.1",
     "husky": "^8.0.1",
     "jest-matchmedia-mock": "^1.1.0",
-    "lint-staged": "^12.3.4",
+    "lint-staged": "^13.0.0",
     "prettier": "^2.5.1",
     "semantic-release": "^19.0.2"
   }
