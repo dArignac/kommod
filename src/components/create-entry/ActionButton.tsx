@@ -14,9 +14,9 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
   const token = useStoreState(SettingsStore, (s) => s.token)
   const projectId = useStoreState(BookingStore, (s) => s.projectId)
   const timeEntryDescription = useStoreState(BookingStore, (s) => s.timeEntryDescription)
-  const timeEntryId = useStoreState(BookingStore, (s) => s.timEntryId)
+  const timeEntryId = useStoreState(BookingStore, (s) => s.timeEntryId)
   const timeStop = useStoreState(BookingStore, (s) => s.timeStop)
-  const mutation = useMutation<TimeEntry | null, unknown, number, unknown>((x) => {
+  const mutationStopEntry = useMutation<TimeEntry | null, unknown, number, unknown>((x) => {
     return TogglService.getInstance(token).stopTimeEntry(x)
   })
 
@@ -26,7 +26,7 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
 
   function onClick() {
     if (hasRunningEntry) {
-      mutation.mutate(timeEntryId)
+      mutationStopEntry.mutate(timeEntryId)
     }
   }
 

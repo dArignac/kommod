@@ -1,6 +1,6 @@
 import { AutoComplete } from "antd"
 import { useStoreState } from "pullstate"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BookingStore, TogglStore } from "../../store"
 
 interface TaskSelectorInterface {
@@ -10,40 +10,54 @@ interface TaskSelectorInterface {
 
 export function TaskSelector({ tabIndex, width }: TaskSelectorInterface) {
   const [options, setOptions] = useState<{ value: string }[]>([])
+  const [isDisabled, setIsDisabled] = useState(false)
   const [value, setValue] = useState("")
   const tasks = useStoreState(TogglStore, (s) => s.tasks)
-  const activeTask = useStoreState(BookingStore, (s) => s.timeEntryDescription)
+  const timeEntryId = useStoreState(BookingStore, (s) => s.timeEntryId)
+  const timeEntryDescription = useStoreState(BookingStore, (s) => s.timeEntryDescription)
+
+  useEffect(() => {
+    const hasActiveEntry = timeEntryId !== undefined
+    setIsDisabled(hasActiveEntry)
+    if (hasActiveEntry) {
+      setValue(timeEntryDescription!!)
+    }
+    if (!hasActiveEntry && timeEntryDescription === undefined) {
+      setValue("")
+    }
+  }, [timeEntryId, timeEntryDescription])
 
   const sortedTasks = Array.from(new Set(tasks)).sort()
   let taskOptions = sortedTasks.map((task) => {
     return { value: task }
   })
 
-  const onSearch = (searchText: string) => {
-    setValue(searchText)
-    setOptions([...taskOptions].filter((option) => option.value.toLowerCase().includes(searchText.toLowerCase())))
+  function onChange(text: string) {
+    setValue(text)
   }
 
-  const onSelect = (taskDescription: string) => {
+  function onBlur() {
     BookingStore.update((s) => {
-      s.timeEntryDescription = taskDescription
+      s.timeEntryDescription = value
     })
   }
 
-  const onFocus = () => {
+  function onFocus() {
     setOptions(taskOptions)
   }
 
   return (
     <AutoComplete
       data-testid="task-selector"
-      value={activeTask || value}
+      disabled={isDisabled}
+      onBlur={onBlur}
+      onChange={onChange}
+      onFocus={onFocus}
+      onSelect={onChange}
       options={options}
       style={{ width }}
-      onSelect={onSelect}
-      onSearch={onSearch}
-      onFocus={onFocus}
       tabIndex={tabIndex}
+      value={value}
     />
   )
 }

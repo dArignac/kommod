@@ -107,7 +107,7 @@ export class TogglService {
         s.day = entry.start
         s.projectId = entry.project.id
         s.timeEntryDescription = entry.description
-        s.timEntryId = entry.id
+        s.timeEntryId = entry.id
         s.timeStart = formatTime(entry.start)
       })
 
@@ -150,7 +150,7 @@ export class TogglService {
           s.day = new Date()
           s.projectId = entry.project.id
           s.timeEntryDescription = undefined
-          s.timEntryId = undefined
+          s.timeEntryId = undefined
           s.timeStart = undefined
         })
 

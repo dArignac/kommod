@@ -62,7 +62,7 @@ test("displays stop button with setup store (scenario 4)", () => {
     s.projectId = 1
     s.timeStart = "11:30"
     s.timeEntryDescription = "Test"
-    s.timEntryId = 1
+    s.timeEntryId = 1
   })
   renderButton()
   expect(getButton().textContent).toBe("Stop")

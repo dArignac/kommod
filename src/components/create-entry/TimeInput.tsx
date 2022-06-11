@@ -5,7 +5,7 @@ import { parseTime } from "../../services/date"
 import { BookingStore, BookingStoreTimes } from "../../store"
 
 interface TimeInputProps {
-  placeholder: string
+  placeholder?: string
   storeAttribute: keyof BookingStoreTimes
   tabIndex: number
   validateOnEmpty: boolean
@@ -48,7 +48,7 @@ export function TimeInput({ placeholder, storeAttribute, tabIndex, validateOnEmp
       maxLength={5}
       tabIndex={tabIndex}
       style={{ width }}
-      placeholder={placeholder}
+      placeholder={placeholder || ""}
     />
   )
 }
