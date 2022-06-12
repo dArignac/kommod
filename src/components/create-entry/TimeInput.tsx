@@ -40,15 +40,15 @@ export function TimeInput({ placeholder, storeAttribute, tabIndex, validateOnEmp
 
   return (
     <Input
-      onChange={onChange}
-      onBlur={onBlur}
-      value={value || timeValue}
-      status={status}
-      data-testid={`create-entry-${storeAttribute}`}
+      data-testid={`time-input-${storeAttribute}`}
       maxLength={5}
-      tabIndex={tabIndex}
-      style={{ width }}
+      onBlur={onBlur}
+      onChange={onChange}
       placeholder={placeholder || ""}
+      status={status}
+      style={{ width }}
+      tabIndex={tabIndex}
+      value={value || timeValue}
     />
   )
 }

@@ -3,15 +3,9 @@ import userEvent from "@testing-library/user-event"
 import sub from "date-fns/sub"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { formatTime } from "../../services/date"
-import { BookingStore } from "../../store"
+import { BookingStore, TogglStore } from "../../store"
+import { Client, Project } from "../../types"
 import { CreateEntry } from "./CreateEntry"
-
-// FIXME #38 add tests
-// FIXME test workflow
-
-beforeEach(() => {
-  jest.resetModules()
-})
 
 function renderWithClient() {
   const queryClient = new QueryClient()
@@ -26,40 +20,51 @@ function getTaskSelector(): HTMLInputElement {
   return within(screen.getByTestId("task-selector")).getByRole("combobox") as HTMLInputElement
 }
 
-function getProjectSelector(): HTMLElement {
-  return within(screen.getByTestId("project-selector")).getByRole("combobox") as HTMLElement
+function getProjectSelectorValueElement(container: HTMLElement) {
+  return container.querySelector(".ant-select-selection-item")
 }
 
 test("Tabbing through subcomponents is in correct order", () => {
   renderWithClient()
 
   const taskSelector = getTaskSelector()
-  const projectSelector = getProjectSelector()
 
   userEvent.tab()
   expect(taskSelector).toHaveFocus()
   userEvent.tab()
-  expect(projectSelector).toHaveFocus()
+  expect(within(screen.getByTestId("project-selector")).getByRole("combobox")).toHaveFocus()
 })
 
 test("A.1 active entry fills all fields accordingly", async () => {
   const now = new Date()
-  BookingStore.update((s) => {
-    s.day = now
-    s.projectId = 1
-    s.timeStart = "10:00"
-    s.timeEntryDescription = "Running Entry 1"
-    s.timeEntryId = 1
-    s.timeStart = formatTime(sub(now, { hours: 1 }))
+  const timeStart = formatTime(sub(now, { hours: 1 }))
+  const clients = [{ id: 1, name: "Client A" }] as Client[]
+  const projects = [
+    { id: 1, name: "Project A", client: clients[0], color: "#ffffff" },
+    { id: 2, name: "Project B", client: clients[0], color: "#ffffff" },
+    { id: 3, name: "Project C", client: clients[0], color: "#ffffff" },
+  ] as Project[]
+
+  TogglStore.update((s) => {
+    s.clients = clients
+    s.projects = projects
   })
 
-  renderWithClient()
+  BookingStore.update((s) => {
+    s.day = now
+    s.projectId = 2
+    s.timeEntryDescription = "Running Entry 1"
+    s.timeEntryId = 1
+    s.timeStart = timeStart
+  })
 
-  await new Promise((r) => setTimeout(r, 3000))
+  const { container } = renderWithClient()
 
   const taskSelector = getTaskSelector()
-  const projectSelector = getProjectSelector()
 
   expect(taskSelector).toHaveValue("Running Entry 1")
-  // FIXME unclear how to get the value of the <Select> component, maybe inspire from here: https://github.com/ant-design/ant-design/blob/master/components/select/__tests__/index.test.js
+  expect(getProjectSelectorValueElement(container)).toHaveTextContent("Project B | Client A")
+  expect(screen.getByTestId("time-input-timeStart")).toHaveValue(timeStart)
+  expect(screen.getByTestId("time-input-timeStop")).toHaveValue("")
+  expect(screen.getByTestId("action-button")).toHaveTextContent("Stop")
 })

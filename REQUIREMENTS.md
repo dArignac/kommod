@@ -4,7 +4,7 @@
 
 ### (A) Active entries
 
-- A.1 if there is an active entry, all relevant fields are prefilled and the action button states "Stop"
+- A.1 if there is an active entry, then description, project and start are prefilled and the action button states "Stop"
 - A.2 an active entry can only be stopped with the stop button
   - A.2.1 start and end time are adjustable and reflected when stopped
 - A.3 if end is not set, the entry is stopped with now()
