@@ -20,15 +20,15 @@
 
 ## Status
 
-| Req   | Implementation | Tests      |
-| ----- | -------------- | ---------- |
-| A.1   | done           | incomplete |
-| A.2   |                |            |
-| A.2.1 |                |            |
-| A.3   |                |            |
-| A.4   |                |            |
-| A.5   |                |            |
-| B.1   |                |            |
-| B.2   |                |            |
-| B.3   |                |            |
-| B.4   |                |            |
+| Req   | Implementation | Tests   |
+| ----- | -------------- | ------- |
+| A.1   | done           | done    |
+| A.2   | incomplete     | missing |
+| A.2.1 |                |         |
+| A.3   |                |         |
+| A.4   |                |         |
+| A.5   |                |         |
+| B.1   |                |         |
+| B.2   |                |         |
+| B.3   |                |         |
+| B.4   |                |         |

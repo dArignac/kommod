@@ -1,4 +1,4 @@
-import { TogglProject, TogglTag, TogglTimeEntry, TogglUser, TogglWorkspace } from "./services/toggl/types"
+import { TogglProject, TogglTag, TogglTimeEntry, TogglUser, TogglWorkspace } from "../services/toggl/types"
 
 export const mockUser = {
   since: 1362575771,

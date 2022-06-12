@@ -1,6 +1,6 @@
 import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
-import { mockTimeEntries1, mockTimeEntryCurrent, mockUser } from "../../mocks"
+import { mockTimeEntries1, mockTimeEntryCurrent, mockUser } from "../../tests/mocks"
 import { BookingStore, TogglStore } from "../../store"
 import { Client, Project, TimeEntry } from "../../types"
 import { TogglService } from "./TogglService"

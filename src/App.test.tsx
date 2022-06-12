@@ -4,7 +4,7 @@ import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
 import React from "react"
 import { App } from "./App"
-import { mockTimeEntries1, mockUser } from "./mocks"
+import { mockTimeEntries1, mockUser } from "./tests/mocks"
 import { SettingsStore } from "./store"
 
 const mock = new MockAdapter(axios)
