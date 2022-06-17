@@ -11,7 +11,7 @@ test("renders the component", () => {
 
 test("filling a value updates the store", async () => {
   render(<TimeInput storeAttribute="timeStart" {...defaultProps} />)
-  const input = screen.getByTestId("create-entry-timeStart")
+  const input = screen.getByTestId("time-input-timeStart")
 
   act(() => input.focus())
   fireEvent.change(input, { target: { value: "09:00" } })
