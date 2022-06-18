@@ -151,16 +151,16 @@ export class TogglService {
     return null
   }
 
-  // public async updateTimeEntry(entry: TimeEntry): Promise<TimeEntry | null> {
-  //   try {
-  //     const { data } = await this.ax.put<{ data: TogglTimeEntry }>(`/time_entries/${entry.id}`, { time_entry: entry }, { ...this.getAuth(), params: { id: entry.id } })
+  public async updateTimeEntry(entry: TimeEntry): Promise<TimeEntry | null> {
+    try {
+      const { data } = await this.ax.put<{ data: TogglTimeEntry }>(`/time_entries/${entry.id}`, { time_entry: entry }, { ...this.getAuth(), params: { id: entry.id } })
 
-  //     if (data.data !== null) {
-  //       return this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
-  //     }
-  //   } catch {}
-  //   return null
-  // }
+      if (data.data !== null) {
+        return this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
+      }
+    } catch {}
+    return null
+  }
 
   private mapTimeEntry(entry: TogglTimeEntry, projects: Project[]): TimeEntry {
     const project = projects.find((project) => project.id === entry.pid)
