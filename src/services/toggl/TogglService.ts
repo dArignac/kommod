@@ -135,31 +135,33 @@ export class TogglService {
     return data.map((entry: TogglTimeEntry) => this.mapTimeEntry(entry, TogglStore.getRawState().projects)).sort(sortStartStopables)
   }
 
+  /**
+   * Stops a time entry.
+   * @param id time entry id
+   * @returns the entry or null
+   */
   public async stopTimeEntry(id: number): Promise<TimeEntry | null> {
-    if (isDev() && config.development.networkDelays.fetchEntries > 0) {
-      await this.sleep(config.development.networkDelays.fetchEntries)
-    }
-
     try {
       const { data } = await this.ax.put<{ data: TogglTimeEntry }>(`/time_entries/${id}/stop`, {}, { ...this.getAuth(), params: { id } })
 
       if (data.data !== null) {
-        const entry = this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
-
-        BookingStore.update((s) => {
-          s.day = new Date()
-          s.projectId = entry.project.id
-          s.timeEntryDescription = undefined
-          s.timeEntryId = undefined
-          s.timeStart = undefined
-        })
-
-        return entry
+        return this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
       }
     } catch {}
     return null
   }
-  // we map only what we need - adjust tests accordingly
+
+  // public async updateTimeEntry(entry: TimeEntry): Promise<TimeEntry | null> {
+  //   try {
+  //     const { data } = await this.ax.put<{ data: TogglTimeEntry }>(`/time_entries/${entry.id}`, { time_entry: entry }, { ...this.getAuth(), params: { id: entry.id } })
+
+  //     if (data.data !== null) {
+  //       return this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
+  //     }
+  //   } catch {}
+  //   return null
+  // }
+
   private mapTimeEntry(entry: TogglTimeEntry, projects: Project[]): TimeEntry {
     const project = projects.find((project) => project.id === entry.pid)
     const item = {

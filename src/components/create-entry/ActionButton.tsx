@@ -1,8 +1,10 @@
-import { Button } from "antd"
+import { Button, notification } from "antd"
 import { useStoreState } from "pullstate"
+import { useEffect } from "react"
 import { useMutation } from "react-query"
 import { TogglService } from "../../services/toggl/TogglService"
 import { BookingStore, SettingsStore } from "../../store"
+import { resetBookingStore } from "../../tests/store"
 import { TimeEntry } from "../../types"
 
 interface ActionButtonProps {
@@ -16,8 +18,12 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
   const timeEntryDescription = useStoreState(BookingStore, (s) => s.timeEntryDescription)
   const timeEntryId = useStoreState(BookingStore, (s) => s.timeEntryId)
   const timeStop = useStoreState(BookingStore, (s) => s.timeStop)
-  const mutationStopEntry = useMutation<TimeEntry | null, unknown, number, unknown>((x) => {
-    return TogglService.getInstance(token).stopTimeEntry(x)
+  const mutationStopEntry = useMutation<TimeEntry | null, unknown, number, unknown>((timeEntryId) => {
+    const entry = TogglService.getInstance(token).stopTimeEntry(timeEntryId)
+    if (entry !== null) {
+      resetBookingStore()
+    }
+    return entry
   })
 
   const hasRunningEntry = timeEntryId !== undefined
@@ -29,6 +35,31 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
       mutationStopEntry.mutate(timeEntryId)
     }
   }
+
+  function showSuccessNotification() {
+    notification.success({
+      message: "Entry updated.",
+      placement: "top",
+    })
+  }
+
+  function showErrorNotification() {
+    notification.error({
+      message: "Error updating entry.",
+      placement: "top",
+    })
+  }
+
+  useEffect(() => {
+    if (mutationStopEntry.isSuccess) {
+      showSuccessNotification()
+      mutationStopEntry.reset()
+    }
+    if (mutationStopEntry.isError) {
+      showErrorNotification()
+      mutationStopEntry.reset()
+    }
+  })
 
   return (
     <Button data-testid="action-button" tabIndex={tabIndex} style={{ width }} disabled={!enabled} onClick={onClick}>

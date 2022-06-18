@@ -5,8 +5,7 @@
 ### (A) Active entries
 
 - A.1 if there is an active entry, then description, project and start are prefilled and the action button states "Stop"
-- A.2 an active entry can only be stopped with the stop button
-  - A.2.1 start and end time are adjustable and reflected when stopped
+- A.2 an active entry can only be stopped with the stop button; start and end time are adjustable and reflected when stopped
 - A.3 if end is not set, the entry is stopped with now()
 - A.4 if end is set, the entry is stopped with the value of end
 - A.5 after stopping an entry, task and end is cleared, start is set to now()
@@ -20,15 +19,14 @@
 
 ## Status
 
-| Req   | Implementation | Tests   |
-| ----- | -------------- | ------- |
-| A.1   | done           | done    |
-| A.2   | incomplete     | missing |
-| A.2.1 |                |         |
-| A.3   |                |         |
-| A.4   |                |         |
-| A.5   |                |         |
-| B.1   |                |         |
-| B.2   |                |         |
-| B.3   |                |         |
-| B.4   |                |         |
+| Req | Implementation | Tests   |
+| --- | -------------- | ------- |
+| A.1 | done           | done    |
+| A.2 | imcomplete     | missing |
+| A.3 |                |         |
+| A.4 |                |         |
+| A.5 |                |         |
+| B.1 |                |         |
+| B.2 |                |         |
+| B.3 |                |         |
+| B.4 |                |         |
