@@ -1,4 +1,4 @@
-import { formatDuration, formatTime, parseTime, setToBeforeMidnight, setToMidnight, sortStartStopables } from "./date"
+import { combineDateWithTime, formatDuration, formatTime, parseTime, setToBeforeMidnight, setToMidnight, sortStartStopables } from "./date"
 
 test("timezone is set to UTC", () => {
   expect(new Date().getTimezoneOffset()).toBe(0)
@@ -59,4 +59,9 @@ test("parsing time works", () => {
   expect(parseTime("9:13")).toBe("09:13")
   expect(parseTime("913")).toBe("09:13")
   expect(parseTime("23:59")).toBe("23:59")
+})
+
+test("combining date and time works", () => {
+  expect(combineDateWithTime(new Date("2022-05-05T12:00:00Z"), "00:00")).toEqual(new Date("2022-05-05T00:00:00Z"))
+  expect(combineDateWithTime(new Date("2022-05-05T12:00:22Z"), "23:59")).toEqual(new Date("2022-05-05T23:59:22Z"))
 })

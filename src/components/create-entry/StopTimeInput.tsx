@@ -1,7 +1,8 @@
 import { Input } from "antd"
+import { isBefore } from "date-fns"
 import { useStoreState } from "pullstate"
 import { ChangeEvent, useState } from "react"
-import { parseTime } from "../../services/date"
+import { combineDateWithTime, parseTime } from "../../services/date"
 import { BookingStore } from "../../store"
 
 interface TimeInputProps {
@@ -11,7 +12,9 @@ interface TimeInputProps {
 }
 
 export function StopTimeInput({ placeholder, tabIndex, width }: TimeInputProps) {
-  const timeValue = useStoreState(BookingStore, (s) => s.timeStop)
+  const startTime = useStoreState(BookingStore, (s) => s.timeStart)
+  const stopTime = useStoreState(BookingStore, (s) => s.timeStop)
+  const day = useStoreState(BookingStore, (s) => s.day)
   const [value, setValue] = useState("")
   const [status, setStatus] = useState<"" | "warning" | "error">("")
 
@@ -22,7 +25,15 @@ export function StopTimeInput({ placeholder, tabIndex, width }: TimeInputProps) 
         s.timeStop = time
       })
       setValue(time)
-      setStatus("")
+
+      // check if value is before the start date
+      if (startTime !== undefined) {
+        if (isBefore(combineDateWithTime(day, time), combineDateWithTime(day, startTime!!))) {
+          setStatus("error")
+        }
+      } else {
+        setStatus("")
+      }
     } else {
       if (value.trim().length === 0) {
         setStatus("")
@@ -46,7 +57,7 @@ export function StopTimeInput({ placeholder, tabIndex, width }: TimeInputProps) 
       status={status}
       style={{ width }}
       tabIndex={tabIndex}
-      value={value || timeValue}
+      value={value || stopTime}
     />
   )
 }

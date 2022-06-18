@@ -46,3 +46,10 @@ export function parseTime(input: string): string | null {
 
   return String(hours).padStart(2, "0") + ":" + String(minutes).padStart(2, "0")
 }
+
+export function combineDateWithTime(date: Date, time: string): Date {
+  const times = time.split(":")
+  date = setHours(date, parseInt(times[0]))
+  date = setMinutes(date, parseInt(times[1]))
+  return date
+}
