@@ -26,11 +26,11 @@ function getProjectSelectorValueElement(container: HTMLElement) {
 }
 
 function getStartTimeInput() {
-  return screen.getByTestId("time-input-timeStart")
+  return screen.getByTestId("time-input-start")
 }
 
 function getStopTimeInput() {
-  return screen.getByTestId("time-input-timeStop")
+  return screen.getByTestId("time-input-stop")
 }
 
 function getActionButton() {
@@ -88,6 +88,8 @@ test("stop time cannot be before start time", () => {
 
   expect(start.getAttribute("class")?.split(" ")).not.toContain("ant-input-status-error")
   expect(stop.getAttribute("class")?.split(" ")).toContain("ant-input-status-error")
+
+  // FIXME needs to split the generic input into 2 dedicated elements for less complexity but a little bit of duplication
 })
 
 test("A.1 active entry fills all fields accordingly", () => {
