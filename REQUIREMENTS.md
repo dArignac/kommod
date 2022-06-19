@@ -22,7 +22,7 @@
 | Req | Implementation | Tests   |
 | --- | -------------- | ------- |
 | A.1 | done           | done    |
-| A.2 | imcomplete     | missing |
+| A.2 | incomplete     | missing |
 | A.3 |                |         |
 | A.4 |                |         |
 | A.5 |                |         |

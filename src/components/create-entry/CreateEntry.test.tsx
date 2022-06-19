@@ -1,14 +1,18 @@
-import { act, fireEvent, render, screen, within } from "@testing-library/react"
+import { act, fireEvent, render, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import sub from "date-fns/sub"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { formatTime } from "../../services/date"
+import { TogglService } from "../../services/toggl/TogglService"
 import { BookingStore, TogglStore } from "../../store"
 import { getActionButton, getProjectSelector, getProjectSelectorValueElement, getStartTimeInput, getStopTimeInput, getTaskSelector } from "../../tests/selectors"
 import { resetStores } from "../../tests/store"
 import { inputValueAndBlur } from "../../tests/utils"
 import { Client, Project } from "../../types"
 import { CreateEntry } from "./CreateEntry"
+
+jest.mock("../../services/toggl/TogglService")
+const mockedTogglService = jest.mocked(TogglService, true)
 
 function renderWithClient() {
   const queryClient = new QueryClient()
@@ -40,6 +44,11 @@ function setupWithRunningTimeEntry(now: Date, timeStart: string) {
     s.timeStart = timeStart
   })
 }
+
+beforeEach(() => {
+  // FIXME how to handle that
+  // TogglService.mockClear()
+})
 
 afterEach(() => {
   resetStores()
@@ -81,12 +90,12 @@ test("A.1 active entry fills all fields accordingly", () => {
   expect(getActionButton()).toHaveTextContent("Stop")
 })
 
-test("A.2 entry can only be stopped with action button", () => {
+test("A.2 entry can only be stopped with action button having only start time set", async () => {
   const now = new Date()
   const timeStart = formatTime(sub(now, { hours: 1 }))
   setupWithRunningTimeEntry(now, timeStart)
 
-  const { container } = renderWithClient()
+  const { container } = await renderWithClient()
   const task = getTaskSelector()
   const start = getStartTimeInput()
   const stop = getStopTimeInput()
@@ -101,12 +110,15 @@ test("A.2 entry can only be stopped with action button", () => {
 
   // check start and end is alterable
   inputValueAndBlur(start, "09:00")
-  inputValueAndBlur(stop, "09:30")
-
   const store = BookingStore.getRawState()
   expect(store.timeStart).toBe("09:00")
-  expect(store.timeStop).toBe("09:30")
+  expect(store.timeStop).toBeUndefined()
 
   // TODO stop with set start and unset stop sends proper request
-  // TODO stop with set start and stop sends proper request
+  // FIXME try to avoid breaking the act rule here
+  await act(async () => {
+    fireEvent.click(getActionButton())
+  })
 })
+
+// TODO A.2 stop with set start and stop sends proper request

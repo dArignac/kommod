@@ -19,7 +19,7 @@ test("Using buttons changes the date", () => {
   render(<DaySelector />)
   const btnDayYesterday = getDaySelectorPrevious()
   const btnDayTomorrow = getDaySelectorNext()
-  const datePicker = getDatePicker() as HTMLInputElement
+  const datePicker = getDatePicker()
 
   expect(datePicker.value).toBe(format(new Date(), dateFormat))
   expect(format(SingleDayViewStore.getRawState().day, dateFormat)).toBe(format(today, dateFormat))

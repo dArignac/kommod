@@ -1,5 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
 import { App } from "./App"
@@ -32,7 +31,6 @@ test("Renders default components", async () => {
 })
 
 test("Navigation to settings works", () => {
-  const leftClick = { button: 0 }
   mock.onGet("/me").reply(200, mockUser)
   mock.onGet("/time_entries").reply(200, mockTimeEntries1)
 
@@ -42,8 +40,8 @@ test("Navigation to settings works", () => {
 
   render(<App />)
 
-  userEvent.click(getSettingsLink(), leftClick)
+  fireEvent.click(getSettingsLink())
   expect(screen.getByText(/kommod - Settings/)).toBeInTheDocument()
-  userEvent.click(getHomeLink(), leftClick)
+  fireEvent.click(getHomeLink())
   expect(screen.getByText(/kommod/)).toBeInTheDocument()
 })
