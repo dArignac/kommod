@@ -119,6 +119,11 @@ test("A.2 entry can only be stopped with action button having only start time se
   await act(async () => {
     fireEvent.click(getActionButton())
   })
+
+  // FIXME need to review usage of TogglService singleton, it's not autoamtically mockable
+  // see https://github.com/facebook/jest/issues/3766
+  // see https://stackoverflow.com/questions/51495473/typescript-and-jest-avoiding-type-errors-on-mocked-functions
+  // see https://stackoverflow.com/questions/48759035/mock-dependency-in-jest-with-typescript
 })
 
 // TODO A.2 stop with set start and stop sends proper request
