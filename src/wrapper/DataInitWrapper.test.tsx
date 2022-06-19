@@ -2,8 +2,9 @@ import { screen, waitFor } from "@testing-library/react"
 import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
 import { QueryCache, QueryClient } from "react-query"
-import { mockUser } from "../tests/mocks"
 import { SettingsStore } from "../store"
+import { mockUser } from "../tests/mocks"
+import { getSkeletonLoading } from "../tests/selectors"
 import { renderWithClient } from "../testUtils"
 import { DataInitWrapper } from "./DataInitWrapper"
 
@@ -23,7 +24,7 @@ test("Renders normally", async () => {
   renderWithClient(queryClient, <DataInitWrapper content={<>Solor</>} />)
 
   // initial rendering is the skeleton loader
-  expect(screen.getByTestId("skeleton-loading")).toBeVisible()
+  expect(getSkeletonLoading()).toBeVisible()
 
   // waiting for response
   await waitFor(() => expect(screen.getByText(/Solor/)).toBeVisible())

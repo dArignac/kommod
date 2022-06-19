@@ -4,7 +4,9 @@ import sub from "date-fns/sub"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { formatTime } from "../../services/date"
 import { BookingStore, TogglStore } from "../../store"
+import { getActionButton, getProjectSelector, getProjectSelectorValueElement, getStartTimeInput, getStopTimeInput, getTaskSelector } from "../../tests/selectors"
 import { resetStores } from "../../tests/store"
+import { inputValueAndBlur } from "../../tests/utils"
 import { Client, Project } from "../../types"
 import { CreateEntry } from "./CreateEntry"
 
@@ -16,30 +18,6 @@ function renderWithClient() {
     </QueryClientProvider>
   )
 }
-
-function getTaskSelector(): HTMLInputElement {
-  return within(screen.getByTestId("task-selector")).getByRole("combobox") as HTMLInputElement
-}
-
-function getProjectSelectorValueElement(container: HTMLElement) {
-  return container.querySelector(".ant-select-selection-item")
-}
-
-function getStartTimeInput() {
-  return screen.getByTestId("time-input-start")
-}
-
-function getStopTimeInput() {
-  return screen.getByTestId("time-input-stop")
-}
-
-function getActionButton() {
-  return screen.getByTestId("action-button")
-}
-
-afterEach(() => {
-  resetStores()
-})
 
 function setupWithRunningTimeEntry(now: Date, timeStart: string) {
   const clients = [{ id: 1, name: "Client A" }] as Client[]
@@ -63,13 +41,17 @@ function setupWithRunningTimeEntry(now: Date, timeStart: string) {
   })
 }
 
+afterEach(() => {
+  resetStores()
+})
+
 test("Tabbing through subcomponents is in correct order", () => {
   renderWithClient()
 
   userEvent.tab()
   expect(getTaskSelector()).toHaveFocus()
   userEvent.tab()
-  expect(within(screen.getByTestId("project-selector")).getByRole("combobox")).toHaveFocus()
+  expect(within(getProjectSelector()).getByRole("combobox")).toHaveFocus()
 })
 
 test("stop time cannot be before start time", () => {
@@ -78,13 +60,8 @@ test("stop time cannot be before start time", () => {
   const start = getStartTimeInput()
   const stop = getStopTimeInput()
 
-  act(() => start.focus())
-  fireEvent.change(start, { target: { value: "09:00" } })
-  act(() => start.blur())
-
-  act(() => stop.focus())
-  fireEvent.change(stop, { target: { value: "08:59" } })
-  act(() => stop.blur())
+  inputValueAndBlur(start, "09:00")
+  inputValueAndBlur(stop, "08:59")
 
   expect(start.getAttribute("class")?.split(" ")).not.toContain("ant-input-status-error")
   expect(stop.getAttribute("class")?.split(" ")).toContain("ant-input-status-error")
@@ -105,8 +82,31 @@ test("A.1 active entry fills all fields accordingly", () => {
 })
 
 test("A.2 entry can only be stopped with action button", () => {
-  // TODO check description and project is readonly
-  // TODO check start and end is alterable
+  const now = new Date()
+  const timeStart = formatTime(sub(now, { hours: 1 }))
+  setupWithRunningTimeEntry(now, timeStart)
+
+  const { container } = renderWithClient()
+  const task = getTaskSelector()
+  const start = getStartTimeInput()
+  const stop = getStopTimeInput()
+
+  expect(task).toHaveValue("Running Entry 1")
+  expect(task).toBeDisabled()
+  expect(getProjectSelectorValueElement(container)).toHaveTextContent("Project B | Client A")
+  expect(getProjectSelector().getAttribute("class")?.split(" ")).toContain("ant-select-disabled")
+  expect(start).toHaveValue(timeStart)
+  expect(stop).toHaveValue("")
+  expect(getActionButton()).toHaveTextContent("Stop")
+
+  // check start and end is alterable
+  inputValueAndBlur(start, "09:00")
+  inputValueAndBlur(stop, "09:30")
+
+  const store = BookingStore.getRawState()
+  expect(store.timeStart).toBe("09:00")
+  expect(store.timeStop).toBe("09:30")
+
   // TODO stop with set start and unset stop sends proper request
   // TODO stop with set start and stop sends proper request
 })
