@@ -8,11 +8,14 @@ import { BookingStore, TogglStore } from "../../store"
 import { getActionButton, getProjectSelector, getProjectSelectorValueElement, getStartTimeInput, getStopTimeInput, getTaskSelector } from "../../tests/selectors"
 import { resetStores } from "../../tests/store"
 import { inputValueAndBlur } from "../../tests/utils"
-import { Client, Project } from "../../types"
+import { Client, Project, TimeEntry } from "../../types"
 import { CreateEntry } from "./CreateEntry"
 
-jest.mock("../../services/toggl/TogglService")
-const mockedTogglService = jest.mocked(TogglService, true)
+const stopTimeEntryMock = jest.spyOn(TogglService.prototype, "stopTimeEntry").mockImplementation(() => {
+  return new Promise(function (resolve, reject) {
+    resolve({} as TimeEntry)
+  })
+})
 
 function renderWithClient() {
   const queryClient = new QueryClient()
@@ -40,14 +43,13 @@ function setupWithRunningTimeEntry(now: Date, timeStart: string) {
     s.day = now
     s.projectId = 2
     s.timeEntryDescription = "Running Entry 1"
-    s.timeEntryId = 1
+    s.timeEntryId = 1234
     s.timeStart = timeStart
   })
 }
 
 beforeEach(() => {
-  // FIXME how to handle that
-  // TogglService.mockClear()
+  stopTimeEntryMock.mockReset()
 })
 
 afterEach(() => {
@@ -90,7 +92,7 @@ test("A.1 active entry fills all fields accordingly", () => {
   expect(getActionButton()).toHaveTextContent("Stop")
 })
 
-test("A.2 entry can only be stopped with action button having only start time set", async () => {
+test("A.2 stop entry with set start time and no stop time works", async () => {
   const now = new Date()
   const timeStart = formatTime(sub(now, { hours: 1 }))
   setupWithRunningTimeEntry(now, timeStart)
@@ -114,16 +116,14 @@ test("A.2 entry can only be stopped with action button having only start time se
   expect(store.timeStart).toBe("09:00")
   expect(store.timeStop).toBeUndefined()
 
-  // TODO stop with set start and unset stop sends proper request
   // FIXME try to avoid breaking the act rule here
   await act(async () => {
     fireEvent.click(getActionButton())
   })
 
-  // FIXME need to review usage of TogglService singleton, it's not autoamtically mockable
-  // see https://github.com/facebook/jest/issues/3766
-  // see https://stackoverflow.com/questions/51495473/typescript-and-jest-avoiding-type-errors-on-mocked-functions
-  // see https://stackoverflow.com/questions/48759035/mock-dependency-in-jest-with-typescript
+  expect(stopTimeEntryMock).toBeCalledTimes(1)
+  expect(stopTimeEntryMock).toBeCalledWith(1234)
 })
 
 // TODO A.2 stop with set start and stop sends proper request
+test("A.2 stop entry with set start time and set stop time works", async () => {})
