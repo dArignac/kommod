@@ -1,4 +1,4 @@
-import { act, fireEvent, render, within } from "@testing-library/react"
+import { fireEvent, render, waitFor, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import sub from "date-fns/sub"
 import { QueryClient, QueryClientProvider } from "react-query"
@@ -116,9 +116,10 @@ test("A.2 stop entry with set start time and no stop time works", async () => {
   expect(store.timeStart).toBe("09:00")
   expect(store.timeStop).toBeUndefined()
 
-  // FIXME try to avoid breaking the act rule here
-  await act(async () => {
-    fireEvent.click(getActionButton())
+  fireEvent.click(getActionButton())
+
+  await waitFor(() => {
+    expect(getActionButton()).toHaveTextContent("Start")
   })
 
   expect(stopTimeEntryMock).toBeCalledTimes(1)
