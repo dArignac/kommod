@@ -1,10 +1,12 @@
 import { Button, notification } from "antd"
+import differenceInSeconds from "date-fns/differenceInSeconds"
 import { useStoreState } from "pullstate"
 import { useEffect } from "react"
 import { useMutation } from "react-query"
+import { combineDateWithTime } from "../../services/date"
 import { TogglService } from "../../services/toggl/TogglService"
 import { SettingsStore, TimeBookingStore } from "../../store"
-import { resetBookingStore } from "../../tests/store"
+import { resetTimeBookingStore } from "../../tests/store"
 import { TimeEntry } from "../../types"
 
 interface ActionButtonProps {
@@ -17,21 +19,23 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
   const projectId = useStoreState(TimeBookingStore, (s) => s.projectId)
   const description = useStoreState(TimeBookingStore, (s) => s.description)
   const timeEntry = useStoreState(TimeBookingStore, (s) => s.entry)
+  const timeStart = useStoreState(TimeBookingStore, (s) => s.start)
   const timeStop = useStoreState(TimeBookingStore, (s) => s.stop)
+  const day = useStoreState(TimeBookingStore, (s) => s.day)
   const mutationStopEntry = useMutation<TimeEntry | null, unknown, number, unknown>((timeEntryId) => {
     const entry = TogglService.getInstance(token).stopTimeEntry(timeEntryId)
     if (entry !== null) {
-      resetBookingStore()
+      resetTimeBookingStore()
     }
     return entry
   })
-  // const mutationUpdateEntry = useMutation<TimeEntry | null, unknown, TimeEntry, unknown>((entry: TimeEntry) => {
-  //   const updatedEntry = TogglService.getInstance(token).updateTimeEntry(entry)
-  //   if (updatedEntry !== null) {
-  //     resetBookingStore()
-  //   }
-  //   return updatedEntry
-  // })
+  const mutationUpdateEntry = useMutation<TimeEntry | null, unknown, TimeEntry, unknown>((entry: TimeEntry) => {
+    const updatedEntry = TogglService.getInstance(token).updateTimeEntry(entry)
+    if (updatedEntry !== null) {
+      resetTimeBookingStore()
+    }
+    return updatedEntry
+  })
 
   const hasRunningEntry = timeEntry !== undefined
   const label = timeStop !== undefined || hasRunningEntry ? "Stop" : "Start"
@@ -40,7 +44,14 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
   function onClick() {
     if (hasRunningEntry) {
       if (timeStop !== undefined) {
-        // FIXME implement
+        const start = combineDateWithTime(day, timeStart!!)
+        const stop = combineDateWithTime(day, timeStop!!)
+        mutationUpdateEntry.mutate({
+          ...timeEntry,
+          duration: differenceInSeconds(stop, start),
+          start,
+          stop,
+        })
       } else {
         mutationStopEntry.mutate(timeEntry.id)
       }
@@ -62,13 +73,15 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
   }
 
   useEffect(() => {
-    if (mutationStopEntry.isSuccess) {
+    if (mutationStopEntry.isSuccess || mutationUpdateEntry.isSuccess) {
       showSuccessNotification()
       mutationStopEntry.reset()
+      mutationUpdateEntry.reset()
     }
-    if (mutationStopEntry.isError) {
+    if (mutationStopEntry.isError || mutationUpdateEntry.isError) {
       showErrorNotification()
       mutationStopEntry.reset()
+      mutationUpdateEntry.reset()
     }
   })
 

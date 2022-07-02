@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react"
+import { fireEvent, render, screen, waitForElementToBeRemoved, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import sub from "date-fns/sub"
 import { QueryClient, QueryClientProvider } from "react-query"
@@ -137,7 +137,6 @@ test("A.2 stop entry with set start time and no stop time works", async () => {
   expect(stopTimeEntryMock).toBeCalledWith(3)
 })
 
-// TODO A.2 stop with set start and stop sends proper request
 test("A.2 stop entry with set start time and set stop time works", async () => {
   const now = new Date()
   const timeStart = formatTime(sub(now, { hours: 1 }))
@@ -149,12 +148,12 @@ test("A.2 stop entry with set start time and set stop time works", async () => {
 
   fireEvent.click(getActionButton())
 
-  const notificiation = await screen.findByText("Entry updated.")
-  expect(notificiation).toBeVisible()
+  await waitForElementToBeRemoved(() => screen.queryByText("Entry updated."))
   expect(updateTimeEntryMock).toBeCalledTimes(1)
   expect(updateTimeEntryMock).toBeCalledWith({
     ...mockTimeEntryRunning,
-    timeStart: combineDateWithTime(now, "09:00"),
-    timeStop: combineDateWithTime(now, "10:00"),
-  })
+    duration: 3600,
+    start: combineDateWithTime(now, "09:00"),
+    stop: combineDateWithTime(now, "10:00"),
+  } as TimeEntry)
 })

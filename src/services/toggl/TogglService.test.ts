@@ -178,7 +178,6 @@ test("updating an entry works", async () => {
   const history = mock.history.put.filter((h) => h.url === "/time_entries/666")[0]
 
   // params and auth
-  expect(history.params.id).toBe(666)
   expect(history.auth).toEqual({
     username: "",
     password: "api_token",

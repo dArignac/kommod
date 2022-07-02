@@ -1,6 +1,6 @@
 import { TimeBookingStore, SettingsStore, SingleDayViewStore, TogglStore } from "../store"
 
-export function resetBookingStore(projectId?: number) {
+export function resetTimeBookingStore(projectId?: number) {
   TimeBookingStore.update((s) => {
     s.day = new Date()
     s.projectId = projectId
@@ -12,7 +12,7 @@ export function resetBookingStore(projectId?: number) {
 }
 
 export function resetStores() {
-  resetBookingStore()
+  resetTimeBookingStore()
 
   TogglStore.update((s) => {
     s.clients = []

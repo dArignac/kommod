@@ -153,7 +153,7 @@ export class TogglService {
 
   public async updateTimeEntry(entry: TimeEntry): Promise<TimeEntry | null> {
     try {
-      const { data } = await this.ax.put<{ data: TogglTimeEntry }>(`/time_entries/${entry.id}`, { time_entry: entry }, { ...this.getAuth(), params: { id: entry.id } })
+      const { data } = await this.ax.put<{ data: TogglTimeEntry }>(`/time_entries/${entry.id}`, { time_entry: entry }, { ...this.getAuth() })
 
       if (data.data !== null) {
         return this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
