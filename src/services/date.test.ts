@@ -59,6 +59,7 @@ test("parsing time works", () => {
   expect(parseTime("9:13")).toBe("09:13")
   expect(parseTime("913")).toBe("09:13")
   expect(parseTime("23:59")).toBe("23:59")
+  expect(parseTime("25:61")).toBe("23:59")
 })
 
 test("combining date and time works", () => {

@@ -39,10 +39,12 @@ export function parseTime(input: string): string | null {
   if (input.length < 3 || input.length > 5) return null
 
   input = input.replace(":", "")
-  const minutes = parseInt(input.slice(-2))
-  const hours = parseInt(input.slice(0, input.length - 2))
+  let minutes = parseInt(input.slice(-2))
+  let hours = parseInt(input.slice(0, input.length - 2))
 
   if (isNaN(minutes) || isNaN(hours)) return null
+  if (hours > 23) hours = 23
+  if (minutes > 59) minutes = 59
 
   return String(hours).padStart(2, "0") + ":" + String(minutes).padStart(2, "0")
 }

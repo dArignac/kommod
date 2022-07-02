@@ -14,6 +14,8 @@ interface ActionButtonProps {
   width: number
 }
 
+// FIXME stop time before start does not prevent action button click
+// FIXME stop label is not changed to start after stopping
 export function ActionButton({ tabIndex, width }: ActionButtonProps) {
   const token = useStoreState(SettingsStore, (s) => s.token)
   const projectId = useStoreState(TimeBookingStore, (s) => s.projectId)

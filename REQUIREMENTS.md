@@ -6,8 +6,6 @@
 
 - A.1 if there is an active entry, then description, project and start are prefilled and the action button states "Stop"
 - A.2 an active entry can only be stopped with the stop button; start and end time are adjustable and reflected when stopped
-- FIXME stop time before start does not prevent action button click
-- FIXME stop label is not changed to start after stopping
 - A.3 if end is not set, the entry is stopped with now()
 - A.4 if end is set, the entry is stopped with the value of end
 - A.5 after stopping an entry, task and end is cleared, start is set to now()
