@@ -25,6 +25,13 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
     }
     return entry
   })
+  const mutationUpdateEntry = useMutation<TimeEntry | null, unknown, TimeEntry, unknown>((entry: TimeEntry) => {
+    const updatedEntry = TogglService.getInstance(token).updateTimeEntry(entry)
+    if (updatedEntry !== null) {
+      resetBookingStore()
+    }
+    return updatedEntry
+  })
 
   const hasRunningEntry = timeEntryId !== undefined
   const label = timeStop !== undefined || hasRunningEntry ? "Stop" : "Start"
@@ -32,7 +39,11 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
 
   function onClick() {
     if (hasRunningEntry) {
-      mutationStopEntry.mutate(timeEntryId)
+      if (timeStop !== undefined) {
+        // FIXME implement
+      } else {
+        mutationStopEntry.mutate(timeEntryId)
+      }
     }
   }
 

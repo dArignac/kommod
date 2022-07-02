@@ -1,8 +1,8 @@
-import { fireEvent, render, waitFor, within } from "@testing-library/react"
+import { fireEvent, render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import sub from "date-fns/sub"
 import { QueryClient, QueryClientProvider } from "react-query"
-import { formatTime } from "../../services/date"
+import { combineDateWithTime, formatTime } from "../../services/date"
 import { TogglService } from "../../services/toggl/TogglService"
 import { BookingStore, TogglStore } from "../../store"
 import { getActionButton, getProjectSelector, getProjectSelectorValueElement, getStartTimeInput, getStopTimeInput, getTaskSelector } from "../../tests/selectors"
@@ -12,6 +12,12 @@ import { Client, Project, TimeEntry } from "../../types"
 import { CreateEntry } from "./CreateEntry"
 
 const stopTimeEntryMock = jest.spyOn(TogglService.prototype, "stopTimeEntry").mockImplementation(() => {
+  return new Promise(function (resolve, reject) {
+    resolve({} as TimeEntry)
+  })
+})
+
+const updateTimeEntryMock = jest.spyOn(TogglService.prototype, "updateTimeEntry").mockImplementation(() => {
   return new Promise(function (resolve, reject) {
     resolve({} as TimeEntry)
   })
@@ -92,7 +98,7 @@ test("A.1 active entry fills all fields accordingly", () => {
   expect(getActionButton()).toHaveTextContent("Stop")
 })
 
-test("A.2 stop entry with set start time and no stop time works", async () => {
+test("A.2 ui for stop entry behaves correctly", async () => {
   const now = new Date()
   const timeStart = formatTime(sub(now, { hours: 1 }))
   setupWithRunningTimeEntry(now, timeStart)
@@ -112,19 +118,52 @@ test("A.2 stop entry with set start time and no stop time works", async () => {
 
   // check start and end is alterable
   inputValueAndBlur(start, "09:00")
-  const store = BookingStore.getRawState()
-  expect(store.timeStart).toBe("09:00")
-  expect(store.timeStop).toBeUndefined()
+  expect(BookingStore.getRawState().timeStart).toBe("09:00")
+  expect(BookingStore.getRawState().timeStop).toBeUndefined()
+
+  inputValueAndBlur(stop, "10:00")
+  expect(BookingStore.getRawState().timeStart).toBe("09:00")
+  expect(BookingStore.getRawState().timeStop).toBe("10:00")
+})
+
+test("A.2 stop entry with set start time and no stop time works", async () => {
+  const now = new Date()
+  const timeStart = formatTime(sub(now, { hours: 1 }))
+  setupWithRunningTimeEntry(now, timeStart)
+
+  await renderWithClient()
+  inputValueAndBlur(getStartTimeInput(), "09:00")
 
   fireEvent.click(getActionButton())
 
-  await waitFor(() => {
-    expect(getActionButton()).toHaveTextContent("Start")
-  })
+  const notificiation = await screen.findByText("Entry updated.")
+  expect(notificiation).toBeVisible()
 
   expect(stopTimeEntryMock).toBeCalledTimes(1)
   expect(stopTimeEntryMock).toBeCalledWith(1234)
 })
 
 // TODO A.2 stop with set start and stop sends proper request
-test("A.2 stop entry with set start time and set stop time works", async () => {})
+test("A.2 stop entry with set start time and set stop time works", async () => {
+  const now = new Date()
+  const timeStart = formatTime(sub(now, { hours: 1 }))
+  setupWithRunningTimeEntry(now, timeStart)
+
+  await renderWithClient()
+  inputValueAndBlur(getStartTimeInput(), "09:00")
+  inputValueAndBlur(getStopTimeInput(), "10:00")
+
+  fireEvent.click(getActionButton())
+
+  const notificiation = await screen.findByText("Entry updated.")
+  expect(notificiation).toBeVisible()
+  expect(updateTimeEntryMock).toBeCalledTimes(1)
+  expect(updateTimeEntryMock).toBeCalledWith({
+    day: now,
+    projectId: 2,
+    timeEntryDescription: "Running Entry 1",
+    timeEntryId: 1234,
+    timeStart: combineDateWithTime(now, "09:00"),
+    timeStop: combineDateWithTime(now, "10:00"),
+  })
+})
