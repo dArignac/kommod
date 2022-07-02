@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react"
 import { QueryClient, QueryClientProvider } from "react-query"
-import { BookingStore } from "../../store"
+import { TimeBookingStore } from "../../store"
+import { mockTimeEntryRunning } from "../../tests/mocks"
 import { getActionButton } from "../../tests/selectors"
 import { ActionButton } from "./ActionButton"
 
@@ -25,9 +26,9 @@ test("displays start button with default store", () => {
 })
 
 test("displays start button with setup store", () => {
-  BookingStore.update((s) => {
+  TimeBookingStore.update((s) => {
     s.projectId = 1
-    s.timeEntryDescription = "Test"
+    s.description = "Test"
   })
   renderButton()
   expect(getActionButton().textContent).toBe("Start")
@@ -35,10 +36,10 @@ test("displays start button with setup store", () => {
 })
 
 test("displays start button with setup store with time", () => {
-  BookingStore.update((s) => {
+  TimeBookingStore.update((s) => {
     s.projectId = 1
-    s.timeStart = "11:30"
-    s.timeEntryDescription = "Test"
+    s.start = "11:30"
+    s.description = "Test"
   })
   renderButton()
   expect(getActionButton().textContent).toBe("Start")
@@ -46,11 +47,11 @@ test("displays start button with setup store with time", () => {
 })
 
 test("A.2 displays stop button with entry values", () => {
-  BookingStore.update((s) => {
+  TimeBookingStore.update((s) => {
     s.projectId = 1
-    s.timeStart = "11:30"
-    s.timeStop = "12:30"
-    s.timeEntryDescription = "Test"
+    s.start = "11:30"
+    s.stop = "12:30"
+    s.description = "Test"
   })
   renderButton()
   expect(getActionButton().textContent).toBe("Stop")
@@ -58,11 +59,11 @@ test("A.2 displays stop button with entry values", () => {
 })
 
 test("A.2 displays stop button with running entry", () => {
-  BookingStore.update((s) => {
-    s.projectId = 1
-    s.timeStart = "11:30"
-    s.timeEntryDescription = "Test"
-    s.timeEntryId = 1
+  TimeBookingStore.update((s) => {
+    s.projectId = mockTimeEntryRunning.project.id
+    s.start = "11:30"
+    s.description = mockTimeEntryRunning.description
+    s.entry = mockTimeEntryRunning
   })
   renderButton()
   expect(getActionButton().textContent).toBe("Stop")

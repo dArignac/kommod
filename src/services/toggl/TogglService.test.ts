@@ -1,10 +1,20 @@
 import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
-import { mockTimeEntries1, mockTimeEntryCurrent, mockUser } from "../../tests/mocks"
-import { BookingStore, TogglStore } from "../../store"
+import addHours from "date-fns/addHours"
+import { TimeBookingStore, TogglStore } from "../../store"
+import {
+  mockClient1,
+  mockProject1,
+  mockProject2,
+  mockTimeEntries1,
+  mockTimeEntry1,
+  mockTimeEntry2,
+  mockTimeEntryRunning,
+  mockTogglTimeEntryRunning,
+  mockUser,
+} from "../../tests/mocks"
 import { Client, Project, TimeEntry } from "../../types"
 import { TogglService } from "./TogglService"
-import addHours from "date-fns/addHours"
 
 const mock = new MockAdapter(axios)
 
@@ -20,34 +30,15 @@ test("fetches and transforms user data correctly", async () => {
 
   // clients
   expect(storeToggl.clients.length).toBe(1)
-  expect(storeToggl.clients).toContainEqual({
-    id: 1,
-    name: "Client A",
-  })
+  expect(storeToggl.clients).toContainEqual(mockClient1)
 
   // tasks
   expect(storeToggl.tasks).toStrictEqual(["Time entries task a", "Time entries task b"])
 
   // projects
   expect(storeToggl.projects.length).toBe(2)
-  expect(storeToggl.projects).toContainEqual({
-    client: {
-      id: 1,
-      name: "Client A",
-    },
-    color: "#ff0000",
-    id: 1,
-    name: "Project A",
-  })
-  expect(storeToggl.projects).toContainEqual({
-    client: {
-      id: 1,
-      name: "Client A",
-    },
-    color: "#0000aa",
-    id: 2,
-    name: "Project B",
-  })
+  expect(storeToggl.projects).toContainEqual(mockProject1)
+  expect(storeToggl.projects).toContainEqual(mockProject2)
 
   // sorting is alphabetically by name
   expect(storeToggl.projects[0].id).toBe(1)
@@ -64,7 +55,7 @@ test("fetches current time entry with no entry", async () => {
   mock.onGet("/time_entries/current").reply(200, { data: null })
 
   const entry = await TogglService.getInstance("").fetchActiveTimeEntry()
-  const store = BookingStore.getRawState()
+  const store = TimeBookingStore.getRawState()
 
   expect(entry).toBeNull()
   expect(store).toHaveProperty("day")
@@ -77,25 +68,15 @@ test("fetches current time entry with no entry", async () => {
 
 test("fetches current time entry with existing entry", async () => {
   mock.onGet("/me").reply(200, mockUser)
-  mock.onGet("/time_entries/current").reply(200, { data: mockTimeEntryCurrent })
+  mock.onGet("/time_entries/current").reply(200, { data: mockTogglTimeEntryRunning })
 
   const entry = await TogglService.getInstance("").fetchActiveTimeEntry()
-  const store = BookingStore.getRawState()
+  const store = TimeBookingStore.getRawState()
 
-  expect(entry).toEqual({
-    description: "The current, active entry",
-    id: 3,
-    project: {
-      client: {
-        id: 1,
-        name: "Client A",
-      } as Client,
-      color: "#ff0000",
-      id: 1,
-      name: "Project A",
-    } as Project,
-    start: new Date("2013-03-11T11:36:00+00:00"),
-  } as TimeEntry)
+  // check returned entry
+  expect(entry).toEqual(mockTimeEntryRunning)
+
+  // check store state
   expect(store).not.toHaveProperty("stop")
 })
 
@@ -115,37 +96,8 @@ test("fetches and transforms todays entries correctly", async () => {
   expect(results[1].id).toBe(1)
 
   // transformation
-  expect(results).toContainEqual({
-    description: "Meeting with the client",
-    duration: 14400,
-    id: 1,
-    project: {
-      client: {
-        id: 1,
-        name: "Client A",
-      },
-      color: "#ff0000",
-      id: 1,
-      name: "Project A",
-    },
-    start: new Date("2013-03-11T11:36:00.000Z"),
-    stop: new Date("2013-03-11T15:36:00.000Z"),
-  })
-  expect(results).toContainEqual({
-    description: "important work",
-    duration: 18400,
-    id: 2,
-    project: {
-      client: {
-        id: 1,
-        name: "Client A",
-      },
-      color: "#0000aa",
-      id: 2,
-      name: "Project B",
-    },
-    start: new Date("2013-03-12T10:32:43.000Z"),
-  })
+  expect(results).toContainEqual(mockTimeEntry1)
+  expect(results).toContainEqual(mockTimeEntry2)
 })
 
 test("active entries are always sorted to the top", async () => {
@@ -165,7 +117,7 @@ test("active entries are always sorted to the top", async () => {
 
 test("stopping entry works", async () => {
   mock.onGet("/me").reply(200, mockUser)
-  const mockedRespondedEntry = { ...mockTimeEntryCurrent }
+  const mockedRespondedEntry = { ...mockTogglTimeEntryRunning }
   mockedRespondedEntry.duration = 222
   mock.onPut("/time_entries/666/stop").reply(200, { data: mockedRespondedEntry })
 
@@ -188,11 +140,11 @@ test("stopping entry works", async () => {
     project: {
       client: {
         id: 1,
-        name: "Client A",
+        name: "Client 1",
       } as Client,
       color: "#ff0000",
       id: 1,
-      name: "Project A",
+      name: "Project 1",
     } as Project,
     start: new Date(mockedRespondedEntry.start),
   } as TimeEntry)
@@ -206,25 +158,17 @@ test("returns correct if entry cannot be stopped", async () => {
 
 test("updating an entry works", async () => {
   mock.onGet("/me").reply(200, mockUser)
-  const mockedRespondedEntry = { ...mockTimeEntryCurrent }
+  const mockedRespondedEntry = { ...mockTogglTimeEntryRunning }
   mockedRespondedEntry.id = 666
   mockedRespondedEntry.duration = 123
-  mockedRespondedEntry.stop = "2013-03-11T12:36:00+00:00"
+  mockedRespondedEntry.stop = "2013-03-11T12:30:00+00:00"
   mock.onPut("/time_entries/666").reply(200, { data: mockedRespondedEntry })
 
   const payload: TimeEntry = {
+    ...mockTimeEntryRunning,
     description: "The current, active entry",
-    id: 666,
-    project: {
-      client: {
-        id: 1,
-        name: "Client A",
-      },
-      color: "#ff0000",
-      id: 1,
-      name: "Project A",
-    },
     duration: mockedRespondedEntry.duration,
+    id: mockedRespondedEntry.id,
     start: new Date(mockedRespondedEntry.start),
     stop: addHours(new Date(mockedRespondedEntry.start), 1),
   }

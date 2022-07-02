@@ -3,7 +3,7 @@ import { isBefore } from "date-fns"
 import { useStoreState } from "pullstate"
 import { ChangeEvent, useState } from "react"
 import { combineDateWithTime, parseTime } from "../../services/date"
-import { BookingStore } from "../../store"
+import { TimeBookingStore } from "../../store"
 
 interface TimeInputProps {
   placeholder?: string
@@ -12,17 +12,17 @@ interface TimeInputProps {
 }
 
 export function StopTimeInput({ placeholder, tabIndex, width }: TimeInputProps) {
-  const startTime = useStoreState(BookingStore, (s) => s.timeStart)
-  const stopTime = useStoreState(BookingStore, (s) => s.timeStop)
-  const day = useStoreState(BookingStore, (s) => s.day)
+  const startTime = useStoreState(TimeBookingStore, (s) => s.start)
+  const stopTime = useStoreState(TimeBookingStore, (s) => s.stop)
+  const day = useStoreState(TimeBookingStore, (s) => s.day)
   const [value, setValue] = useState("")
   const [status, setStatus] = useState<"" | "warning" | "error">("")
 
   function onBlur() {
     const time = parseTime(value)
     if (time !== null) {
-      BookingStore.update((s) => {
-        s.timeStop = time
+      TimeBookingStore.update((s) => {
+        s.stop = time
       })
       setValue(time)
 

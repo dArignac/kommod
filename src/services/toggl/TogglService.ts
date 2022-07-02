@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios"
 import { config } from "../../config"
 import { isDev } from "../../helpers"
-import { BookingStore, TogglStore } from "../../store"
+import { TimeBookingStore, TogglStore } from "../../store"
 import { Client, Project, TimeEntry, User } from "../../types"
 import { formatTime, setToBeforeMidnight, setToMidnight, sortStartStopables } from "../date"
 import { TogglCurrentTimeEntryResponse, TogglTimeEntry, TogglUserResponse } from "./types"
@@ -103,12 +103,12 @@ export class TogglService {
     if (data.data !== null) {
       const entry = this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
 
-      BookingStore.update((s) => {
+      TimeBookingStore.update((s) => {
         s.day = entry.start
+        s.description = entry.description
+        s.start = formatTime(entry.start)
+        s.entry = entry
         s.projectId = entry.project.id
-        s.timeEntryDescription = entry.description
-        s.timeEntryId = entry.id
-        s.timeStart = formatTime(entry.start)
       })
 
       return entry
@@ -172,7 +172,7 @@ export class TogglService {
       start: new Date(entry.start),
     } as TimeEntry
     if ("stop" in entry) {
-      item.stop = new Date(entry.stop)
+      item.stop = new Date(entry.stop!!)
     }
     return item
   }

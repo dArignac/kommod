@@ -32,7 +32,7 @@ function renderStartStop(record: TimeEntry) {
 }
 
 function renderSum(record: TimeEntry) {
-  if ("stop" in record) return <>{formatDuration(record.duration)}</>
+  if ("stop" in record) return <>{formatDuration(record.duration!!)}</>
   return ""
 }
 

@@ -1,5 +1,5 @@
 import { render, waitFor } from "@testing-library/react"
-import { BookingStore } from "../../store"
+import { TimeBookingStore } from "../../store"
 import { getStopTimeInput } from "../../tests/selectors"
 import { inputValueAndBlur } from "../../tests/utils"
 import { StopTimeInput } from "./StopTimeInput"
@@ -17,7 +17,7 @@ test("renders the component", () => {
 test("filling a value updates the store", async () => {
   renderElement()
   inputValueAndBlur(getStopTimeInput(), "09:00")
-  await waitFor(() => expect(BookingStore.getRawState().timeStop).toBe("09:00"))
+  await waitFor(() => expect(TimeBookingStore.getRawState().stop).toBe("09:00"))
 })
 
 test("setting a non time value is marked as error", () => {

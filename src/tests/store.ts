@@ -1,13 +1,13 @@
-import { BookingStore, SettingsStore, SingleDayViewStore, TogglStore } from "../store"
+import { TimeBookingStore, SettingsStore, SingleDayViewStore, TogglStore } from "../store"
 
 export function resetBookingStore(projectId?: number) {
-  BookingStore.update((s) => {
+  TimeBookingStore.update((s) => {
     s.day = new Date()
     s.projectId = projectId
-    s.timeEntryDescription = undefined
-    s.timeEntryId = undefined
-    s.timeStart = undefined
-    s.timeStop = undefined
+    s.description = undefined
+    s.entry = undefined
+    s.start = undefined
+    s.stop = undefined
   })
 }
 

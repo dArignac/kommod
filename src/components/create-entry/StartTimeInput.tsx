@@ -2,7 +2,7 @@ import { Input } from "antd"
 import { useStoreState } from "pullstate"
 import { ChangeEvent, useState } from "react"
 import { parseTime } from "../../services/date"
-import { BookingStore } from "../../store"
+import { TimeBookingStore } from "../../store"
 
 interface TimeInputProps {
   placeholder?: string
@@ -11,15 +11,15 @@ interface TimeInputProps {
 }
 
 export function StartTimeInput({ placeholder, tabIndex, width }: TimeInputProps) {
-  const timeValue = useStoreState(BookingStore, (s) => s.timeStart)
+  const timeValue = useStoreState(TimeBookingStore, (s) => s.start)
   const [value, setValue] = useState("")
   const [status, setStatus] = useState<"" | "warning" | "error">("")
 
   function onBlur() {
     const time = parseTime(value)
     if (time !== null) {
-      BookingStore.update((s) => {
-        s.timeStart = time
+      TimeBookingStore.update((s) => {
+        s.start = time
       })
       setValue(time)
       setStatus("")

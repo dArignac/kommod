@@ -4,11 +4,12 @@ import sub from "date-fns/sub"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { combineDateWithTime, formatTime } from "../../services/date"
 import { TogglService } from "../../services/toggl/TogglService"
-import { BookingStore, TogglStore } from "../../store"
+import { TimeBookingStore, TogglStore } from "../../store"
+import { mockClient1, mockProject1, mockProject2, mockTimeEntryRunning } from "../../tests/mocks"
 import { getActionButton, getProjectSelector, getProjectSelectorValueElement, getStartTimeInput, getStopTimeInput, getTaskSelector } from "../../tests/selectors"
 import { resetStores } from "../../tests/store"
 import { inputValueAndBlur } from "../../tests/utils"
-import { Client, Project, TimeEntry } from "../../types"
+import { TimeEntry } from "../../types"
 import { CreateEntry } from "./CreateEntry"
 
 const stopTimeEntryMock = jest.spyOn(TogglService.prototype, "stopTimeEntry").mockImplementation(() => {
@@ -33,24 +34,17 @@ function renderWithClient() {
 }
 
 function setupWithRunningTimeEntry(now: Date, timeStart: string) {
-  const clients = [{ id: 1, name: "Client A" }] as Client[]
-  const projects = [
-    { id: 1, name: "Project A", client: clients[0], color: "#ffffff" },
-    { id: 2, name: "Project B", client: clients[0], color: "#ffffff" },
-    { id: 3, name: "Project C", client: clients[0], color: "#ffffff" },
-  ] as Project[]
-
   TogglStore.update((s) => {
-    s.clients = clients
-    s.projects = projects
+    s.clients = [mockClient1]
+    s.projects = [mockProject1, mockProject2]
   })
 
-  BookingStore.update((s) => {
+  TimeBookingStore.update((s) => {
     s.day = now
-    s.projectId = 2
-    s.timeEntryDescription = "Running Entry 1"
-    s.timeEntryId = 1234
-    s.timeStart = timeStart
+    s.projectId = mockTimeEntryRunning.project.id
+    s.description = mockTimeEntryRunning.description
+    s.entry = mockTimeEntryRunning
+    s.start = timeStart
   })
 }
 
@@ -91,8 +85,8 @@ test("A.1 active entry fills all fields accordingly", () => {
 
   const { container } = renderWithClient()
 
-  expect(getTaskSelector()).toHaveValue("Running Entry 1")
-  expect(getProjectSelectorValueElement(container)).toHaveTextContent("Project B | Client A")
+  expect(getTaskSelector()).toHaveValue(mockTimeEntryRunning.description)
+  expect(getProjectSelectorValueElement(container)).toHaveTextContent(`${mockTimeEntryRunning.project.name} | ${mockTimeEntryRunning.project.client.name}`)
   expect(getStartTimeInput()).toHaveValue(timeStart)
   expect(getStopTimeInput()).toHaveValue("")
   expect(getActionButton()).toHaveTextContent("Stop")
@@ -108,9 +102,9 @@ test("A.2 ui for stop entry behaves correctly", async () => {
   const start = getStartTimeInput()
   const stop = getStopTimeInput()
 
-  expect(task).toHaveValue("Running Entry 1")
+  expect(getTaskSelector()).toHaveValue(mockTimeEntryRunning.description)
   expect(task).toBeDisabled()
-  expect(getProjectSelectorValueElement(container)).toHaveTextContent("Project B | Client A")
+  expect(getProjectSelectorValueElement(container)).toHaveTextContent(`${mockTimeEntryRunning.project.name} | ${mockTimeEntryRunning.project.client.name}`)
   expect(getProjectSelector().getAttribute("class")?.split(" ")).toContain("ant-select-disabled")
   expect(start).toHaveValue(timeStart)
   expect(stop).toHaveValue("")
@@ -118,12 +112,12 @@ test("A.2 ui for stop entry behaves correctly", async () => {
 
   // check start and end is alterable
   inputValueAndBlur(start, "09:00")
-  expect(BookingStore.getRawState().timeStart).toBe("09:00")
-  expect(BookingStore.getRawState().timeStop).toBeUndefined()
+  expect(TimeBookingStore.getRawState().start).toBe("09:00")
+  expect(TimeBookingStore.getRawState().stop).toBeUndefined()
 
   inputValueAndBlur(stop, "10:00")
-  expect(BookingStore.getRawState().timeStart).toBe("09:00")
-  expect(BookingStore.getRawState().timeStop).toBe("10:00")
+  expect(TimeBookingStore.getRawState().start).toBe("09:00")
+  expect(TimeBookingStore.getRawState().stop).toBe("10:00")
 })
 
 test("A.2 stop entry with set start time and no stop time works", async () => {
@@ -140,7 +134,7 @@ test("A.2 stop entry with set start time and no stop time works", async () => {
   expect(notificiation).toBeVisible()
 
   expect(stopTimeEntryMock).toBeCalledTimes(1)
-  expect(stopTimeEntryMock).toBeCalledWith(1234)
+  expect(stopTimeEntryMock).toBeCalledWith(3)
 })
 
 // TODO A.2 stop with set start and stop sends proper request
@@ -159,10 +153,7 @@ test("A.2 stop entry with set start time and set stop time works", async () => {
   expect(notificiation).toBeVisible()
   expect(updateTimeEntryMock).toBeCalledTimes(1)
   expect(updateTimeEntryMock).toBeCalledWith({
-    day: now,
-    projectId: 2,
-    timeEntryDescription: "Running Entry 1",
-    timeEntryId: 1234,
+    ...mockTimeEntryRunning,
     timeStart: combineDateWithTime(now, "09:00"),
     timeStop: combineDateWithTime(now, "10:00"),
   })

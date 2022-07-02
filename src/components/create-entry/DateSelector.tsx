@@ -1,6 +1,6 @@
 import dateFnsGenerateConfig from "rc-picker/lib/generate/dateFns"
 import { useStoreState } from "pullstate"
-import { BookingStore } from "../../store"
+import { TimeBookingStore } from "../../store"
 import generatePicker from "antd/lib/date-picker/generatePicker"
 import { Button } from "antd"
 import { useState } from "react"
@@ -13,11 +13,11 @@ interface DateSelectorProps {
 }
 
 export function DateSelector({ tabIndex }: DateSelectorProps) {
-  const day = useStoreState(BookingStore, (s) => s.day)
+  const day = useStoreState(TimeBookingStore, (s) => s.day)
   const [open, setOpen] = useState(false)
 
   function onChangeDate(date: any, dateString: string) {
-    BookingStore.update((s) => {
+    TimeBookingStore.update((s) => {
       s.day = date
     })
   }

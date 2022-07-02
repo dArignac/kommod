@@ -1,7 +1,7 @@
 import { Select } from "antd"
 import { useStoreState } from "pullstate"
 import { useEffect, useState } from "react"
-import { BookingStore, TogglStore } from "../../store"
+import { TimeBookingStore, TogglStore } from "../../store"
 
 const { Option } = Select
 
@@ -13,15 +13,15 @@ interface ProjectSelectorInterface {
 export function ProjectSelector({ tabIndex, width }: ProjectSelectorInterface) {
   const [isDisabled, setIsDisabled] = useState(false)
   const projects = useStoreState(TogglStore, (s) => s.projects)
-  const selectedProject = useStoreState(BookingStore, (s) => s.projectId)
-  const timeEntryId = useStoreState(BookingStore, (s) => s.timeEntryId)
+  const selectedProject = useStoreState(TimeBookingStore, (s) => s.projectId)
+  const timeEntry = useStoreState(TimeBookingStore, (s) => s.entry)
 
   useEffect(() => {
-    setIsDisabled(timeEntryId !== undefined)
-  }, [timeEntryId])
+    setIsDisabled(timeEntry !== undefined)
+  }, [timeEntry])
 
   function onSelect(projectId: number) {
-    BookingStore.update((s) => {
+    TimeBookingStore.update((s) => {
       s.projectId = projectId
     })
   }

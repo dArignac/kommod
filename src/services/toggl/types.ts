@@ -6,17 +6,17 @@ export type TogglBlogPost = {
 export type TogglTimeEntry = {
   at: string
   billable: boolean
-  created_with: string
+  created_with?: string
   description: string
-  duration: number
-  duronly: boolean
-  guid: string
+  duration?: number
+  duronly?: boolean
+  guid?: string
   id: number
   pid: number
   start: string
-  stop: string
+  stop?: string
   tags: string[]
-  tid: number
+  tid?: number
   wid: number
 }
 

@@ -1,7 +1,7 @@
 import { AutoComplete } from "antd"
 import { useStoreState } from "pullstate"
 import { useEffect, useState } from "react"
-import { BookingStore, TogglStore } from "../../store"
+import { TimeBookingStore, TogglStore } from "../../store"
 
 interface TaskSelectorInterface {
   tabIndex: number
@@ -13,11 +13,11 @@ export function TaskSelector({ tabIndex, width }: TaskSelectorInterface) {
   const [isDisabled, setIsDisabled] = useState(false)
   const [value, setValue] = useState("")
   const tasks = useStoreState(TogglStore, (s) => s.tasks)
-  const timeEntryId = useStoreState(BookingStore, (s) => s.timeEntryId)
-  const timeEntryDescription = useStoreState(BookingStore, (s) => s.timeEntryDescription)
+  const timeEntry = useStoreState(TimeBookingStore, (s) => s.entry)
+  const timeEntryDescription = useStoreState(TimeBookingStore, (s) => s.description)
 
   useEffect(() => {
-    const hasActiveEntry = timeEntryId !== undefined
+    const hasActiveEntry = timeEntry !== undefined
     setIsDisabled(hasActiveEntry)
     if (hasActiveEntry) {
       setValue(timeEntryDescription!!)
@@ -25,7 +25,7 @@ export function TaskSelector({ tabIndex, width }: TaskSelectorInterface) {
     if (!hasActiveEntry && timeEntryDescription === undefined) {
       setValue("")
     }
-  }, [timeEntryId, timeEntryDescription])
+  }, [timeEntry, timeEntryDescription])
 
   const sortedTasks = Array.from(new Set(tasks)).sort()
   let taskOptions = sortedTasks.map((task) => {
@@ -37,8 +37,8 @@ export function TaskSelector({ tabIndex, width }: TaskSelectorInterface) {
   }
 
   function onBlur() {
-    BookingStore.update((s) => {
-      s.timeEntryDescription = value
+    TimeBookingStore.update((s) => {
+      s.description = value
     })
   }
 
