@@ -8,7 +8,7 @@
 - A.2 an active entry can only be stopped with the stop button; start and end time are adjustable and reflected when stopped
 - A.3 if end is not set, the entry is stopped with now()
 - A.4 if end is set, the entry is stopped with the value of end
-- A.5 after stopping an entry, task and end is cleared, start is set to now()
+- A.5 after stopping an entry, task and end is cleared, start is set to now(), button is set to start
 
 ### (B) Adding entries
 
@@ -19,14 +19,14 @@
 
 ## Status
 
-| Req | Implementation | Tests   |
-| --- | -------------- | ------- |
-| A.1 | done           | done    |
-| A.2 | incomplete     | missing |
-| A.3 |                |         |
-| A.4 |                |         |
-| A.5 |                |         |
-| B.1 |                |         |
-| B.2 |                |         |
-| B.3 |                |         |
-| B.4 |                |         |
+| Req | Implementation | Tests      |
+| --- | -------------- | ---------- |
+| A.1 | done           | done       |
+| A.2 | done           | done       |
+| A.3 | done           | done       |
+| A.4 | done           | done       |
+| A.5 | incomplete     | incomplete |
+| B.1 |                |            |
+| B.2 |                |            |
+| B.3 |                |            |
+| B.4 |                |            |

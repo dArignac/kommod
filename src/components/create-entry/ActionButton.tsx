@@ -15,7 +15,6 @@ interface ActionButtonProps {
 }
 
 // FIXME stop time before start does not prevent action button click
-// FIXME stop label is not changed to start after stopping
 export function ActionButton({ tabIndex, width }: ActionButtonProps) {
   const token = useStoreState(SettingsStore, (s) => s.token)
   const projectId = useStoreState(TimeBookingStore, (s) => s.projectId)
@@ -24,19 +23,27 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
   const timeStart = useStoreState(TimeBookingStore, (s) => s.start)
   const timeStop = useStoreState(TimeBookingStore, (s) => s.stop)
   const day = useStoreState(TimeBookingStore, (s) => s.day)
-  const mutationStopEntry = useMutation<TimeEntry | null, unknown, number, unknown>((timeEntryId) => {
-    const entry = TogglService.getInstance(token).stopTimeEntry(timeEntryId)
-    if (entry !== null) {
-      resetTimeBookingStore()
-    }
-    return entry
+
+  const mutationStopEntry = useMutation<TimeEntry | null, unknown, number, unknown>((timeEntryId) => TogglService.getInstance(token).stopTimeEntry(timeEntryId), {
+    async onSuccess(entry, variables, context) {
+      if (entry !== null) {
+        resetTimeBookingStore(entry.project.id)
+      }
+    },
+    async onError(error, variables, context) {
+      console.error("Error on stopping entry", error)
+    },
   })
-  const mutationUpdateEntry = useMutation<TimeEntry | null, unknown, TimeEntry, unknown>((entry: TimeEntry) => {
-    const updatedEntry = TogglService.getInstance(token).updateTimeEntry(entry)
-    if (updatedEntry !== null) {
-      resetTimeBookingStore()
-    }
-    return updatedEntry
+
+  const mutationUpdateEntry = useMutation<TimeEntry | null, unknown, TimeEntry, unknown>((entry: TimeEntry) => TogglService.getInstance(token).updateTimeEntry(entry), {
+    onSuccess(entry, variables, context) {
+      if (entry !== null) {
+        resetTimeBookingStore(entry.project.id)
+      }
+    },
+    async onError(error, variables, context) {
+      console.error("Error on updating entry", error)
+    },
   })
 
   const hasRunningEntry = timeEntry !== undefined
@@ -62,6 +69,7 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
 
   function showSuccessNotification() {
     notification.success({
+      duration: 1,
       message: "Entry updated.",
       placement: "top",
     })
@@ -69,6 +77,7 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
 
   function showErrorNotification() {
     notification.error({
+      duration: 2,
       message: "Error updating entry.",
       placement: "top",
     })

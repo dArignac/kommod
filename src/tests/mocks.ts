@@ -1,3 +1,4 @@
+import addMinutes from "date-fns/addMinutes"
 import { TogglClient, TogglProject, TogglTag, TogglTimeEntry, TogglUser, TogglWorkspace } from "../services/toggl/types"
 import { Client, Project, TimeEntry } from "../types"
 
@@ -259,4 +260,9 @@ export const mockTimeEntryRunning: TimeEntry = {
   id: timeEntryRunning.id,
   project: mockProject1,
   start: new Date(timeEntryRunning.start),
+}
+export const mockTimeEntryStopped: TimeEntry = {
+  ...mockTimeEntryRunning,
+  stop: addMinutes(mockTimeEntryRunning.start, 15),
+  duration: 15,
 }

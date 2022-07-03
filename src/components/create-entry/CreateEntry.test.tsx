@@ -5,24 +5,15 @@ import { QueryClient, QueryClientProvider } from "react-query"
 import { combineDateWithTime, formatTime } from "../../services/date"
 import { TogglService } from "../../services/toggl/TogglService"
 import { TimeBookingStore, TogglStore } from "../../store"
-import { mockClient1, mockProject1, mockProject2, mockTimeEntryRunning } from "../../tests/mocks"
+import { mockClient1, mockProject1, mockProject2, mockTimeEntryRunning, mockTimeEntryStopped } from "../../tests/mocks"
 import { getActionButton, getProjectSelector, getProjectSelectorValueElement, getStartTimeInput, getStopTimeInput, getTaskSelector } from "../../tests/selectors"
 import { resetStores } from "../../tests/store"
 import { inputValueAndBlur } from "../../tests/utils"
 import { TimeEntry } from "../../types"
 import { CreateEntry } from "./CreateEntry"
 
-const stopTimeEntryMock = jest.spyOn(TogglService.prototype, "stopTimeEntry").mockImplementation(() => {
-  return new Promise(function (resolve, reject) {
-    resolve({} as TimeEntry)
-  })
-})
-
-const updateTimeEntryMock = jest.spyOn(TogglService.prototype, "updateTimeEntry").mockImplementation(() => {
-  return new Promise(function (resolve, reject) {
-    resolve({} as TimeEntry)
-  })
-})
+const stopTimeEntryMock = jest.spyOn(TogglService.prototype, "stopTimeEntry")
+const updateTimeEntryMock = jest.spyOn(TogglService.prototype, "updateTimeEntry")
 
 function renderWithClient() {
   const queryClient = new QueryClient()
@@ -48,8 +39,18 @@ function setupWithRunningTimeEntry(now: Date, timeStart: string) {
   })
 }
 
+function mockStoppedTimeEntry() {
+  const r = () =>
+    new Promise<TimeEntry | null>(function (resolve, reject) {
+      resolve(mockTimeEntryStopped)
+    })
+  stopTimeEntryMock.mockImplementation(r)
+  updateTimeEntryMock.mockImplementation(r)
+}
+
 beforeEach(() => {
   stopTimeEntryMock.mockReset()
+  updateTimeEntryMock.mockReset()
 })
 
 afterEach(() => {
@@ -96,6 +97,7 @@ test("A.2 ui for stop entry behaves correctly", async () => {
   const now = new Date()
   const timeStart = formatTime(sub(now, { hours: 1 }))
   setupWithRunningTimeEntry(now, timeStart)
+  mockStoppedTimeEntry()
 
   const { container } = await renderWithClient()
   const task = getTaskSelector()
@@ -120,27 +122,38 @@ test("A.2 ui for stop entry behaves correctly", async () => {
   expect(TimeBookingStore.getRawState().stop).toBe("10:00")
 })
 
-test("A.2 stop entry with set start time and no stop time works", async () => {
+test("A.3 + A.5 stop entry with set start time and no stop time works", async () => {
   const now = new Date()
   const timeStart = formatTime(sub(now, { hours: 1 }))
   setupWithRunningTimeEntry(now, timeStart)
+  mockStoppedTimeEntry()
 
-  await renderWithClient()
+  const { container } = await renderWithClient()
   inputValueAndBlur(getStartTimeInput(), "09:00")
 
   fireEvent.click(getActionButton())
 
   const notificiation = await screen.findByText("Entry updated.")
   expect(notificiation).toBeVisible()
+  await waitForElementToBeRemoved(() => screen.queryByText("Entry updated."))
 
   expect(stopTimeEntryMock).toBeCalledTimes(1)
   expect(stopTimeEntryMock).toBeCalledWith(3)
+
+  // FIXME uncomment for A.5
+  // expect(getTaskSelector()).toHaveValue("")
+  // expect(getProjectSelectorValueElement(container)).toHaveTextContent(`${mockTimeEntryRunning.project.name} | ${mockTimeEntryRunning.project.client.name}`)
+  // expect(getStartTimeInput()).toHaveValue(formatTime(new Date()))
+  // expect(getStopTimeInput()).toHaveValue("")
+  // expect(getActionButton()).toHaveTextContent("Start")
 })
 
-test("A.2 stop entry with set start time and set stop time works", async () => {
+test("A.4 + A.5 stop entry with set start time and set stop time works", async () => {
   const now = new Date()
   const timeStart = formatTime(sub(now, { hours: 1 }))
+
   setupWithRunningTimeEntry(now, timeStart)
+  mockStoppedTimeEntry()
 
   await renderWithClient()
   inputValueAndBlur(getStartTimeInput(), "09:00")
@@ -148,7 +161,8 @@ test("A.2 stop entry with set start time and set stop time works", async () => {
 
   fireEvent.click(getActionButton())
 
-  await waitForElementToBeRemoved(() => screen.queryByText("Entry updated."))
+  await screen.findByText("Entry updated.")
+
   expect(updateTimeEntryMock).toBeCalledTimes(1)
   expect(updateTimeEntryMock).toBeCalledWith({
     ...mockTimeEntryRunning,
@@ -156,4 +170,11 @@ test("A.2 stop entry with set start time and set stop time works", async () => {
     start: combineDateWithTime(now, "09:00"),
     stop: combineDateWithTime(now, "10:00"),
   } as TimeEntry)
+
+  // FIXME uncomment for A.5
+  // expect(getTaskSelector()).toHaveValue("")
+  // expect(getProjectSelectorValueElement(container)).toHaveTextContent(`${mockTimeEntryRunning.project.name} | ${mockTimeEntryRunning.project.client.name}`)
+  // expect(getStartTimeInput()).toHaveValue(formatTime(new Date()))
+  // expect(getStopTimeInput()).toHaveValue("")
+  // expect(getActionButton()).toHaveTextContent("Start")
 })
