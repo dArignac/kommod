@@ -1,5 +1,6 @@
-import { fireEvent, render, screen, waitForElementToBeRemoved, within } from "@testing-library/react"
+import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import add from "date-fns/add"
 import sub from "date-fns/sub"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { combineDateWithTime, formatTime } from "../../services/date"
@@ -127,9 +128,7 @@ test("A.3 + A.5 stop entry with set start time and no stop time works", async ()
   const timeStart = formatTime(sub(now, { hours: 1 }))
   setupWithRunningTimeEntry(now, timeStart)
   mockStoppedTimeEntry()
-
   const { container } = await renderWithClient()
-  inputValueAndBlur(getStartTimeInput(), "09:00")
 
   fireEvent.click(getActionButton())
 
@@ -140,41 +139,38 @@ test("A.3 + A.5 stop entry with set start time and no stop time works", async ()
   expect(stopTimeEntryMock).toBeCalledTimes(1)
   expect(stopTimeEntryMock).toBeCalledWith(3)
 
-  // FIXME uncomment for A.5
-  // expect(getTaskSelector()).toHaveValue("")
-  // expect(getProjectSelectorValueElement(container)).toHaveTextContent(`${mockTimeEntryRunning.project.name} | ${mockTimeEntryRunning.project.client.name}`)
-  // expect(getStartTimeInput()).toHaveValue(formatTime(new Date()))
-  // expect(getStopTimeInput()).toHaveValue("")
-  // expect(getActionButton()).toHaveTextContent("Start")
+  // check reset of UI
+  expect(getTaskSelector()).toHaveValue("")
+  expect(getProjectSelectorValueElement(container)).toHaveTextContent(`${mockTimeEntryRunning.project.name} | ${mockTimeEntryRunning.project.client.name}`)
+  expect(getStartTimeInput()).toHaveValue(formatTime(new Date()))
+  expect(getStopTimeInput()).toHaveValue("")
+  expect(getActionButton()).toHaveTextContent("Start")
 })
 
 test("A.4 + A.5 stop entry with set start time and set stop time works", async () => {
   const now = new Date()
-  const timeStart = formatTime(sub(now, { hours: 1 }))
-
-  setupWithRunningTimeEntry(now, timeStart)
+  const timeStart = sub(now, { hours: 1 })
+  const timeStop = add(now, { hours: 1 })
+  setupWithRunningTimeEntry(now, formatTime(timeStart))
   mockStoppedTimeEntry()
-
-  await renderWithClient()
-  inputValueAndBlur(getStartTimeInput(), "09:00")
-  inputValueAndBlur(getStopTimeInput(), "10:00")
+  const { container } = await renderWithClient()
+  inputValueAndBlur(getStopTimeInput(), formatTime(timeStop))
 
   fireEvent.click(getActionButton())
-
   await screen.findByText("Entry updated.")
 
   expect(updateTimeEntryMock).toBeCalledTimes(1)
   expect(updateTimeEntryMock).toBeCalledWith({
     ...mockTimeEntryRunning,
-    duration: 3600,
-    start: combineDateWithTime(now, "09:00"),
-    stop: combineDateWithTime(now, "10:00"),
+    duration: 7200, // 2h
+    start: timeStart,
+    stop: timeStop,
   } as TimeEntry)
 
-  // FIXME uncomment for A.5
-  // expect(getTaskSelector()).toHaveValue("")
-  // expect(getProjectSelectorValueElement(container)).toHaveTextContent(`${mockTimeEntryRunning.project.name} | ${mockTimeEntryRunning.project.client.name}`)
-  // expect(getStartTimeInput()).toHaveValue(formatTime(new Date()))
-  // expect(getStopTimeInput()).toHaveValue("")
-  // expect(getActionButton()).toHaveTextContent("Start")
+  // check reset of UI
+  expect(getTaskSelector()).toHaveValue("")
+  expect(getProjectSelectorValueElement(container)).toHaveTextContent(`${mockTimeEntryRunning.project.name} | ${mockTimeEntryRunning.project.client.name}`)
+  expect(getStartTimeInput()).toHaveValue(formatTime(new Date()))
+  expect(getStopTimeInput()).toHaveValue("")
+  expect(getActionButton()).toHaveTextContent("Start")
 })

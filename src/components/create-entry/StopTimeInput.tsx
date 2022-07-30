@@ -57,7 +57,7 @@ export function StopTimeInput({ placeholder, tabIndex, width }: TimeInputProps) 
       status={status}
       style={{ width }}
       tabIndex={tabIndex}
-      value={value || stopTime}
+      value={stopTime}
     />
   )
 }

@@ -19,14 +19,14 @@
 
 ## Status
 
-| Req | Implementation | Tests      |
-| --- | -------------- | ---------- |
-| A.1 | done           | done       |
-| A.2 | done           | done       |
-| A.3 | done           | done       |
-| A.4 | done           | done       |
-| A.5 | incomplete     | incomplete |
-| B.1 |                |            |
-| B.2 |                |            |
-| B.3 |                |            |
-| B.4 |                |            |
+| Req | Implementation | Tests |
+| --- | -------------- | ----- |
+| A.1 | done           | done  |
+| A.2 | done           | done  |
+| A.3 | done           | done  |
+| A.4 | done           | done  |
+| A.5 | done           | done  |
+| B.1 |                |       |
+| B.2 |                |       |
+| B.3 |                |       |
+| B.4 |                |       |

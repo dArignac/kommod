@@ -3,7 +3,7 @@ import differenceInSeconds from "date-fns/differenceInSeconds"
 import { useStoreState } from "pullstate"
 import { useEffect } from "react"
 import { useMutation } from "react-query"
-import { combineDateWithTime } from "../../services/date"
+import { combineDateWithTime, formatTime } from "../../services/date"
 import { TogglService } from "../../services/toggl/TogglService"
 import { SettingsStore, TimeBookingStore } from "../../store"
 import { resetTimeBookingStore } from "../../tests/store"
@@ -27,7 +27,8 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
   const mutationStopEntry = useMutation<TimeEntry | null, unknown, number, unknown>((timeEntryId) => TogglService.getInstance(token).stopTimeEntry(timeEntryId), {
     async onSuccess(entry, variables, context) {
       if (entry !== null) {
-        resetTimeBookingStore(entry.project.id)
+        // reset but set the start date to now
+        resetTimeBookingStore(entry.project.id, formatTime(new Date()))
       }
     },
     async onError(error, variables, context) {
@@ -38,7 +39,8 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
   const mutationUpdateEntry = useMutation<TimeEntry | null, unknown, TimeEntry, unknown>((entry: TimeEntry) => TogglService.getInstance(token).updateTimeEntry(entry), {
     onSuccess(entry, variables, context) {
       if (entry !== null) {
-        resetTimeBookingStore(entry.project.id)
+        // reset but set the start date to now
+        resetTimeBookingStore(entry.project.id, formatTime(new Date()))
       }
     },
     async onError(error, variables, context) {
