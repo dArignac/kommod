@@ -18,3 +18,11 @@ export function Error({ status, title, subTitle, extra }: ErrorProps) {
     </Row>
   )
 }
+
+interface TogglAPIErrorProps {
+  extra: ReactNode
+}
+
+export function TogglAPIError({ extra }: TogglAPIErrorProps) {
+  return <Error status="warning" title="Unable to fetch user data from toggl." subTitle="Please ensure the toggl.com API token is set in settings!" extra={extra} />
+}

@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
+import { getSkeletonLoading } from "../tests/selectors"
 import { SkeletonLoading } from "./SkeletonLoading"
 
-test("It renders", () => {
+test("it renders", () => {
   render(<SkeletonLoading />)
-  expect(screen.getByTestId("skeleton-loading")).toBeInTheDocument()
+  expect(getSkeletonLoading()).toBeInTheDocument()
 })

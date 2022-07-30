@@ -17,7 +17,7 @@ export type StartStopable = {
 
 export type TimeEntry = {
   description: string
-  duration: number
+  duration?: number
   id: number
   project: Project
 } & StartStopable

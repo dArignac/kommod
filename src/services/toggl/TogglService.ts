@@ -1,10 +1,10 @@
 import axios, { AxiosInstance } from "axios"
 import { config } from "../../config"
 import { isDev } from "../../helpers"
-import { ClientStore, ProjectStore, UserStore } from "../../store"
+import { TimeBookingStore, TogglStore } from "../../store"
 import { Client, Project, TimeEntry, User } from "../../types"
-import { setToBeforeMidnight, setToMidnight, sort } from "../date"
-import { TogglTimeEntry, TogglUserResponse } from "./types"
+import { formatTime, setToBeforeMidnight, setToMidnight, sortStartStopables } from "../date"
+import { TogglCurrentTimeEntryResponse, TogglTimeEntry, TogglUserResponse } from "./types"
 
 export class TogglService {
   private static instance: TogglService
@@ -44,6 +44,10 @@ export class TogglService {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
+  /**
+   * Fetches the user information.
+   * @returns User
+   */
   public async fetchUser(): Promise<User> {
     if (isDev() && config.development.networkDelays.fetchUser > 0) {
       await this.sleep(config.development.networkDelays.fetchUser)
@@ -62,31 +66,55 @@ export class TogglService {
         name: client.name,
       } as Client
     })
-    const projects = data.data.projects.map((project) => {
-      return {
-        client: clients.find((client) => client.id === project.cid),
-        color: project.hex_color,
-        id: project.id,
-        name: project.name,
-      } as Project
-    })
+    const projects = data.data.projects
+      .map((project) => {
+        return {
+          client: clients.find((client) => client.id === project.cid),
+          color: project.hex_color,
+          id: project.id,
+          name: project.name,
+        } as Project
+      })
+      .sort(function (p1, p2) {
+        return p1.name.localeCompare(p2.name)
+      })
+    const tasks = data.data.time_entries.map((time_entry) => time_entry.description)
     const user = {
       email: data.data.email,
       id: data.data.id,
     } as User
 
     // update stores
-    ClientStore.update((s) => {
+    TogglStore.update((s) => {
       s.clients = clients
-    })
-    ProjectStore.update((s) => {
       s.projects = projects
-    })
-    UserStore.update((s) => {
+      s.tasks = tasks
       s.user = user
     })
 
     return user
+  }
+
+  public async fetchActiveTimeEntry(): Promise<TimeEntry | null> {
+    let { data } = await this.ax.get<TogglCurrentTimeEntryResponse>("/time_entries/current", {
+      ...this.getAuth(),
+    })
+
+    if (data.data !== null) {
+      const entry = this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
+
+      TimeBookingStore.update((s) => {
+        s.day = entry.start
+        s.description = entry.description
+        s.start = formatTime(entry.start)
+        s.entry = entry
+        s.projectId = entry.project.id
+      })
+
+      return entry
+    } else {
+      return null
+    }
   }
 
   /**
@@ -104,28 +132,49 @@ export class TogglService {
       params: { start_date: setToMidnight(day).toISOString(), end_date: setToBeforeMidnight(day).toISOString() },
     })
 
-    const projects = ProjectStore.getRawState().projects
+    return data.map((entry: TogglTimeEntry) => this.mapTimeEntry(entry, TogglStore.getRawState().projects)).sort(sortStartStopables)
+  }
 
-    // we map only what we need - adjust tests accordingly
-    return (
-      data
-        .map((entry: TogglTimeEntry) => {
-          const project = projects.find((project) => project.id === entry.pid)
-          const item = {
-            description: entry.description,
-            duration: entry.duration,
-            id: entry.id,
-            project,
-            start: new Date(entry.start),
-          } as TimeEntry
-          if ("stop" in entry) {
-            item.stop = new Date(entry.stop)
-          }
-          return item
-        })
-        // sort entries
-        .sort(sort)
-    )
+  /**
+   * Stops a time entry.
+   * @param id time entry id
+   * @returns the entry or null
+   */
+  public async stopTimeEntry(id: number): Promise<TimeEntry | null> {
+    try {
+      const { data } = await this.ax.put<{ data: TogglTimeEntry }>(`/time_entries/${id}/stop`, {}, { ...this.getAuth(), params: { id } })
+
+      if (data.data !== null) {
+        return this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
+      }
+    } catch {}
+    return null
+  }
+
+  public async updateTimeEntry(entry: TimeEntry): Promise<TimeEntry | null> {
+    try {
+      const { data } = await this.ax.put<{ data: TogglTimeEntry }>(`/time_entries/${entry.id}`, { time_entry: entry }, { ...this.getAuth() })
+
+      if (data.data !== null) {
+        return this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
+      }
+    } catch {}
+    return null
+  }
+
+  private mapTimeEntry(entry: TogglTimeEntry, projects: Project[]): TimeEntry {
+    const project = projects.find((project) => project.id === entry.pid)
+    const item = {
+      description: entry.description,
+      duration: entry.duration,
+      id: entry.id,
+      project,
+      start: new Date(entry.start),
+    } as TimeEntry
+    if ("stop" in entry) {
+      item.stop = new Date(entry.stop!!)
+    }
+    return item
   }
 
   public static getInstance(token: string): TogglService {
