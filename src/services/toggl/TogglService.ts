@@ -4,7 +4,7 @@ import { isDev } from "../../helpers"
 import { TimeBookingStore, TogglStore } from "../../store"
 import { Client, Project, TimeEntry, User } from "../../types"
 import { formatTime, setToBeforeMidnight, setToMidnight, sortStartStopables } from "../date"
-import { TogglCurrentTimeEntryResponse, TogglTimeEntry, TogglUserResponse } from "./types"
+import { TogglClient, TogglGenericResponse, TogglProject, TogglTimeEntry, TogglUser } from "./types"
 
 export class TogglService {
   private static instance: TogglService
@@ -54,50 +54,78 @@ export class TogglService {
     }
 
     // fetch data
-    let { data } = await this.ax.get<TogglUserResponse>("/me", {
+    let { data } = await this.ax.get<TogglUser>("/me", {
       ...this.getAuth(),
     })
 
-    // FIXME the /me call does not include clients and projects any more
+    const user: User = {
+      defaultWorkspaceId: data.default_workspace_id,
+      email: data.email,
+      id: data.id,
+    }
 
-    // map data
-    const clients = data.data.clients.map((client) => {
-      return {
-        id: client.id,
-        name: client.name,
-      } as Client
-    })
-    const projects = data.data.projects
-      .map((project) => {
-        return {
-          client: clients.find((client) => client.id === project.cid),
-          color: project.hex_color,
-          id: project.id,
-          name: project.name,
-        } as Project
-      })
-      .sort(function (p1, p2) {
-        return p1.name.localeCompare(p2.name)
-      })
-    const tasks = data.data.time_entries.map((time_entry) => time_entry.description)
-    const user = {
-      email: data.data.email,
-      id: data.data.id,
-    } as User
-
-    // update stores
+    // update store
     TogglStore.update((s) => {
-      s.clients = clients
-      s.projects = projects
-      s.tasks = tasks
+      // s.tasks = tasks
       s.user = user
     })
 
     return user
   }
 
+  public async fetchClients(workspaceId: number): Promise<Client[]> {
+    let { data } = await this.ax.get<TogglClient[]>(`/workspaces/${workspaceId}/clients`, { ...this.getAuth() })
+
+    if (data != null) {
+      const clients = data.map((client) => {
+        return {
+          id: client.id,
+          name: client.name,
+        } as Client
+      })
+
+      TogglStore.update((s) => {
+        s.clients = clients
+      })
+
+      return clients
+    }
+
+    return []
+  }
+
+  public async fetchProjects(workspaceId: number): Promise<Project[]> {
+    let { data } = await this.ax.get<TogglProject[]>(`/workspaces/${workspaceId}/projects`, { ...this.getAuth() })
+
+    const clients = TogglStore.getRawState().clients
+
+    if (data != null) {
+      const projects = data
+        .map((project) => {
+          return {
+            client: clients.find((client) => client.id === project.client_id),
+            color: project.color,
+            id: project.id,
+            name: project.name,
+          } as Project
+        })
+        .sort(function (p1, p2) {
+          return p1.name.localeCompare(p2.name)
+        })
+
+      TogglStore.update((s) => {
+        s.projects = projects
+      })
+    }
+
+    return []
+  }
+
+  // FIXME tasks
+  // const tasks = data.data.time_entries.map((time_entry) => time_entry.description)
+
   public async fetchActiveTimeEntry(): Promise<TimeEntry | null> {
-    let { data } = await this.ax.get<TogglCurrentTimeEntryResponse>("/time_entries/current", {
+    let { data } = await this.ax.get<TogglGenericResponse<TogglTimeEntry>>("/time_entries/current", {
       ...this.getAuth(),
     })
 

@@ -27,12 +27,32 @@ export type TogglTimeEntry = {
 
 export type TogglClient = {
   at: string
+  foreign_id: string
   id: number
   name: string
+  server_deleted_at?: string
   wid: number
 }
 
 export type TogglInvitation = {}
+
+export type TogglPeriod = {
+  end_date: string
+  start_date: string
+}
+
+export type TogglRecurringParameterItems = {
+  custom_period: number
+  estimated_seconds: number
+  parameter_end_date: string
+  parameter_start_date: string
+  period: string
+  project_start_date: string
+}
+
+export type TogglRecurringParameters = {
+  items: TogglRecurringParameterItems
+}
 
 export type TogglProject = {
   active: boolean
@@ -41,16 +61,25 @@ export type TogglProject = {
   auto_estimates: boolean
   billable: boolean
   cid: number
+  client_id: number
   color: string
   created_at: string
   currency: string
-  hex_color: string
+  current_period: TogglPeriod
+  estimated_hours: number
+  fixed_fee: number
+  foreign_id: number
   id: number
   is_private: boolean
   name: string
   rate: number
+  rate_last_updated: string
+  recurring: boolean
+  recurring_parameters?: TogglRecurringParameters
+  server_deleted_at?: string
   template: boolean
   wid: number
+  workspace_id: number
 }
 
 export type TogglTag = {
@@ -105,11 +134,6 @@ export type TogglUser = {
   workspaces: TogglWorkspace[]
 }
 
-export type TogglUserResponse = {
-  data: TogglUser
-  since: string
-}
-
-export type TogglCurrentTimeEntryResponse = {
-  data: TogglTimeEntry | null
+export type TogglGenericResponse<T> = {
+  data: T | null
 }

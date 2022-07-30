@@ -23,6 +23,7 @@ export type TimeEntry = {
 } & StartStopable
 
 export type User = {
+  defaultWorkspaceId: number
   email: string
   id: number
 }
