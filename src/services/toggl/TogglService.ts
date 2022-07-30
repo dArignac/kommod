@@ -14,7 +14,7 @@ export class TogglService {
   private constructor(token: string) {
     this.token = token
     this.ax = axios.create({
-      baseURL: "https://api.track.toggl.com/api/v8",
+      baseURL: "https://api.track.toggl.com/api/v9",
     })
   }
 
@@ -56,8 +56,9 @@ export class TogglService {
     // fetch data
     let { data } = await this.ax.get<TogglUserResponse>("/me", {
       ...this.getAuth(),
-      params: { with_related_data: true },
     })
+
+    // FIXME the /me call does not include clients and projects any more
 
     // map data
     const clients = data.data.clients.map((client) => {

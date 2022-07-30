@@ -10,6 +10,8 @@ import {
   mockTimeEntry1,
   mockTimeEntry2,
   mockTimeEntryRunning,
+  mockTogglTimeEntry1,
+  mockTogglTimeEntry2,
   mockTogglTimeEntryRunning,
   mockUser,
 } from "../../tests/mocks"
@@ -33,7 +35,7 @@ test("fetches and transforms user data correctly", async () => {
   expect(storeToggl.clients).toContainEqual(mockClient1)
 
   // tasks
-  expect(storeToggl.tasks).toStrictEqual(["Time entries task a", "Time entries task b"])
+  expect(storeToggl.tasks).toStrictEqual([mockTogglTimeEntry1.description, mockTogglTimeEntry2.description])
 
   // projects
   expect(storeToggl.projects.length).toBe(2)

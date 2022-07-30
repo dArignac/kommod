@@ -6,18 +6,23 @@ export type TogglBlogPost = {
 export type TogglTimeEntry = {
   at: string
   billable: boolean
-  created_with?: string
   description: string
   duration?: number
   duronly?: boolean
-  guid?: string
   id: number
   pid: number
+  project_id: number
+  server_deleted_at?: string
   start: string
   stop?: string
+  tag_ids?: number[]
   tags: string[]
+  task_id?: number
   tid?: number
+  uid: number
+  user_id: number
   wid: number
+  workspace_id: number
 }
 
 export type TogglClient = {
@@ -80,30 +85,23 @@ export type TogglUser = {
   at: string
   beginning_of_week: number
   clients: TogglClient[]
+  country_id: number
   created_at: string
   date_format: string
-  default_wid: number
-  duration_format: string
+  default_workspace_id: number
   email: string
   fullname: string
   id: number
   image_url: string
+  intercom_hash: string
   invitation: TogglInvitation
-  jquery_date_format: string
-  jquery_timeofday_format: string
-  language: string
+  openid_email: string
   openid_enabled: boolean
   projects: TogglProject[]
-  record_timeline: boolean
-  send_product_emails: boolean
-  send_timer_notifications: boolean
-  send_weekly_report: boolean
-  should_upgrade: boolean
-  store_start_and_stop_time: boolean
   tags: TogglTag[]
   time_entries: TogglTimeEntry[]
-  timeofday_format: string
   timezone: string
+  updated_at: string
   workspaces: TogglWorkspace[]
 }
 

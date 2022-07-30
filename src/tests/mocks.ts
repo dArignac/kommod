@@ -96,90 +96,6 @@ export const mockProject2: Project = {
   name: project2.name,
 }
 
-// User
-export const mockUser = {
-  since: 1362575771,
-  data: {
-    api_token: "1971800d4d82861d8f2c1651fea4d212",
-    at: "2013-03-06T12:18:42+00:00",
-    beginning_of_week: 0,
-    clients: [mockTogglClient1],
-    created_at: "2021-11-24T15:01:12+00:00",
-    date_format: "MM/DD/YYYY",
-    default_wid: 1,
-    duration_format: "improved",
-    email: "johnt@swift.com",
-    fullname: "John Swift",
-    id: 9000,
-    image_url: "https://www.toggl.com/system/avatars/9000/small/open-uri20121116-2767-b1qr8l.png",
-    invitation: {},
-    jquery_date_format: "m/d/Y",
-    jquery_timeofday_format: "h:i A",
-    language: "en_US",
-    openid_enabled: false,
-    projects: [mockTogglProject1, mockTogglProject2],
-    record_timeline: true,
-    render_timeline: true,
-    retention: 9,
-    send_product_emails: false,
-    send_timer_notifications: true,
-    send_weekly_report: false,
-    should_upgrade: false,
-    sidebar_piechart: false,
-    store_start_and_stop_time: true,
-    tags: [
-      {
-        at: "2013-02-21T14:57:46+00:00",
-        id: 1,
-        name: "billable",
-        wid: 188309,
-      } as TogglTag,
-      {
-        at: "2013-02-22T14:06:17+00:00",
-        id: 2,
-        name: "important",
-        wid: 188309,
-      } as TogglTag,
-    ],
-    timeline_enabled: true,
-    timeline_experiment: true,
-    timeofday_format: "h:mm A",
-    timezone: "Europe/Berlin",
-    time_entries: [
-      {
-        at: "2013-03-06T14:00:00+00:00",
-        billable: false,
-        description: "Time entries task a",
-        duration: 60 * 60,
-        id: 1,
-        start: "2013-03-06T13:00:00+00:00",
-        stop: "2013-03-06T14:00:00+00:00",
-        tags: [""],
-        wid: 1,
-      } as TogglTimeEntry,
-      {
-        at: "2013-03-06T15:00:00+00:00",
-        billable: false,
-        description: "Time entries task b",
-        duration: 60 * 30,
-        id: 2,
-        start: "2013-03-06T14:30:00+00:00",
-        stop: "2013-03-06T15:00:00+00:00",
-        tags: [""],
-        wid: 1,
-      } as TogglTimeEntry,
-    ],
-    workspaces: [
-      {
-        id: 1,
-        name: "John's WS",
-        premium: true,
-        at: "2013-03-06T09:00:30+00:00",
-      } as TogglWorkspace,
-    ],
-  } as TogglUser,
-}
-
 // Time entries
 const timeEntry1 = {
   description: "Meeting with the client",
@@ -195,10 +111,14 @@ export const mockTogglTimeEntry1: TogglTimeEntry = {
   duration: timeEntry1.duration,
   id: timeEntry1.id,
   pid: 1,
+  project_id: 1,
   start: timeEntry1.start,
   stop: timeEntry1.stop,
   tags: [""],
+  uid: 1,
+  user_id: 1,
   wid: 1,
+  workspace_id: 1,
 }
 export const mockTimeEntry1: TimeEntry = {
   description: timeEntry1.description,
@@ -223,10 +143,14 @@ export const mockTogglTimeEntry2: TogglTimeEntry = {
   duration: timeEntry2.duration,
   id: timeEntry2.id,
   pid: 1,
+  project_id: 1,
   start: timeEntry2.start,
   stop: timeEntry2.stop,
   tags: [""],
+  uid: 1,
+  user_id: 1,
   wid: 1,
+  workspace_id: 1,
 }
 export const mockTimeEntry2: TimeEntry = {
   description: timeEntry2.description,
@@ -251,9 +175,13 @@ export const mockTogglTimeEntryRunning: TogglTimeEntry = {
   description: timeEntryRunning.description,
   id: timeEntryRunning.id,
   pid: 1,
+  project_id: 1,
   start: timeEntryRunning.start,
   tags: [""],
+  uid: 1,
+  user_id: 1,
   wid: 1,
+  workspace_id: 1,
 }
 export const mockTimeEntryRunning: TimeEntry = {
   description: timeEntryRunning.description,
@@ -265,4 +193,54 @@ export const mockTimeEntryStopped: TimeEntry = {
   ...mockTimeEntryRunning,
   stop: addMinutes(mockTimeEntryRunning.start, 15),
   duration: 15,
+}
+
+// User
+const user: TogglUser = {
+  api_token: "1971800d4d82861d8f2c1651fea4d212",
+  at: "2013-03-06T12:18:42+00:00",
+  beginning_of_week: 0,
+  clients: [mockTogglClient1],
+  country_id: 1,
+  created_at: "2021-11-24T15:01:12+00:00",
+  date_format: "MM/DD/YYYY",
+  default_workspace_id: 1,
+  email: "johnt@swift.com",
+  fullname: "John Swift",
+  id: 9000,
+  intercom_hash: "",
+  image_url: "https://www.toggl.com/system/avatars/9000/small/open-uri20121116-2767-b1qr8l.png",
+  invitation: {},
+  openid_email: "",
+  openid_enabled: false,
+  projects: [mockTogglProject1, mockTogglProject2],
+  tags: [
+    {
+      at: "2013-02-21T14:57:46+00:00",
+      id: 1,
+      name: "billable",
+      wid: 188309,
+    } as TogglTag,
+    {
+      at: "2013-02-22T14:06:17+00:00",
+      id: 2,
+      name: "important",
+      wid: 188309,
+    } as TogglTag,
+  ],
+  timezone: "Europe/Berlin",
+  time_entries: [mockTogglTimeEntry1, mockTogglTimeEntry2],
+  updated_at: "2013-03-06T14:30:00+00:00",
+  workspaces: [
+    {
+      id: 1,
+      name: "John's WS",
+      premium: true,
+      at: "2013-03-06T09:00:30+00:00",
+    } as TogglWorkspace,
+  ],
+}
+export const mockUser = {
+  since: 1362575771,
+  data: user,
 }
