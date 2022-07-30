@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
-import React from "react"
 import { SettingsStore } from "../store"
+import { getSettingsSubmitButton, getSettingsTokenInput } from "../tests/selectors"
 import { Settings } from "./Settings"
 
 test("Renders the form", async () => {
@@ -12,8 +12,8 @@ test("Renders the form", async () => {
 test("It saves and loads the token value", async () => {
   await render(<Settings />)
 
-  const input = screen.getByTestId("token") as HTMLInputElement
-  const submit = screen.getByTestId("submit") as HTMLButtonElement
+  const input = getSettingsTokenInput()
+  const submit = getSettingsSubmitButton()
 
   expect(input.value).toBe("")
   fireEvent.change(input, { target: { value: "testToken1" } })
@@ -27,8 +27,8 @@ test("It saves and loads the token value", async () => {
 test("Empty token triggers error message", async () => {
   await render(<Settings />)
 
-  const input = screen.getByTestId("token") as HTMLInputElement
-  const submit = screen.getByTestId("submit") as HTMLButtonElement
+  const input = getSettingsTokenInput()
+  const submit = getSettingsSubmitButton()
 
   fireEvent.change(input, { target: { value: "" } })
   fireEvent.click(submit)

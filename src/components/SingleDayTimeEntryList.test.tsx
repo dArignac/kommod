@@ -1,6 +1,12 @@
-import { render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
+import { QueryClient, QueryClientProvider } from "react-query"
+import { SingleDayTimeEntryList } from "./SingleDayTimeEntryList"
 
-// FIXME add some cool tests
-test("Renders layout", () => {
-  expect(true).toBeTruthy()
+test("renders the component", () => {
+  const queryClient = new QueryClient()
+  render(
+    <QueryClientProvider client={queryClient}>
+      <SingleDayTimeEntryList />
+    </QueryClientProvider>
+  )
 })

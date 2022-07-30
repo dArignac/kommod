@@ -1,17 +1,16 @@
-import { render, screen, waitFor } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
-import React from "react"
 import { App } from "./App"
-import { mockTimeEntries1, mockUser } from "./mocks"
 import { SettingsStore } from "./store"
+import { mockTimeEntries1, mockUser } from "./tests/mocks"
+import { getHomeLink, getSettingsLink, getSkeletonLoading } from "./tests/selectors"
 
 const mock = new MockAdapter(axios)
 
 test("Initially shows skeleton loading", () => {
   render(<App />)
-  expect(screen.getByTestId("skeleton-loading")).toBeVisible()
+  expect(getSkeletonLoading()).toBeVisible()
 })
 
 test("Renders default components", async () => {
@@ -32,7 +31,6 @@ test("Renders default components", async () => {
 })
 
 test("Navigation to settings works", () => {
-  const leftClick = { button: 0 }
   mock.onGet("/me").reply(200, mockUser)
   mock.onGet("/time_entries").reply(200, mockTimeEntries1)
 
@@ -42,8 +40,8 @@ test("Navigation to settings works", () => {
 
   render(<App />)
 
-  userEvent.click(screen.getByTestId("link-settings"), leftClick)
+  fireEvent.click(getSettingsLink())
   expect(screen.getByText(/kommod - Settings/)).toBeInTheDocument()
-  userEvent.click(screen.getByTestId("link-home"), leftClick)
+  fireEvent.click(getHomeLink())
   expect(screen.getByText(/kommod/)).toBeInTheDocument()
 })

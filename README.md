@@ -1,6 +1,6 @@
 # kommod
 
-A toggl.com client.
+A [toggl track](https://track.toggl.com/) client.
 
 **Please note that this project is currently in development and cannot be used until the [MVP project](https://github.com/dArignac/kommod/projects/1) is finished!**
 

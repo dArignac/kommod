@@ -22,7 +22,7 @@ export function setToBeforeMidnight(day: Date): Date {
   return setSeconds(setMinutes(setHours(day, 23), 59), 59)
 }
 
-export function sort<T extends StartStopable>(a: T, b: T): number {
+export function sortStartStopables<T extends StartStopable>(a: T, b: T): number {
   if (hasOwnProperty(a, "stop") && hasOwnProperty(b, "stop")) {
     return compareDesc(a.stop!, b.stop!)
   } else if (!hasOwnProperty(a, "stop") && !hasOwnProperty(b, "stop")) {
@@ -33,4 +33,25 @@ export function sort<T extends StartStopable>(a: T, b: T): number {
     return 1
   }
   return 0
+}
+
+export function parseTime(input: string): string | null {
+  if (input.length < 3 || input.length > 5) return null
+
+  input = input.replace(":", "")
+  let minutes = parseInt(input.slice(-2))
+  let hours = parseInt(input.slice(0, input.length - 2))
+
+  if (isNaN(minutes) || isNaN(hours)) return null
+  if (hours > 23) hours = 23
+  if (minutes > 59) minutes = 59
+
+  return String(hours).padStart(2, "0") + ":" + String(minutes).padStart(2, "0")
+}
+
+export function combineDateWithTime(date: Date, time: string): Date {
+  const times = time.split(":")
+  date = setHours(date, parseInt(times[0]))
+  date = setMinutes(date, parseInt(times[1]))
+  return date
 }
