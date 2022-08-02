@@ -42,12 +42,12 @@ export function DataInitWrapper({ content }: DataInitWrapperProps) {
     }
   )
 
-  // const { status: statusCurrentTimeEntry } = useQuery<TimeEntry | null, Error>(["time_entry_current"], async () => TogglService.getInstance(token).fetchActiveTimeEntry(), {
-  //   initialDataUpdatedAt: +new Date(),
-  //   staleTime: 5 * 1000,
-  //   retry: 0,
-  //   enabled: !!token && !!clients,
-  // })
+  const { status: statusCurrentTimeEntry } = useQuery<TimeEntry | null, Error>(["time_entry_current"], async () => TogglService.getInstance(token).fetchActiveTimeEntry(), {
+    initialDataUpdatedAt: +new Date(),
+    staleTime: 5 * 1000,
+    retry: 0,
+    enabled: !!token && !!user && !!clients && !!projects,
+  })
 
   const errorDisplay = (
     <TogglAPIError
@@ -59,8 +59,8 @@ export function DataInitWrapper({ content }: DataInitWrapperProps) {
     />
   )
 
-  const isLoading = statusUser === "loading" || statusClients === "loading" || statusProjects === "loading"
-  const isError = statusUser === "error" || statusClients === "error" || statusProjects === "error"
+  const isLoading = statusUser === "loading" || statusClients === "loading" || statusProjects === "loading" || statusCurrentTimeEntry === "loading"
+  const isError = statusUser === "error" || statusClients === "error" || statusProjects === "error" || statusCurrentTimeEntry === "error"
 
   return <>{isLoading ? <SkeletonLoading /> : isError ? errorDisplay : content}</>
 }

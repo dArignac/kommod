@@ -121,15 +121,14 @@ export class TogglService {
     return []
   }
 
-  // FIXME tasks
-  // const tasks = data.data.time_entries.map((time_entry) => time_entry.description)
-
   public async fetchActiveTimeEntry(): Promise<TimeEntry | null> {
-    let { data } = await this.ax.get<TogglGenericResponse<TogglTimeEntry>>("/time_entries/current", {
+    let { data } = await this.ax.get<TogglGenericResponse<TogglTimeEntry>>("/me/time_entries/current", {
       ...this.getAuth(),
     })
 
-    if (data.data !== null) {
+    if (data === null || data.data === null) {
+      return null
+    } else {
       const entry = this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
 
       TimeBookingStore.update((s) => {
@@ -141,8 +140,6 @@ export class TogglService {
       })
 
       return entry
-    } else {
-      return null
     }
   }
 
@@ -156,7 +153,7 @@ export class TogglService {
       await this.sleep(config.development.networkDelays.fetchEntries)
     }
 
-    const { data } = await this.ax.get<TogglTimeEntry[]>("/time_entries", {
+    const { data } = await this.ax.get<TogglTimeEntry[]>("/me/time_entries", {
       ...this.getAuth(),
       params: { start_date: setToMidnight(day).toISOString(), end_date: setToBeforeMidnight(day).toISOString() },
     })
