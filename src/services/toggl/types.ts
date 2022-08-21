@@ -133,7 +133,3 @@ export type TogglUser = {
   updated_at: string
   workspaces: TogglWorkspace[]
 }
-
-export type TogglGenericResponse<T> = {
-  data: T | null
-}

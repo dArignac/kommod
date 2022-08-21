@@ -2,9 +2,9 @@ import axios, { AxiosInstance } from "axios"
 import { config } from "../../config"
 import { isDev } from "../../helpers"
 import { TimeBookingStore, TogglStore } from "../../store"
-import { Client, Project, TimeEntry, User } from "../../types"
-import { formatTime, setToBeforeMidnight, setToMidnight, sortStartStopables } from "../date"
-import { TogglClient, TogglGenericResponse, TogglProject, TogglTimeEntry, TogglUser } from "./types"
+import { Client, Project, TimeEntry, User, Workspace } from "../../types"
+import { formatDate, formatTime, setToBeforeMidnight, setToMidnight, sortStartStopables } from "../date"
+import { TogglClient, TogglProject, TogglTimeEntry, TogglUser } from "./types"
 
 export class TogglService {
   private static instance: TogglService
@@ -102,11 +102,15 @@ export class TogglService {
     if (data != null) {
       const projects = data
         .map((project) => {
+          const ws: Workspace = {
+            id: project.workspace_id,
+          }
           return {
             client: clients.find((client) => client.id === project.client_id),
             color: project.color,
             id: project.id,
             name: project.name,
+            workspace: ws,
           } as Project
         })
         .sort(function (p1, p2) {
@@ -122,14 +126,14 @@ export class TogglService {
   }
 
   public async fetchActiveTimeEntry(): Promise<TimeEntry | null> {
-    let { data } = await this.ax.get<TogglGenericResponse<TogglTimeEntry>>("/me/time_entries/current", {
+    let { data } = await this.ax.get<TogglTimeEntry>("/me/time_entries/current", {
       ...this.getAuth(),
     })
 
-    if (data === null || data.data === null) {
+    if (data === null) {
       return null
     } else {
-      const entry = this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
+      const entry = this.mapTimeEntry(data, TogglStore.getRawState().projects)
 
       TimeBookingStore.update((s) => {
         s.day = entry.start
@@ -153,43 +157,28 @@ export class TogglService {
       await this.sleep(config.development.networkDelays.fetchEntries)
     }
 
+    // FIXME toggl messed it up, querying with start_date=2022-08-21 and end_date=2022-08-21 returns zero results but should return the entries of that day
     const { data } = await this.ax.get<TogglTimeEntry[]>("/me/time_entries", {
       ...this.getAuth(),
-      params: { start_date: setToMidnight(day).toISOString(), end_date: setToBeforeMidnight(day).toISOString() },
+      params: { start_date: formatDate(setToMidnight(day)), end_date: formatDate(setToBeforeMidnight(day)) },
     })
 
     return data.map((entry: TogglTimeEntry) => this.mapTimeEntry(entry, TogglStore.getRawState().projects)).sort(sortStartStopables)
   }
 
-  /**
-   * Stops a time entry.
-   * @param id time entry id
-   * @returns the entry or null
-   */
-  public async stopTimeEntry(id: number): Promise<TimeEntry | null> {
-    try {
-      const { data } = await this.ax.put<{ data: TogglTimeEntry }>(`/time_entries/${id}/stop`, {}, { ...this.getAuth(), params: { id } })
-
-      if (data.data !== null) {
-        return this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
-      }
-    } catch {}
-    return null
-  }
-
   public async updateTimeEntry(entry: TimeEntry): Promise<TimeEntry | null> {
     try {
-      const { data } = await this.ax.put<{ data: TogglTimeEntry }>(`/time_entries/${entry.id}`, { time_entry: entry }, { ...this.getAuth() })
+      const { data } = await this.ax.put<TogglTimeEntry>(`/workspaces/${entry.project.workspace.id}/time_entries/${entry.id}`, entry, { ...this.getAuth() })
 
-      if (data.data !== null) {
-        return this.mapTimeEntry(data.data, TogglStore.getRawState().projects)
+      if (data !== null) {
+        return this.mapTimeEntry(data, TogglStore.getRawState().projects)
       }
     } catch {}
     return null
   }
 
   private mapTimeEntry(entry: TogglTimeEntry, projects: Project[]): TimeEntry {
-    const project = projects.find((project) => project.id === entry.pid)
+    const project = projects.find((project) => project.id === entry.project_id)
     const item = {
       description: entry.description,
       duration: entry.duration,

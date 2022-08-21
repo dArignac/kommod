@@ -1,6 +1,6 @@
 import addMinutes from "date-fns/addMinutes"
 import { TogglClient, TogglProject, TogglTag, TogglTimeEntry, TogglUser, TogglWorkspace } from "../services/toggl/types"
-import { Client, Project, TimeEntry } from "../types"
+import { Client, Project, TimeEntry, Workspace } from "../types"
 
 /**
  * This mocks the toggl responses as defined through the toggl types.
@@ -25,6 +25,9 @@ export const mockClient1: Client = {
 }
 
 // Projects
+const workspace1 = {
+  id: 1,
+}
 const project1 = {
   active: false,
   actual_hours: 79,
@@ -78,11 +81,15 @@ export const mockTogglProject1: TogglProject = {
   wid: project1.wid,
   workspace_id: project1.workspace_id,
 }
+export const mockWorkspace1: Workspace = {
+  id: workspace1.id,
+}
 export const mockProject1: Project = {
   client: mockClient1,
   color: project1.color,
   id: project1.id,
   name: project1.name,
+  workspace: mockWorkspace1,
 }
 const project2 = {
   color: "4",
@@ -119,6 +126,7 @@ export const mockProject2: Project = {
   color: project2.color,
   id: project2.id,
   name: project2.name,
+  workspace: mockWorkspace1,
 }
 
 // Time entries

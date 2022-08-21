@@ -24,18 +24,6 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
   const timeStop = useStoreState(TimeBookingStore, (s) => s.stop)
   const day = useStoreState(TimeBookingStore, (s) => s.day)
 
-  const mutationStopEntry = useMutation<TimeEntry | null, unknown, number, unknown>((timeEntryId) => TogglService.getInstance(token).stopTimeEntry(timeEntryId), {
-    async onSuccess(entry, variables, context) {
-      if (entry !== null) {
-        // reset but set the start date to now
-        resetTimeBookingStore(entry.project.id, formatTime(new Date()))
-      }
-    },
-    async onError(error, variables, context) {
-      console.error("Error on stopping entry", error)
-    },
-  })
-
   const mutationUpdateEntry = useMutation<TimeEntry | null, unknown, TimeEntry, unknown>((entry: TimeEntry) => TogglService.getInstance(token).updateTimeEntry(entry), {
     onSuccess(entry, variables, context) {
       if (entry !== null) {
@@ -54,18 +42,15 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
 
   function onClick() {
     if (hasRunningEntry) {
-      if (timeStop !== undefined) {
-        const start = combineDateWithTime(day, timeStart!!)
-        const stop = combineDateWithTime(day, timeStop!!)
-        mutationUpdateEntry.mutate({
-          ...timeEntry,
-          duration: differenceInSeconds(stop, start),
-          start,
-          stop,
-        })
-      } else {
-        mutationStopEntry.mutate(timeEntry.id)
-      }
+      const start = combineDateWithTime(day, timeStart!!)
+      const stop = timeStop !== undefined ? combineDateWithTime(day, timeStop!!) : new Date()
+
+      mutationUpdateEntry.mutate({
+        ...timeEntry,
+        duration: differenceInSeconds(stop, start),
+        start,
+        stop,
+      })
     }
   }
 
@@ -86,14 +71,12 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
   }
 
   useEffect(() => {
-    if (mutationStopEntry.isSuccess || mutationUpdateEntry.isSuccess) {
+    if (mutationUpdateEntry.isSuccess) {
       showSuccessNotification()
-      mutationStopEntry.reset()
       mutationUpdateEntry.reset()
     }
-    if (mutationStopEntry.isError || mutationUpdateEntry.isError) {
+    if (mutationUpdateEntry.isError) {
       showErrorNotification()
-      mutationStopEntry.reset()
       mutationUpdateEntry.reset()
     }
   })
