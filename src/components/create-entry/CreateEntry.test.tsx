@@ -53,6 +53,7 @@ beforeEach(() => {
 
 afterEach(() => {
   resetStores()
+  jest.useRealTimers()
 })
 
 test("Tabbing through subcomponents is in correct order", () => {
@@ -121,6 +122,8 @@ test("A.2 ui for stop entry behaves correctly", async () => {
 })
 
 test("A.3 + A.5 stop entry with set start time and no stop time works", async () => {
+  // set the date to a fixed value to allow new Date() to always return the same, so assertions below work
+  jest.useFakeTimers().setSystemTime(new Date())
   const now = new Date()
   const timeStart = sub(now, { hours: 1 })
   const timeStop = now
