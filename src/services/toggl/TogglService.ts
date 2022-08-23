@@ -1,9 +1,10 @@
 import axios, { AxiosInstance } from "axios"
+import add from "date-fns/add"
 import { config } from "../../config"
 import { isDev } from "../../helpers"
 import { TimeBookingStore, TogglStore } from "../../store"
 import { Client, Project, TimeEntry, User, Workspace } from "../../types"
-import { formatDate, formatTime, setToBeforeMidnight, setToMidnight, sortStartStopables } from "../date"
+import { formatDate, formatTime, sortStartStopables } from "../date"
 import { TogglClient, TogglProject, TogglTimeEntry, TogglUser } from "./types"
 
 export class TogglService {
@@ -157,10 +158,11 @@ export class TogglService {
       await this.sleep(config.development.networkDelays.fetchEntries)
     }
 
-    // FIXME toggl messed it up, querying with start_date=2022-08-21 and end_date=2022-08-21 returns zero results but should return the entries of that day
+    // API takes a date and assumes the time is 00:00:00
+    // thus querying a day we need <day> as start date and <day+1> as end date
     const { data } = await this.ax.get<TogglTimeEntry[]>("/me/time_entries", {
       ...this.getAuth(),
-      params: { start_date: formatDate(setToMidnight(day)), end_date: formatDate(setToBeforeMidnight(day)) },
+      params: { start_date: formatDate(day), end_date: formatDate(add(day, { days: 1 })) },
     })
 
     return data.map((entry: TogglTimeEntry) => this.mapTimeEntry(entry, TogglStore.getRawState().projects)).sort(sortStartStopables)
