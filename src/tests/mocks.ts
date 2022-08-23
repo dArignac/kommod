@@ -28,6 +28,10 @@ export const mockClient1: Client = {
 const workspace1 = {
   id: 1,
 }
+export const mockWorkspace1: Workspace = {
+  id: workspace1.id,
+}
+
 const project1 = {
   active: false,
   actual_hours: 79,
@@ -81,9 +85,6 @@ export const mockTogglProject1: TogglProject = {
   wid: project1.wid,
   workspace_id: project1.workspace_id,
 }
-export const mockWorkspace1: Workspace = {
-  id: workspace1.id,
-}
 export const mockProject1: Project = {
   client: mockClient1,
   color: project1.color,
@@ -91,6 +92,7 @@ export const mockProject1: Project = {
   name: project1.name,
   workspace: mockWorkspace1,
 }
+
 const project2 = {
   color: "4",
   id: 2,
@@ -104,7 +106,7 @@ export const mockTogglProject2: TogglProject = {
   billable: project1.billable,
   cid: project1.cid,
   client_id: project1.client_id,
-  color: project1.color,
+  color: project2.color,
   created_at: project1.created_at,
   currency: project1.currency,
   current_period: project1.current_period,
@@ -229,7 +231,7 @@ export const mockTimeEntryStopped: TimeEntry = {
 }
 
 // User
-const user: TogglUser = {
+export const mockUser: TogglUser = {
   api_token: "1971800d4d82861d8f2c1651fea4d212",
   at: "2013-03-06T12:18:42+00:00",
   beginning_of_week: 0,
@@ -272,8 +274,4 @@ const user: TogglUser = {
       at: "2013-03-06T09:00:30+00:00",
     } as TogglWorkspace,
   ],
-}
-export const mockUser = {
-  since: 1362575771,
-  data: user,
 }

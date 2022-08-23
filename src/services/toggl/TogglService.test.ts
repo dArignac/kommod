@@ -10,6 +10,9 @@ import {
   mockTimeEntry1,
   mockTimeEntry2,
   mockTimeEntryRunning,
+  mockTogglClient1,
+  mockTogglProject1,
+  mockTogglProject2,
   mockTogglTimeEntry1,
   mockTogglTimeEntry2,
   mockTogglTimeEntryRunning,
@@ -24,37 +27,41 @@ afterEach(() => {
   mock.resetHandlers()
 })
 
-test("fetches and transforms user data correctly", async () => {
+test("fetches and transforms user data", async () => {
   mock.onGet("/me").reply(200, mockUser)
 
   const user = await TogglService.getInstance("").fetchUser()
   const storeToggl = TogglStore.getRawState()
 
-  // clients
-  expect(storeToggl.clients.length).toBe(1)
-  expect(storeToggl.clients).toContainEqual(mockClient1)
-
-  // tasks
-  expect(storeToggl.tasks).toStrictEqual([mockTogglTimeEntry1.description, mockTogglTimeEntry2.description])
-
-  // projects
-  expect(storeToggl.projects.length).toBe(2)
-  expect(storeToggl.projects).toContainEqual(mockProject1)
-  expect(storeToggl.projects).toContainEqual(mockProject2)
-
-  // sorting is alphabetically by name
-  expect(storeToggl.projects[0].id).toBe(1)
-  expect(storeToggl.projects[1].id).toBe(2)
-
-  // user
   expect(user.id).toBe(9000)
   expect(user.email).toBe("johnt@swift.com")
   expect(storeToggl.user).toBe(user)
 })
 
+test("fetches and transforms client data", async () => {
+  mock.onGet(`/workspaces/${mockUser.default_workspace_id}/clients`).reply(200, [mockTogglClient1])
+
+  const clients = await TogglService.getInstance("").fetchClients(mockUser.default_workspace_id)
+  const storeToggl = TogglStore.getRawState()
+
+  expect(clients).toStrictEqual([mockClient1])
+  expect(storeToggl.clients).toStrictEqual([mockClient1])
+})
+
+test("fetches and transforms project data", async () => {
+  mock.onGet(`/workspaces/${mockUser.default_workspace_id}/clients`).reply(200, [mockTogglClient1])
+  mock.onGet(`/workspaces/${mockUser.default_workspace_id}/projects`).reply(200, [mockTogglProject1, mockTogglProject2])
+
+  await TogglService.getInstance("").fetchClients(mockUser.default_workspace_id)
+  const projects = await TogglService.getInstance("").fetchProjects(mockUser.default_workspace_id)
+  const storeToggl = TogglStore.getRawState()
+
+  expect(projects).toStrictEqual([mockProject1, mockProject2])
+  expect(storeToggl.projects).toStrictEqual([mockProject1, mockProject2])
+})
+
 test("fetches current time entry with no entry", async () => {
-  mock.onGet("/me").reply(200, mockUser)
-  mock.onGet("/time_entries/current").reply(200, { data: null })
+  mock.onGet("/me/time_entries/current").reply(200, null)
 
   const entry = await TogglService.getInstance("").fetchActiveTimeEntry()
   const store = TimeBookingStore.getRawState()
@@ -69,8 +76,7 @@ test("fetches current time entry with no entry", async () => {
 })
 
 test("fetches current time entry with existing entry", async () => {
-  mock.onGet("/me").reply(200, mockUser)
-  mock.onGet("/time_entries/current").reply(200, { data: mockTogglTimeEntryRunning })
+  mock.onGet("/me/time_entries/current").reply(200, mockTogglTimeEntryRunning)
 
   const entry = await TogglService.getInstance("").fetchActiveTimeEntry()
   const store = TimeBookingStore.getRawState()
@@ -83,14 +89,16 @@ test("fetches current time entry with existing entry", async () => {
 })
 
 test("fetches and transforms todays entries correctly", async () => {
-  mock.onGet("/time_entries").reply(200, mockTimeEntries1)
+  // ignore the query params
+  mock.onGet("/me/time_entries").reply(200, mockTimeEntries1)
 
   const day = new Date("2022-01-16T12:33:00Z")
   const results = await TogglService.getInstance("").fetchTimeEntriesOfDay(day)
-  const history = mock.history.get.filter((h) => h.url === "/time_entries")[0]
+  const history = mock.history.get.filter((h) => h.url === "/me/time_entries")[0]
+  const storeToggl = TogglStore.getRawState()
 
-  expect(history.params.start_date).toBe("2022-01-16T00:00:00.000Z")
-  expect(history.params.end_date).toBe("2022-01-16T23:59:59.000Z")
+  expect(history.params.start_date).toBe("2022-01-16")
+  expect(history.params.end_date).toBe("2022-01-17")
   expect(results.length).toBe(mockTimeEntries1.length)
 
   // sorting
@@ -100,10 +108,13 @@ test("fetches and transforms todays entries correctly", async () => {
   // transformation
   expect(results).toContainEqual(mockTimeEntry1)
   expect(results).toContainEqual(mockTimeEntry2)
+
+  // tasks in store
+  expect(storeToggl.tasks).toEqual(["Meeting with the client", "important work"])
 })
 
 test("active entries are always sorted to the top", async () => {
-  mock.onGet("/time_entries").reply(200, [
+  mock.onGet("/me/time_entries").reply(200, [
     { id: 1, start: "2022-05-05T10:00:00+00:00", stop: "2022-05-05T11:00:00+00:00" },
     { id: 2, start: "2022-05-05T10:00:00+00:00" },
     { id: 3, start: "2022-05-05T09:00:00+00:00", stop: "2022-05-05T10:00:00+00:00" },

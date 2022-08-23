@@ -67,7 +67,6 @@ export class TogglService {
 
     // update store
     TogglStore.update((s) => {
-      // s.tasks = tasks
       s.user = user
     })
 
@@ -121,6 +120,8 @@ export class TogglService {
       TogglStore.update((s) => {
         s.projects = projects
       })
+
+      return projects
     }
 
     return []
@@ -163,6 +164,17 @@ export class TogglService {
     const { data } = await this.ax.get<TogglTimeEntry[]>("/me/time_entries", {
       ...this.getAuth(),
       params: { start_date: formatDate(day), end_date: formatDate(add(day, { days: 1 })) },
+    })
+
+    // extract the time entry descriptions as tasks for the store
+    let tasks: string[] = []
+    data.forEach((entry) => {
+      if (!tasks.includes(entry.description)) {
+        tasks.push(entry.description)
+      }
+    })
+    TogglStore.update((s) => {
+      s.tasks = s.tasks.concat(tasks)
     })
 
     return data.map((entry: TogglTimeEntry) => this.mapTimeEntry(entry, TogglStore.getRawState().projects)).sort(sortStartStopables)
