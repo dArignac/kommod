@@ -159,6 +159,9 @@ export class TogglService {
       await this.sleep(config.development.networkDelays.fetchEntries)
     }
 
+    // FIXME need to fetch more data than 24 hours due to the API only respecting UTC
+    // FIXME then need to filter the entries....
+
     // API takes a date and assumes the time is 00:00:00
     // thus querying a day we need <day> as start date and <day+1> as end date
     const { data } = await this.ax.get<TogglTimeEntry[]>("/me/time_entries", {

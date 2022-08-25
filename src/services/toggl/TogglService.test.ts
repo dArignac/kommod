@@ -13,12 +13,10 @@ import {
   mockTogglClient1,
   mockTogglProject1,
   mockTogglProject2,
-  mockTogglTimeEntry1,
-  mockTogglTimeEntry2,
   mockTogglTimeEntryRunning,
   mockUser,
 } from "../../tests/mocks"
-import { Client, Project, TimeEntry } from "../../types"
+import { TimeEntry } from "../../types"
 import { TogglService } from "./TogglService"
 
 const mock = new MockAdapter(axios)
@@ -128,56 +126,13 @@ test("active entries are always sorted to the top", async () => {
   expect(results[2].id).toBe(3)
 })
 
-// FIXME update to use update method
-// test("stopping entry works", async () => {
-//   mock.onGet("/me").reply(200, mockUser)
-//   const mockedRespondedEntry = { ...mockTogglTimeEntryRunning }
-//   mockedRespondedEntry.duration = 222
-//   mock.onPut("/time_entries/666/stop").reply(200, { data: mockedRespondedEntry })
-
-//   await TogglService.getInstance("").fetchUser()
-//   const entry = await TogglService.getInstance("").stopTimeEntry(666)
-//   const history = mock.history.put.filter((h) => h.url === "/time_entries/666/stop")[0]
-
-//   // params and auth
-//   expect(history.params.id).toBe(666)
-//   expect(history.auth).toEqual({
-//     username: "",
-//     password: "api_token",
-//   })
-
-//   // content
-//   expect(entry).toEqual({
-//     description: "The current, active entry",
-//     duration: 222,
-//     id: 3,
-//     project: {
-//       client: {
-//         id: 1,
-//         name: "Client 1",
-//       } as Client,
-//       color: "#ff0000",
-//       id: 1,
-//       name: "Project 1",
-//     } as Project,
-//     start: new Date(mockedRespondedEntry.start),
-//   } as TimeEntry)
-// })
-
-// FIXME update to use update method
-// test("returns correct if entry cannot be stopped", async () => {
-//   mock.onPut("/time_entries/666/stop").reply(404)
-//   const entry = await TogglService.getInstance("").stopTimeEntry(666)
-//   expect(entry).toBeNull()
-// })
-
 test("updating an entry works", async () => {
-  mock.onGet("/me").reply(200, mockUser)
   const mockedRespondedEntry = { ...mockTogglTimeEntryRunning }
   mockedRespondedEntry.id = 666
   mockedRespondedEntry.duration = 123
   mockedRespondedEntry.stop = "2013-03-11T12:30:00+00:00"
-  mock.onPut("/time_entries/666").reply(200, { data: mockedRespondedEntry })
+  const pathUrl = `/workspaces/${mockedRespondedEntry.workspace_id}/time_entries/${mockedRespondedEntry.id}`
+  mock.onPut(pathUrl).reply(200, mockedRespondedEntry)
 
   const payload: TimeEntry = {
     ...mockTimeEntryRunning,
@@ -188,9 +143,8 @@ test("updating an entry works", async () => {
     stop: addHours(new Date(mockedRespondedEntry.start), 1),
   }
 
-  await TogglService.getInstance("").fetchUser()
   const entry = await TogglService.getInstance("").updateTimeEntry(payload)
-  const history = mock.history.put.filter((h) => h.url === "/time_entries/666")[0]
+  const history = mock.history.put.filter((h) => h.url === pathUrl)[0]
 
   // params and auth
   expect(history.auth).toEqual({
@@ -203,7 +157,7 @@ test("updating an entry works", async () => {
 })
 
 test("returns correct if entry cannot be updated", async () => {
-  mock.onPut("/time_entries/666").reply(404)
+  mock.onPut("/me/time_entries/666").reply(404)
   const entry = await TogglService.getInstance("").updateTimeEntry({} as TimeEntry)
   expect(entry).toBeNull()
 })
