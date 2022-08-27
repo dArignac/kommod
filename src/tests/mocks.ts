@@ -133,14 +133,49 @@ export const mockProject2: Project = {
 
 // Time entries
 const timeEntry1 = {
-  description: "Meeting with the client",
+  description: "Test entry 1 2022-08-26 11:00:00-15:00:00",
   duration: 14400, // 4:00h
   id: 1,
-  start: "2013-03-11T11:36:00+00:00",
-  stop: "2013-03-11T15:36:00+00:00",
+  start: "2022-08-26T11:00:00+00:00",
+  stop: "2022-08-26T15:00:00+00:00",
+}
+const timeEntry2 = {
+  description: "Test entry 2 2022-08-26 23:00:00-00:00:00",
+  duration: 3600, // 1:00h
+  id: 2,
+  start: "2022-08-26T23:00:00+00:00",
+  stop: "2022-08-27T00:00:00+00:00",
+}
+const timeEntry3 = {
+  description: "Test entry 3 2022-08-27 00:00:00-01:00:00",
+  duration: 3600, // 1:00h
+  id: 3,
+  start: "2022-08-27T00:00:00+00:00",
+  stop: "2022-08-27T01:00:00+00:00",
+}
+const timeEntry4 = {
+  description: "Test entry 4 2022-08-27 01:00:00-02:00:00",
+  duration: 3600, // 1:00h
+  id: 4,
+  start: "2022-08-27T01:00:00+00:00",
+  stop: "2022-08-27T02:00:00+00:00",
+}
+const timeEntry5 = {
+  description: "Test entry 5 2022-08-27 02:00:00-03:00:00",
+  duration: 3600, // 1:00h
+  id: 5,
+  start: "2022-08-27T02:00:00+00:00",
+  stop: "2022-08-27T03:00:00+00:00",
+}
+const timeEntry6 = {
+  description: "Test entry 6 2022-08-27 10:32:43-10:52:43",
+  duration: 4800, // 1:20h
+  id: 6,
+  start: "2022-08-27T10:32:43+00:00",
+  stop: "2022-08-27T11:52:43+00:00",
 }
 export const mockTogglTimeEntry1: TogglTimeEntry = {
-  at: "2013-03-11T15:36:58+00:00",
+  at: "2022-08-25T15:36:58+00:00",
   billable: true,
   description: timeEntry1.description,
   duration: timeEntry1.duration,
@@ -155,6 +190,46 @@ export const mockTogglTimeEntry1: TogglTimeEntry = {
   wid: 1,
   workspace_id: 1,
 }
+export const mockTogglTimeEntry2: TogglTimeEntry = {
+  ...mockTogglTimeEntry1,
+  description: timeEntry2.description,
+  duration: timeEntry2.duration,
+  id: timeEntry2.id,
+  start: timeEntry2.start,
+  stop: timeEntry2.stop,
+}
+export const mockTogglTimeEntry3: TogglTimeEntry = {
+  ...mockTogglTimeEntry1,
+  description: timeEntry3.description,
+  duration: timeEntry3.duration,
+  id: timeEntry3.id,
+  start: timeEntry3.start,
+  stop: timeEntry3.stop,
+}
+export const mockTogglTimeEntry4: TogglTimeEntry = {
+  ...mockTogglTimeEntry1,
+  description: timeEntry4.description,
+  duration: timeEntry4.duration,
+  id: timeEntry4.id,
+  start: timeEntry4.start,
+  stop: timeEntry4.stop,
+}
+export const mockTogglTimeEntry5: TogglTimeEntry = {
+  ...mockTogglTimeEntry1,
+  description: timeEntry5.description,
+  duration: timeEntry5.duration,
+  id: timeEntry5.id,
+  start: timeEntry5.start,
+  stop: timeEntry5.stop,
+}
+export const mockTogglTimeEntry6: TogglTimeEntry = {
+  ...mockTogglTimeEntry1,
+  description: timeEntry6.description,
+  duration: timeEntry6.duration,
+  id: timeEntry6.id,
+  start: timeEntry6.start,
+  stop: timeEntry6.stop,
+}
 export const mockTimeEntry1: TimeEntry = {
   description: timeEntry1.description,
   duration: timeEntry1.duration,
@@ -162,30 +237,6 @@ export const mockTimeEntry1: TimeEntry = {
   project: mockProject1,
   start: new Date(timeEntry1.start),
   stop: new Date(timeEntry1.stop),
-}
-
-const timeEntry2 = {
-  description: "important work",
-  duration: 4800, // 1:20h
-  id: 2,
-  start: "2013-03-12T10:32:43+00:00",
-  stop: "2013-03-12T11:52:43+00:00",
-}
-export const mockTogglTimeEntry2: TogglTimeEntry = {
-  at: "2013-03-12T14:32:43+00:00",
-  billable: true,
-  description: timeEntry2.description,
-  duration: timeEntry2.duration,
-  id: timeEntry2.id,
-  pid: 1,
-  project_id: 1,
-  start: timeEntry2.start,
-  stop: timeEntry2.stop,
-  tags: [""],
-  uid: 1,
-  user_id: 1,
-  wid: 1,
-  workspace_id: 1,
 }
 export const mockTimeEntry2: TimeEntry = {
   description: timeEntry2.description,
@@ -195,8 +246,47 @@ export const mockTimeEntry2: TimeEntry = {
   start: new Date(timeEntry2.start),
   stop: new Date(timeEntry2.stop),
 }
+export const mockTimeEntry3: TimeEntry = {
+  description: timeEntry3.description,
+  duration: timeEntry3.duration,
+  id: timeEntry3.id,
+  project: mockProject1,
+  start: new Date(timeEntry3.start),
+  stop: new Date(timeEntry3.stop),
+}
+export const mockTimeEntry4: TimeEntry = {
+  description: timeEntry4.description,
+  duration: timeEntry4.duration,
+  id: timeEntry4.id,
+  project: mockProject1,
+  start: new Date(timeEntry4.start),
+  stop: new Date(timeEntry4.stop),
+}
+export const mockTimeEntry5: TimeEntry = {
+  description: timeEntry5.description,
+  duration: timeEntry5.duration,
+  id: timeEntry5.id,
+  project: mockProject1,
+  start: new Date(timeEntry5.start),
+  stop: new Date(timeEntry5.stop),
+}
+export const mockTimeEntry6: TimeEntry = {
+  description: timeEntry6.description,
+  duration: timeEntry6.duration,
+  id: timeEntry6.id,
+  project: mockProject1,
+  start: new Date(timeEntry6.start),
+  stop: new Date(timeEntry6.stop),
+}
 
-export const mockTimeEntries1: TogglTimeEntry[] = [mockTogglTimeEntry1, mockTogglTimeEntry2]
+export const mockTogglTimeEntries1: TogglTimeEntry[] = [
+  mockTogglTimeEntry1,
+  mockTogglTimeEntry2,
+  mockTogglTimeEntry3,
+  mockTogglTimeEntry4,
+  mockTogglTimeEntry5,
+  mockTogglTimeEntry6,
+]
 
 // a running time entry
 const timeEntryRunning = {
@@ -264,7 +354,7 @@ export const mockUser: TogglUser = {
     } as TogglTag,
   ],
   timezone: "Europe/Berlin",
-  time_entries: [mockTogglTimeEntry1, mockTogglTimeEntry2],
+  time_entries: [mockTogglTimeEntry1, mockTogglTimeEntry6],
   updated_at: "2013-03-06T14:30:00+00:00",
   workspaces: [
     {

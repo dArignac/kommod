@@ -1,5 +1,8 @@
 import axios, { AxiosInstance } from "axios"
+import { utcToZonedTime } from "date-fns-tz"
 import add from "date-fns/add"
+import isToday from "date-fns/isToday"
+import sub from "date-fns/sub"
 import { config } from "../../config"
 import { isDev } from "../../helpers"
 import { TimeBookingStore, TogglStore } from "../../store"
@@ -159,19 +162,23 @@ export class TogglService {
       await this.sleep(config.development.networkDelays.fetchEntries)
     }
 
-    // FIXME need to fetch more data than 24 hours due to the API only respecting UTC
-    // FIXME then need to filter the entries....
-
-    // API takes a date and assumes the time is 00:00:00
-    // thus querying a day we need <day> as start date and <day+1> as end date
+    // the time for the date parameters is 00:00:00
+    // as the API is incapable of handling timezone and handles the parameters as UTC, we must fetch more data then actually necessary
+    // as timezone ranges from -12 to +14 hours, we query the whole day before <day> and one additional day after <day>
     const { data } = await this.ax.get<TogglTimeEntry[]>("/me/time_entries", {
       ...this.getAuth(),
-      params: { start_date: formatDate(day), end_date: formatDate(add(day, { days: 1 })) },
+      params: { start_date: formatDate(sub(day, { days: 1 })), end_date: formatDate(add(day, { days: 1 })) },
     })
+
+    // map, filter and sort
+    let entries = data
+      .map((entry: TogglTimeEntry) => this.mapTimeEntry(entry, TogglStore.getRawState().projects))
+      .filter((entry) => isToday(entry.start))
+      .sort(sortStartStopables)
 
     // extract the time entry descriptions as tasks for the store
     let tasks: string[] = []
-    data.forEach((entry) => {
+    entries.forEach((entry) => {
       if (!tasks.includes(entry.description)) {
         tasks.push(entry.description)
       }
@@ -180,7 +187,7 @@ export class TogglService {
       s.tasks = s.tasks.concat(tasks)
     })
 
-    return data.map((entry: TogglTimeEntry) => this.mapTimeEntry(entry, TogglStore.getRawState().projects)).sort(sortStartStopables)
+    return entries
   }
 
   public async updateTimeEntry(entry: TimeEntry): Promise<TimeEntry | null> {
@@ -201,10 +208,10 @@ export class TogglService {
       duration: entry.duration,
       id: entry.id,
       project,
-      start: new Date(entry.start),
+      start: utcToZonedTime(entry.start, Intl.DateTimeFormat().resolvedOptions().timeZone),
     } as TimeEntry
     if ("stop" in entry) {
-      item.stop = new Date(entry.stop!!)
+      item.stop = utcToZonedTime(entry.stop!!, Intl.DateTimeFormat().resolvedOptions().timeZone)
     }
     return item
   }
