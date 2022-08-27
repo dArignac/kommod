@@ -8,6 +8,7 @@ export type Project = {
   color: string
   id: number
   name: string
+  workspace: Workspace
 }
 
 export type StartStopable = {
@@ -23,6 +24,11 @@ export type TimeEntry = {
 } & StartStopable
 
 export type User = {
+  defaultWorkspaceId: number
   email: string
+  id: number
+}
+
+export type Workspace = {
   id: number
 }

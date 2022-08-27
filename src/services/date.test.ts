@@ -1,4 +1,4 @@
-import { combineDateWithTime, formatDuration, formatTime, parseTime, setToBeforeMidnight, setToMidnight, sortStartStopables } from "./date"
+import { combineDateWithTime, formatDate, formatDuration, formatTime, parseTime, setToBeforeMidnight, setToMidnight, sortStartStopables } from "./date"
 
 test("timezone is set to UTC", () => {
   expect(new Date().getTimezoneOffset()).toBe(0)
@@ -8,6 +8,10 @@ test("formats duration", () => {
   expect(formatDuration(0)).toBe("00:00:00")
   expect(formatDuration(11420)).toBe("03:10:20")
   expect(formatDuration(86399)).toBe("23:59:59")
+})
+
+test("formats date", () => {
+  expect(formatDate(new Date("2020-11-12"))).toBe("2020-11-12")
 })
 
 test("sets to midnight right", () => {

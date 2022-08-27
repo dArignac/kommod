@@ -30,6 +30,7 @@ export const TogglStore = new Store<TogglStoreInterface>({
   projects: [],
   tasks: [],
   user: {
+    defaultWorkspaceId: 0,
     email: "",
     id: 0,
   },

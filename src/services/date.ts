@@ -14,6 +14,10 @@ export function formatTime(day: Date): string {
   return format(day, "HH:mm")
 }
 
+export function formatDate(day: Date): string {
+  return format(day, "yyyy-MM-dd")
+}
+
 export function setToMidnight(day: Date): Date {
   return setSeconds(setMinutes(setHours(day, 0), 0), 0)
 }

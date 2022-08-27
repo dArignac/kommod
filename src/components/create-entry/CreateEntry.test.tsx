@@ -13,7 +13,6 @@ import { inputValueAndBlur } from "../../tests/utils"
 import { TimeEntry } from "../../types"
 import { CreateEntry } from "./CreateEntry"
 
-const stopTimeEntryMock = jest.spyOn(TogglService.prototype, "stopTimeEntry")
 const updateTimeEntryMock = jest.spyOn(TogglService.prototype, "updateTimeEntry")
 
 function renderWithClient() {
@@ -45,17 +44,16 @@ function mockStoppedTimeEntry() {
     new Promise<TimeEntry | null>(function (resolve, reject) {
       resolve(mockTimeEntryStopped)
     })
-  stopTimeEntryMock.mockImplementation(r)
   updateTimeEntryMock.mockImplementation(r)
 }
 
 beforeEach(() => {
-  stopTimeEntryMock.mockReset()
   updateTimeEntryMock.mockReset()
 })
 
 afterEach(() => {
   resetStores()
+  jest.useRealTimers()
 })
 
 test("Tabbing through subcomponents is in correct order", () => {
@@ -124,9 +122,12 @@ test("A.2 ui for stop entry behaves correctly", async () => {
 })
 
 test("A.3 + A.5 stop entry with set start time and no stop time works", async () => {
+  // set the date to a fixed value to allow new Date() to always return the same, so assertions below work
+  jest.useFakeTimers().setSystemTime(new Date())
   const now = new Date()
-  const timeStart = formatTime(sub(now, { hours: 1 }))
-  setupWithRunningTimeEntry(now, timeStart)
+  const timeStart = sub(now, { hours: 1 })
+  const timeStop = now
+  setupWithRunningTimeEntry(now, formatTime(timeStart))
   mockStoppedTimeEntry()
   const { container } = await renderWithClient()
 
@@ -136,8 +137,13 @@ test("A.3 + A.5 stop entry with set start time and no stop time works", async ()
   expect(notificiation).toBeVisible()
   await waitForElementToBeRemoved(() => screen.queryByText("Entry updated."))
 
-  expect(stopTimeEntryMock).toBeCalledTimes(1)
-  expect(stopTimeEntryMock).toBeCalledWith(3)
+  expect(updateTimeEntryMock).toBeCalledTimes(1)
+  expect(updateTimeEntryMock).toBeCalledWith({
+    ...mockTimeEntryRunning,
+    duration: 3600, // 1h
+    start: timeStart,
+    stop: timeStop,
+  } as TimeEntry)
 
   // check reset of UI
   expect(getTaskSelector()).toHaveValue("")

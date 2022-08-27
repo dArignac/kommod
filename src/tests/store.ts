@@ -19,6 +19,7 @@ export function resetStores() {
     s.projects = []
     s.tasks = []
     s.user = {
+      defaultWorkspaceId: 0,
       email: "",
       id: 0,
     }
