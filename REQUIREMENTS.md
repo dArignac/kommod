@@ -2,31 +2,30 @@
 
 ## Time entry creation/edit
 
-### (A) Active entries
+The tables shows the states and values of the different components composed in CreateEntry.
 
-- A.1 if there is an active entry, then description, project and start are prefilled and the action button states "Stop"
-- A.2 an active entry can only be stopped with the stop button; start and end time are adjustable and reflected when stopped
-- A.3 if end is not set, the entry is stopped with now()
-- A.4 if end is set, the entry is stopped with the value of end
-- A.5 after stopping an entry, task and end is cleared, start is set to now(), button is set to start
+| Req | TaskSelector | ProjectSelector | StartTimeInput | StopTimeInput | Toggl Entry | ActionButton            |
+| --- | ------------ | --------------- | -------------- | ------------- | ----------- | ----------------------- |
+| T.1 | irrelevant   | irrelevant      | empty          | irrelevant    | none        | disabled, label "Start" |
+| T.2 | has value    | has value       | has value      | empty         | none        | enabled, label "Start"  |
+| T.3 | has value    | has value       | has value      | has value     | none        | enabled, label "Save"   |
+| T.4 | has value    | has value       | has value      | empty         | running     | enabled, label "Stop"   |
+| T.5 | has value    | has value       | has value      | has value     | running     | enabled, label "Stop"   |
 
-### (B) Adding entries
+- T.1 is the default state
+- T.2 creates a running time entry with no stop date
+- T.3 create a stopped time entry with start and stop date
+- T.4 updates the running entry with now() as stop date
+- T.5 updates the running entry with the value of the stop date
 
-- B.1 the default text of the action button is "Start"
-- B.2 if task and project are set, then a new and active entry is created with datetime.now()
-- B.3 if task, project and start are set, then a new and active entry is created with start time
-- B.4 if task, project, start and end are set, then a new, finished entry is created with start and end time
+### Status
 
-## Status
+| Component       | I/T.1 | T/T.1 | I/T.2 | T/T.2 | I/T.3 | T/T.3 | I/T.4 | T/T.4 | I/T.5 | T/T.5 |
+| --------------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| TaskSelector    |       |       |       |       |       |       |       |       |       |       |
+| ProjectSelector |       |       |       |       |       |       |       |       |       |       |
+| StartTimeInput  |       |       |       |       |       |       |       |       |       |       |
+| StopTimeInput   |       |       |       |       |       |       |       |       |       |       |
+| ActionButton    | yes   | yes   | yes   | yes   | yes   | yes   | yes   | yes   | yes   | yes   |
 
-| Req | Implementation | Tests |
-| --- | -------------- | ----- |
-| A.1 | done           | done  |
-| A.2 | done           | done  |
-| A.3 | done           | done  |
-| A.4 | done           | done  |
-| A.5 | done           | done  |
-| B.1 |                |       |
-| B.2 |                |       |
-| B.3 |                |       |
-| B.4 |                |       |
+FIXME Status of CreateEntry tests?

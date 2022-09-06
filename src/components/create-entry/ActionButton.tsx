@@ -37,8 +37,21 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
   })
 
   const hasRunningEntry = timeEntry !== undefined
-  const label = timeStop !== undefined || hasRunningEntry ? "Stop" : "Start"
-  const enabled = timeEntry !== undefined || (projectId !== undefined && description !== undefined)
+  const hasTaskAndProject = projectId !== undefined && description !== undefined
+  const hasStartTime = timeStart !== undefined
+  const hasStopTime = timeStop !== undefined
+
+  let label = "Start"
+  if (hasTaskAndProject && hasStartTime && hasStopTime && !hasRunningEntry) {
+    label = "Save"
+  } else if (hasTaskAndProject && hasStartTime && hasRunningEntry) {
+    label = "Stop"
+  }
+
+  let enabled = false
+  if (hasTaskAndProject && hasStartTime) {
+    enabled = true
+  }
 
   function onClick() {
     if (hasRunningEntry) {
