@@ -190,6 +190,17 @@ export class TogglService {
     return entries
   }
 
+  public async createTimeEntry(entry: TimeEntry): Promise<TimeEntry | null> {
+    try {
+      const { data } = await this.ax.post<TogglTimeEntry>(`/workspaces/${entry.project.workspace.id}/time_entries`, entry, { ...this.getAuth() })
+
+      if (data !== null) {
+        return this.mapTimeEntry(data, TogglStore.getRawState().projects)
+      }
+    } catch {}
+    return null
+  }
+
   public async updateTimeEntry(entry: TimeEntry): Promise<TimeEntry | null> {
     try {
       const { data } = await this.ax.put<TogglTimeEntry>(`/workspaces/${entry.project.workspace.id}/time_entries/${entry.id}`, entry, { ...this.getAuth() })

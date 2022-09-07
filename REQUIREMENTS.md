@@ -4,6 +4,8 @@
 
 The tables shows the states and values of the different components composed in CreateEntry.
 
+FIXME reshape to allow starting without filling start time -> this changes T.1 also entirely!
+
 | Req | TaskSelector | ProjectSelector | StartTimeInput | StopTimeInput | Toggl Entry | ActionButton            |
 | --- | ------------ | --------------- | -------------- | ------------- | ----------- | ----------------------- |
 | T.1 | irrelevant   | irrelevant      | empty          | irrelevant    | none        | disabled, label "Start" |

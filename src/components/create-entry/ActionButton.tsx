@@ -36,6 +36,20 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
     },
   })
 
+  const mutationCreateEntry = useMutation<TimeEntry | null, unknown, TimeEntry, unknown>((entry: TimeEntry) => TogglService.getInstance(token).createTimeEntry(entry), {
+    onSuccess(entry, variables, context) {
+      if (entry !== null) {
+        // save the entry id
+        TimeBookingStore.update((s) => {
+          s.entry = entry
+        })
+      }
+    },
+    async onError(error, variables, context) {
+      console.error("Error on creating entry", error)
+    },
+  })
+
   const hasRunningEntry = timeEntry !== undefined
   const hasTaskAndProject = projectId !== undefined && description !== undefined
   const hasStartTime = timeStart !== undefined
@@ -53,17 +67,45 @@ export function ActionButton({ tabIndex, width }: ActionButtonProps) {
     enabled = true
   }
 
+  function hasAllValuesForUpdate() {
+    return hasRunningEntry && hasTaskAndProject && hasStartTime
+  }
+
+  function hasAllValuesForCreation() {
+    return !hasRunningEntry && hasTaskAndProject && hasStartTime
+  }
+
   function onClick() {
-    if (hasRunningEntry) {
+    if (hasAllValuesForUpdate()) {
       const start = combineDateWithTime(day, timeStart!!)
       const stop = timeStop !== undefined ? combineDateWithTime(day, timeStop!!) : new Date()
 
-      mutationUpdateEntry.mutate({
-        ...timeEntry,
+      const entry: TimeEntry = {
+        description: timeEntry!!.description,
         duration: differenceInSeconds(stop, start),
+        id: timeEntry!!.id,
+        project: timeEntry!!.project,
         start,
         stop,
-      })
+      }
+
+      mutationUpdateEntry.mutate(entry)
+    } else if (hasAllValuesForCreation()) {
+      // FIXME refactor to do not duplicate stuff we already have with the update
+      console.log("create")
+      const start = combineDateWithTime(day, timeStart!!)
+      const stop = timeStop !== undefined ? combineDateWithTime(day, timeStop!!) : new Date()
+
+      // FIXME needs customized TimeEntryCreationPayload type, as project_id should be given and id it not existing
+      // const entry: TimeEntry = {
+      //   description: description!!,
+      //   duration: differenceInSeconds(stop, start),
+      //   project: projectId,
+      //   start,
+      //   stop,
+      // }
+
+      // mutationCreateEntry.mutate(entry)
     }
   }
 
