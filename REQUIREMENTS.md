@@ -22,10 +22,9 @@ The tables shows the states and values of the different components composed in C
 
 | Component       | I/T.1 | T/T.1 | I/T.2 | T/T.2 | I/T.3 | T/T.3 | I/T.4 | T/T.4 | I/T.5 | T/T.5 |
 | --------------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| TaskSelector    |       |       |       |       |       |       |       |       |       |       |
-| ProjectSelector |       |       |       |       |       |       |       |       |       |       |
-| StartTimeInput  |       |       |       |       |       |       |       |       |       |       |
-| StopTimeInput   |       |       |       |       |       |       |       |       |       |       |
+| TaskSelector    | skip  | skip  | skip  | skip  | skip  | skip  | skip  | skip  | skip  | skip  |
+| ProjectSelector | skip  | skip  | skip  | skip  | skip  | skip  | skip  | skip  | skip  | skip  |
+| StartTimeInput  | skip  | skip  | skip  | skip  | skip  | skip  | skip  | skip  | skip  | skip  |
+| StopTimeInput   | skip  | skip  | skip  | skip  | skip  | skip  | skip  | skip  | skip  | skip  |
 | ActionButton    | yes   | yes   | yes   | yes   | yes   | yes   | yes   | yes   | yes   | yes   |
-
-FIXME Status of CreateEntry tests?
+| CreateEntry     |       |       |       |       |       |       | yes   | yes   | yes   | yes   |

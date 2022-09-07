@@ -78,7 +78,7 @@ test("stop time cannot be before start time", () => {
   expect(stop.getAttribute("class")?.split(" ")).toContain("ant-input-status-error")
 })
 
-test("A.1 active entry fills all fields accordingly", () => {
+test("T.4 active entry fills all fields accordingly", () => {
   const now = new Date()
   const timeStart = formatTime(sub(now, { hours: 1 }))
   setupWithRunningTimeEntry(now, timeStart)
@@ -92,7 +92,7 @@ test("A.1 active entry fills all fields accordingly", () => {
   expect(getActionButton()).toHaveTextContent("Stop")
 })
 
-test("A.2 ui for stop entry behaves correctly", async () => {
+test("T.5 ui for stop entry behaves correctly", async () => {
   const now = new Date()
   const timeStart = formatTime(sub(now, { hours: 1 }))
   setupWithRunningTimeEntry(now, timeStart)
@@ -121,7 +121,7 @@ test("A.2 ui for stop entry behaves correctly", async () => {
   expect(TimeBookingStore.getRawState().stop).toBe("10:00")
 })
 
-test("A.3 + A.5 stop entry with set start time and no stop time works", async () => {
+test("T.4 stop entry with set start time and no stop time works", async () => {
   // set the date to a fixed value to allow new Date() to always return the same, so assertions below work
   jest.useFakeTimers().setSystemTime(new Date())
   const now = new Date()
@@ -153,7 +153,7 @@ test("A.3 + A.5 stop entry with set start time and no stop time works", async ()
   expect(getActionButton()).toHaveTextContent("Start")
 })
 
-test("A.4 + A.5 stop entry with set start time and set stop time works", async () => {
+test("T.5 stop entry with set start time and set stop time works", async () => {
   const now = new Date()
   const timeStart = sub(now, { hours: 1 })
   const timeStop = add(now, { hours: 1 })
