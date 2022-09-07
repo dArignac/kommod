@@ -210,7 +210,7 @@ export class TogglService {
       project,
       start: utcToZonedTime(entry.start, Intl.DateTimeFormat().resolvedOptions().timeZone),
     } as TimeEntry
-    if ("stop" in entry) {
+    if ("stop" in entry && entry.stop !== null) {
       item.stop = utcToZonedTime(entry.stop!!, Intl.DateTimeFormat().resolvedOptions().timeZone)
     }
     return item
