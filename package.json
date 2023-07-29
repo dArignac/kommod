@@ -21,8 +21,5 @@
     "@vitejs/plugin-react": "^4.0.3",
     "typescript": "^5.0.2",
     "vite": "^4.4.4"
-  },
-  "volta": {
-    "node": "18.17.0"
   }
 }
